@@ -2,5 +2,11 @@
 \BOOKMARK [2][-]{subsection.1.1}{1.1. Introduction}{section.1}% 2
 \BOOKMARK [2][-]{subsection.1.2}{1.2. Discretization of Vasicek Model}{section.1}% 3
 \BOOKMARK [2][-]{subsection.1.3}{1.3. Likelihood of the AR\(1\) Process}{section.1}% 4
-\BOOKMARK [1][-]{section*.1}{References}{}% 5
-\BOOKMARK [1][-]{section*.2}{Appendix: Code}{}% 6
+\BOOKMARK [2][-]{subsection.1.4}{1.4. Maximum Likelihood Estimation}{section.1}% 5
+\BOOKMARK [1][-]{section.2}{2. Merton Jump Diffusion Model Calibration}{}% 6
+\BOOKMARK [2][-]{subsection.2.1}{2.1. Introduction}{section.2}% 7
+\BOOKMARK [2][-]{subsection.2.2}{2.2. Jump Diffusion Process}{section.2}% 8
+\BOOKMARK [2][-]{subsection.2.3}{2.3. Parameter Estimation with Method of Moments}{section.2}% 9
+\BOOKMARK [1][-]{section*.3}{References}{}% 10
+\BOOKMARK [1][-]{section*.4}{Appendix: Code for Vasicek model ML estimation}{}% 11
+\BOOKMARK [1][-]{section*.5}{Appendix: Code for Merton jump diffusion model }{}% 12

@@ -289,7 +289,7 @@
 %%%%%%%%%%%%%%
 
 
-\title{Maximum Likelihood Estimation of Vasicek Model and Calibration on Merton Jump Diffusion Model Using Method of Moments}
+\title{Maximum Likelihood Estimation of Vasicek Model and \\ Calibration on Merton Jump Diffusion Using Method of Moments}
 \author{Ran Zhao}
 \thanks{}
 \begin{document}
@@ -323,15 +323,13 @@ dr_t = a(b-r_t)dt + \sigma dW_t
 where $W_t$ is the Wiener process. $a$ can be interpreted as the speed of mean-reverting, and $b$ is the long term level of the spot rate. $\sigma$, here as
 a constant, is the instantaneous volatility.
 
-In this paper, I use the 3-month Treasury Bills rates to approximate the spot rate. The data source is Federal Reserve Bank of St. Louis website \footnote{\url{https://fred.stlouisfed.org/series/DTB3}}. Using monthly data, the 3-month Treasury Bill rates plots in the Figure~\ref{plot_rates}. 
+In this paper, I use the 3-month Treasury Bills rates to approximate the spot rate. The data source is Federal Reserve Bank of St. Louis website \footnote{\url{https://fred.stlouisfed.org/series/DTB3}}. Using monthly data, the 3-month Treasury Bill rates plots in the Figure~\ref{plot_rates}. From the graph, the 3-month T-bill rates display cyclical pattern, where the rate fluctuates between its long-term trend indicating by rate's moving average. However, these long term trends vary among different time period, over 1954 to 2015. Intuitively, the short term rate is tightly connected with monetary policy, and is adjusted according to the economic status. The economic cycle enhances the pattern of the short term.
 
 \begin{figure}
   \centering
   \includegraphics[scale=0.7]{plot_rates.eps}
-  \caption{Monthly 3-month Treasury Bill rate at secondary market.}\label{plot_rates}
+  \caption{Monthly 3-month Treasury Bill rate at secondary market. Time period is from 1954 to 2015.}\label{plot_rates}
 \end{figure}
-
-From the above graph, 
 
 
 \subsection{Discretization of Vasicek Model}
@@ -347,13 +345,167 @@ r_{t+1}       &=& ab\Delta t + (1 - a\Delta t) r_t + \sigma \epsilon_{t+1}
 Change the notation from $b$ to $\bar{X}$ to represent the mean level of rates,
 from $(1-a\Delta t)$ to $\phi$ simplifying the parameter. Use $X_t$ to denote $r_t$, we yield
 
-$$
+\begin{equation} \label{discrete_ar1}
 X_{t+1} = \bar{X} (1-\phi) + \phi X_t + \sigma \epsilon_{t+1}
-$$
+\end{equation}
 
-which has the form of an AR(1) process. 
+which has the form of an AR(1) process.
 
 \subsection{Likelihood of the AR(1) Process}
+From Equation~\ref{discrete_ar1}, the conditional distribution of $X_{t+1}$ is straightforward:
+\begin{equation} \label{cond_dist}
+X_{t+1}|X_t \sim N(\bar{X} (1-\phi) + \phi X_t, \sigma^2)
+\end{equation}
+since the $\epsilon_{t+1}$ is a white noise term with mean 0 and variance 1. The information available is enough to determine $X_t$, but $\epsilon_{t+1}$ provides the source of randomness. The parameters remain to be estimated, $\mathbf{\theta}=(\bar{X},\phi, \sigma^2)'$.
+
+The distribution of the initial value would be $X_0\sim N(\bar{X}, \frac{\sigma}{1-\phi^2})$. Hence,
+\begin{eqnarray*}
+f_{X_0}(x_0;\mathbf{\theta}) &=& f_{X_0}(x_0; \bar{X},\phi, \sigma^2) \\
+                             &=& \frac{1}{\sqrt{2\pi}/\sqrt{\sigma^2/(1-\phi^2)}}\exp\left[ -\frac{1}{2} \frac{(x_0 - \bar{X})^2}{\sigma^2/(1-\phi^2)} \right]
+\end{eqnarray*}
+
+Next consider the conditional distribution of the second observation. According to Equation~\ref{cond_dist}, we have
+$$
+f_{X_1|X_0}(x_1, x_0;\mathbf{\theta}) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left[ -\frac{1}{2} \frac{(x_1 - \bar{X} (1-\phi) - \phi x_0)^2}{\sigma^2} \right]
+$$
+
+The joint density of observations 1 and 2 is then just
+$$
+f_{X_2, X_1}(x_2.x_1; \mathbf{\theta}) = f_{X_1|X_0}(x_1, x_0;\mathbf{\theta}) f_{X_0}(x_0;\mathbf{\theta})
+$$
+
+In general, the value of $X_0, X_1, \ldots, X_{T-1}$ matters for $X_T$ only through the value $X_{T-1}$, and the density of observation $T$ conditional on the preceding $T-1$ observations is given by
+\begin{eqnarray*}
+f_{X_{T}|X_{T-1}, X_{T-2}, \ldots, X_0}(x_T|x_{T-1},\ldots, x_0;\mathbf{\theta}) &=& f_{X_{T}|X_{T-1}}(x_T|x_{T-1}; \mathbf{\theta}) \\
+                             &=&  \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left[ -\frac{1}{2} \frac{(x_T - \bar{X} (1-\phi) - \phi x_{T-1})^2}{\sigma^2} \right]
+\end{eqnarray*}
+
+The likelihood of the complete sample can thus be calculated as
+$$
+f_{X_T, X_{T-1}, \ldots, X_0}(x_T, x_{T-1}, \ldots, x_0; \mathbf{\theta}) = f_{X_0}(x_0;\theta) \cdot \prod_{t=0}^{T-1} f_{X_{t+1}|X_{t}}(x_{t+1}|x_t; \mathbf{\theta})
+$$
+
+Then the log-likelihood function (denoted by $\ell\mathbf(\theta)$) is
+\begin{eqnarray*} \label{log_like_ar}
+\ell(\mathbf(\theta)) &=& \log f_{X_0}(x_0;\theta) + \sum_{t=0}^{T-1} \log f_{X_{t+1}|X_{t}}(x_{t+1}|x_t; \mathbf{\theta}) \\
+                      &=& -\frac{1}{2}\log 2\pi + \frac{1}{2}\log(1-\phi^2)-\frac{1}{2}\log \sigma^2 - \frac{1}{2} \frac{(1-\phi^2)(x_0-\bar{X})^2}{\sigma^2} \\
+                      & & -\frac{T}{2}\log 2\pi - \frac{T}{2} \log \sigma^2 - \frac{1}{2\sigma^2} \sum_{t=0}^{T-1} [x_{t+1} - \bar{X}(1-\phi)-\phi x_t]^2 \\
+                      &=& -\frac{(T+1)}{2}\log 2\pi + \frac{1}{2}\log(1-\phi^2)-\frac{(T+1)}{2}\log \sigma^2 - \frac{1}{2} \frac{(1-\phi^2)(x_0-\bar{X})^2}{\sigma^2} \\
+                      & & - \frac{1}{2\sigma^2} \sum_{t=0}^{T-1} [x_{t+1} - \bar{X}(1-\phi)-\phi x_t]^2
+\end{eqnarray*}
+
+\subsection{Maximum Likelihood Estimation}
+Maximum likelihood estimation (MLE) is the method of estimating model parameters given observations, by finding the parameters (here $\mathbf{\theta}$) that maximize the likelihood of the model. To optimize the likelihood function derived in Equation~\ref{log_like_ar}, use the derivative of the likelihood function with respect to the parameter set $\mathbf{\theta}$:
+$$
+\frac{\partial \ell\mathbf(\theta)}{\partial \mathbf{\theta}^*} = 0
+$$
+where again $\mathbf{\theta} = (\bar{X}, \phi, \sigma^2)'$. Here the parameter $\sigma^2$ represents the conditional variance of the short rate. The optimization requires
+$$
+\left\{
+  \begin{array}{rcr}
+    \frac{\ell\mathbf(\theta)}{\partial \bar{X}} & = & 0 \\
+    \frac{\ell\mathbf(\theta)}{\partial \phi} & = & 0 \\
+    \frac{\ell\mathbf(\theta)}{\partial \sigma^2} & = & 0 \\
+  \end{array}
+\right.
+$$
+
+Substitute the log-likelihood function in Equation~\ref{log_like_ar} into the optimization condition above yields
+\begin{eqnarray*}
+    \frac{\ell\mathbf(\theta)}{\partial \bar{X}} & = & -\frac{(1-\phi^2)(\bar{X}-x_0)}{2\sigma} + \frac{1-\phi}{\sigma^2}\sum_{t=0}^{T-1}[x_{t+1}-\bar{X}(1-\phi)-\phi x_t] = 0 \\
+    \frac{\ell\mathbf(\theta)}{\partial \phi} & = & -\frac{1}{\phi} + \frac{\phi(x_0-\bar{X})^2}{\sigma^2} - \frac{1}{\sigma^2}\sum_{t=0}^{T-1}(\bar{X} - x_t)[x_{t+1}-\bar{X}(1-\phi)-\phi x_t] = 0 \\
+    \frac{\ell\mathbf(\theta)}{\partial \sigma^2} & = & -\frac{T+1}{2\sigma^2} + \frac{(1-\phi^2)(x_0-\bar{X})^2}{2\sigma^4} + \frac{1}{2\sigma^4}\sum_{t=0}^{T-1}[x_{t+1}-\bar{X}(1-\phi)-\phi x_t]^2 = 0 \\
+\end{eqnarray*}
+
+The exact maximum likelihood estimators requires to solve the above equations. In other words, the solutions of the above equations become the exact ML estimator. However, these equations are nonlinear and difficult to solve analytically. Numerical methods and algorithms would be used in this case, and in this paper I use $\mathrm{R}$ to obtain the
+
+
+\section{Merton Jump Diffusion Model Calibration}
+\subsection{Introduction}
+A vast of literatures have extended the Black-Scholes model~\cite{BS73} in option pricing by making more reasonable assumptions on market factors, such as the distribution of the underlying. Merton's 1976 JFE article~\cite{M76} was the first to explore jump diffusion models. The jump diffusion model is designed to address the issue of fat tails, which is observed in dynamics many asset classes. However, when the underlying can jump to any level, the market is not complete, for the reason that there are more states than assets. Merton's innovative solution lies on extra randomness due to jumps can be diversified away.
+
+The Merton jump diffusion (MJD) model was introduced to model the asset price $S_t$, mainly the equity (stock) prices. Figure~\ref{plot_spx} plots the SPX index levels from 1954 to 2015. The data source is Bloomberg. The long term return on the equity market is tremendous. The SPX index level begins at 25 in the beginning of 1954, and reached over 1500 points around 2000 and 2006. in 2015, the SPX index level exceeds 2000 points.
+
+\begin{figure}
+  \centering
+  \includegraphics[scale=0.6]{plot_spx.eps}
+  \caption{The SPX index levels. Time period is from 1954 to 2015.}\label{plot_spx}
+\end{figure}
+
+\subsection{Jump Diffusion Process}
+Consider the dynamics of the model follows the Black-Scholes dynamics, which supposes 
+that the behavior of the stock price, $S_t$, is determined by the stochastic process
+$$
+dS_t = \mu S_t dt + \sigma S_t dW_t
+$$
+where $W_t$ is the Wiener process. $\mu$ and $\sigma$ are assumed to be constant and 
+represent the drift and diffusion, respectively. 
+
+Now consider the asset price $S_t$ with log-normal jumps $V_1, \ldots, V_j$ at random times
+$\tau_1, \ldots, \tau_j$ representing the moments of jumps in a Poisson process. 
+
+The MJD model assumes the $S_t$ to follow the stochastic process:
+\begin{equation} \label{jump_process}
+\frac{dS_t}{S_t} = \mu dt + \sigma dW_t + d\left( \sum_{j=0}^{N_t}(V_j -1) \right)
+\end{equation}
+
+The discontinuities of the price process are described by the Poisson process $N_t$ 
+with intensity $\lambda$ (mean arrival rate of jumps per unit time) and jump $V_j$. 
+And $\log V_j \sim N(\theta, \delta^2)$. The jump interprets by random variable $V$ which 
+transforms the price $S_t$ to $VS_t$. The difference $V-1$ is the relative price change when 
+a Poisson jump occurs. 
+
+Using Ito's Lemma, the strong solution of the Equation~\ref{jump_process} is 
+$$
+S_t = S_0 \exp\left[\left( \mu - \frac{1}{2} \sigma^2 \right)t + \sigma W_t \right] \prod_{j=0}^{N_t} V_j
+$$
+where $S_0$ is the initial value of the stock price. Let $Y_j = \log V_j$ and rewrite
+\begin{equation} \label{mjd_solution}
+X_t = \log\frac{S_t}{S_0} = \left(\mu-\frac{1}{2} \sigma^2 \right)t + \sigma W_t + \sum_{j=0}^{N_t}Y_j
+\end{equation}
+and we assume in this paper that the processes $W_t$, $N_t$ and $Y_j$ are independent. The parameter set 
+of this MJD model is $\mathbf{\theta}=(\mu, \sigma, \theta, \delta^2, \lambda)'$. 
+
+Discretize Equation~\ref{mjd_solution} over time period $[t, t+1]$ and yield
+$$
+X_{t+1} = X_t + \left( \mu - \frac{1}{2}\sigma^2 \right) + \sigma \epsilon_{t+1} + \sum_{j=0}^{N_{t+1}-N_{t}}Y_j
+$$
+where $\epsilon_{t+1}$ is the white noise with mean 0 and variance 1.
+
+Hence the probability density of $\Delta X_t$ can be expressed as
+$$
+f(x) = \sum_{n=0}^{+\infty} e^{-\lambda}\frac{\lambda^n}{n!} \frac{1}{\sqrt{2\pi(\sigma^2+n\delta^2)}} \exp\left[ -\frac{(x-\mu+\sigma^2/2 -n\theta)^2}{2(\sigma^2+n\delta^2)} \right]
+$$
+
+\subsection{Parameter Estimation with Method of Moments}
+From the density function of $\Delta X_t$ (the return process), we can have
+\begin{eqnarray*}
+\mathbb{E}(X) &=& \sum_{n=0}^{+\infty} e^{-\lambda}\frac{\lambda^n}{n!} \int_{-\infty}^{+\infty} \frac{x}{\sqrt{2\pi(\sigma^2+n\delta^2)}} \exp\left[ -\frac{(x-\mu+\sigma^2/2 -n\theta)^2}{2(\sigma^2+n\delta^2)} \right] dx \\
+\mathbb{E}[(X-\mathbb{E}(X))^k] &=& \sum_{n=0}^{+\infty} e^{-\lambda}\frac{\lambda^n}{n!} \int_{-\infty}^{+\infty} \frac{(x-\mu+\sigma^2/2 -n\theta)^k}{\sqrt{2\pi(\sigma^2+n\delta^2)}} \exp\left[ -\frac{(x-\mu+\sigma^2/2 -n\theta)^2}{2(\sigma^2+n\delta^2)} \right] dx \\
+\end{eqnarray*}
+for $k\geq 1$. Note that the improper integral is the central moment of order $k$ of the normal random variable with $N(\mu-(\sigma^2/2)-n\theta, \sigma^2+n\delta^2)$. Intuitively, the Poisson mixture of normals contributes to but only mean but also the variance (or volatility) term of the return process. Since the central moment with odd order becomes null for normal random variables, we use the central moments with even order to estimate the parameters. The central moments of even order is
+$$
+\mathbb{E}[(X-\mathbb{E}(X))^{2k}] = \frac{(2k)!}{2^k k!} \sum_{n=0}^{+\infty} e^{-\lambda}\frac{\lambda^n}{n!} (\sigma^2 + n\delta^2)^k
+$$
+
+Using the following five central moments to estimate the five parameters:
+\begin{eqnarray*}
+\mathbb{E}(X)                       &=& \mu - \frac{\sigma^2}{2} + \lambda\theta \\
+\mathbb{E}[(X-\mathbb{E}(X))^{2}]   &=& \sigma^2 + \lambda\delta^2 \\
+\mathbb{E}[(X-\mathbb{E}(X))^{4}]   &=& 3[(\sigma^2+\lambda\delta^2)^2+\lambda\delta^4]
+\mathbb{E}[(X-\mathbb{E}(X))^{6}]   &=& 15[(\sigma^2+\lambda\delta^2)^3 + 3\lambda\delta^4(\sigma^2+\lambda\delta^2)+\lambda\delta^6]
+\mathbb{E}[(X-\mathbb{E}(X))^{8}]   &=&
+\end{eqnarray*}
+
+%obtained by equalizing:
+%\begin{eqnarray*}
+%X_0          &=& \bar{X} (1-\phi) + \phi X_0 + \sigma \epsilon_{1} \\
+%(1-\phi) X_0 &=& \bar{X} (1-\phi) + \sigma \epsilon_{1} \\
+%X_0          &=& \bar{X} + \frac{\sigma}{1-\phi} \epsilon_{1}
+%\end{eqnarray*}
+%thus we have the probability density of the initial value as $X_0\sim N(\bar{X}, \frac{}{})$
+
+
 
 %
 %
@@ -367,9 +519,13 @@ which has the form of an AR(1) process.
 %
 %
 \newpage
-\section*{Appendix: Code}
+\section*{Appendix: Code for Vasicek model ML estimation}
 %\begin{spacing}{0.9}
-\lstinputlisting[language=R]{assignment1.R}
+\lstinputlisting[language=R]{assignment1-1.R}
+
+\newpage
+\section*{Appendix: Code for Merton jump diffusion model }
+\lstinputlisting[language=R]{assignment1-2.R}
 %\end{spacing}
 
 \end{document}

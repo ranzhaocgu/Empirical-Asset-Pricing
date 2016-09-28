@@ -1,5 +1,15 @@
 \begin{thebibliography}{1}
 
+\bibitem{BS73}
+{Black F., Scholes M.}
+\newblock The pricing of options and corporate liabilities.
+\newblock {\em Journal of Political Economy}, 81(3):637--654, 1973.
+
+\bibitem{M76}
+Merton~R. C.
+\newblock Option pricing when underlying stock returns are discontinuous.
+\newblock {\em Journal of Financial Economics}, 3:125--144, 1976.
+
 \bibitem{V77}
 Vasicek O.
 \newblock An equilibrium characterization of the term structure.
