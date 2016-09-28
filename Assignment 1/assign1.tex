@@ -433,29 +433,29 @@ The Merton jump diffusion (MJD) model was introduced to model the asset price $S
 \end{figure}
 
 \subsection{Jump Diffusion Process}
-Consider the dynamics of the model follows the Black-Scholes dynamics, which supposes 
+Consider the dynamics of the model follows the Black-Scholes dynamics, which supposes
 that the behavior of the stock price, $S_t$, is determined by the stochastic process
 $$
 dS_t = \mu S_t dt + \sigma S_t dW_t
 $$
-where $W_t$ is the Wiener process. $\mu$ and $\sigma$ are assumed to be constant and 
-represent the drift and diffusion, respectively. 
+where $W_t$ is the Wiener process. $\mu$ and $\sigma$ are assumed to be constant and
+represent the drift and diffusion, respectively.
 
 Now consider the asset price $S_t$ with log-normal jumps $V_1, \ldots, V_j$ at random times
-$\tau_1, \ldots, \tau_j$ representing the moments of jumps in a Poisson process. 
+$\tau_1, \ldots, \tau_j$ representing the moments of jumps in a Poisson process.
 
 The MJD model assumes the $S_t$ to follow the stochastic process:
 \begin{equation} \label{jump_process}
 \frac{dS_t}{S_t} = \mu dt + \sigma dW_t + d\left( \sum_{j=0}^{N_t}(V_j -1) \right)
 \end{equation}
 
-The discontinuities of the price process are described by the Poisson process $N_t$ 
-with intensity $\lambda$ (mean arrival rate of jumps per unit time) and jump $V_j$. 
-And $\log V_j \sim N(\theta, \delta^2)$. The jump interprets by random variable $V$ which 
-transforms the price $S_t$ to $VS_t$. The difference $V-1$ is the relative price change when 
-a Poisson jump occurs. 
+The discontinuities of the price process are described by the Poisson process $N_t$
+with intensity $\lambda$ (mean arrival rate of jumps per unit time) and jump $V_j$.
+And $\log V_j \sim N(\theta, \delta^2)$. The jump interprets by random variable $V$ which
+transforms the price $S_t$ to $VS_t$. The difference $V-1$ is the relative price change when
+a Poisson jump occurs.
 
-Using Ito's Lemma, the strong solution of the Equation~\ref{jump_process} is 
+Using Ito's Lemma, the strong solution of the Equation~\ref{jump_process} is
 $$
 S_t = S_0 \exp\left[\left( \mu - \frac{1}{2} \sigma^2 \right)t + \sigma W_t \right] \prod_{j=0}^{N_t} V_j
 $$
@@ -463,8 +463,8 @@ where $S_0$ is the initial value of the stock price. Let $Y_j = \log V_j$ and re
 \begin{equation} \label{mjd_solution}
 X_t = \log\frac{S_t}{S_0} = \left(\mu-\frac{1}{2} \sigma^2 \right)t + \sigma W_t + \sum_{j=0}^{N_t}Y_j
 \end{equation}
-and we assume in this paper that the processes $W_t$, $N_t$ and $Y_j$ are independent. The parameter set 
-of this MJD model is $\mathbf{\theta}=(\mu, \sigma, \theta, \delta^2, \lambda)'$. 
+and we assume in this paper that the processes $W_t$, $N_t$ and $Y_j$ are independent. The parameter set
+of this MJD model is $\mathbf{\theta}=(\mu, \sigma, \theta, \delta^2, \lambda)'$.
 
 Discretize Equation~\ref{mjd_solution} over time period $[t, t+1]$ and yield
 $$
@@ -492,9 +492,9 @@ Using the following five central moments to estimate the five parameters:
 \begin{eqnarray*}
 \mathbb{E}(X)                       &=& \mu - \frac{\sigma^2}{2} + \lambda\theta \\
 \mathbb{E}[(X-\mathbb{E}(X))^{2}]   &=& \sigma^2 + \lambda\delta^2 \\
-\mathbb{E}[(X-\mathbb{E}(X))^{4}]   &=& 3[(\sigma^2+\lambda\delta^2)^2+\lambda\delta^4]
-\mathbb{E}[(X-\mathbb{E}(X))^{6}]   &=& 15[(\sigma^2+\lambda\delta^2)^3 + 3\lambda\delta^4(\sigma^2+\lambda\delta^2)+\lambda\delta^6]
-\mathbb{E}[(X-\mathbb{E}(X))^{8}]   &=&
+\mathbb{E}[(X-\mathbb{E}(X))^{4}]   &=& 3[(\sigma^2+\lambda\delta^2)^2+\lambda\delta^4] \\
+\mathbb{E}[(X-\mathbb{E}(X))^{6}]   &=& 15[(\sigma^2+\lambda\delta^2)^3 + 3\lambda\delta^4(\sigma^2+\lambda\delta^2)+\lambda\delta^6] \\
+\mathbb{E}[(X-\mathbb{E}(X))^{8}]   &=& x
 \end{eqnarray*}
 
 %obtained by equalizing:
