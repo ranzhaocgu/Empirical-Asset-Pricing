@@ -35,10 +35,27 @@ moment.diff = function(data.input){
   theo.moment.4 = 3 * ((sigma.square+lambda*delta.square)^2 + lambda*delta.square^2)
   theo.moment.6 = 15 * ((sigma.square+lambda*delta.square)^2 + 3*lambda*delta.square*(sigma.square+lambda*delta.square)+lambda*delta.square^3)
   
-  least.square.obj = (theo.moment.1 - emp.moment.1)^2 + (theo.moment.2 - emp.moment.2)^2 + (theo.moment.4 - emp.moment.4)^2 + (theo.moment.6 - emp.moment.6)^2
+  least.square.obj = (theo.moment.1 - emp.moment.1)^2 + 100*(theo.moment.2 - emp.moment.2)^2 + 10000*(theo.moment.4 - emp.moment.4)^2 + 10000*(theo.moment.6 - emp.moment.6)^2
   return(least.square.obj)
 }
 
 # parameter calibration
-output = optim(c(0, 0.006, 0.03, 0.0005), moment.diff)
+output = optim(c(0, 0.006, 0.03, 0.005), moment.diff)
 output$par
+
+mu = output$par[1]
+sigma.square = output$par[2]
+lambda = output$par[3]
+delta.square = output$par[4]
+
+theo.moment.1 = mu - sigma.square / 2
+theo.moment.2 = sigma.square + lambda * delta.square
+theo.moment.4 = 3 * ((sigma.square+lambda*delta.square)^2 + lambda*delta.square^2)
+theo.moment.6 = 15 * ((sigma.square+lambda*delta.square)^2 + 3*lambda*delta.square*(sigma.square+lambda*delta.square)+lambda*delta.square^3)
+
+theo.out = c(theo.moment.1, theo.moment.2, theo.moment.4, theo.moment.6)
+empi.out = c(emp.moment.1, emp.moment.2, emp.moment.4, emp.moment.6)
+diff.out = empi.out - theo.out
+perg.out = diff.out / theo.out
+
+cbind(theo.out, empi.out, diff.out, perg.out)
