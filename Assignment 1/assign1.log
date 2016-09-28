@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=latex 2016.5.15)  27 SEP 2016 18:06
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=latex 2016.3.20)  28 SEP 2016 00:10
 entering extended mode
 **./assign1.tex
 (assign1.tex
@@ -429,7 +429,7 @@ Package: fullpage 1999/02/23 1.1 (PWD)
 ("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\psnfss\palatino.sty"
 Package: palatino 2005/04/12 PSNFSS-v9.2a (SPQR) 
 )
-(C:\Users\Ran\AppData\Roaming\MiKTeX\2.9\tex\latex\listings\listings.sty
+("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\listings\listings.sty"
 \lst@mode=\count108
 \lst@gtempboxa=\box30
 \lst@token=\toks27
@@ -443,18 +443,18 @@ Package: palatino 2005/04/12 PSNFSS-v9.2a (SPQR)
 \lst@lineno=\count113
 \lst@maxwidth=\dimen131
 
-(C:\Users\Ran\AppData\Roaming\MiKTeX\2.9\tex\latex\listings\lstmisc.sty
+("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\listings\lstmisc.sty"
 File: lstmisc.sty 2015/06/04 1.6 (Carsten Heinz)
 \c@lstnumber=\count114
 \lst@skipnumbers=\count115
 \lst@framebox=\box31
 )
-(C:\Users\Ran\AppData\Roaming\MiKTeX\2.9\tex\latex\listings\listings.cfg
+("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\listings\listings.cfg"
 File: listings.cfg 2015/06/04 1.6 listings configuration
 ))
 Package: listings 2015/06/04 1.6 (Carsten Heinz)
 
-(C:\Users\Ran\AppData\Roaming\MiKTeX\2.9\tex\latex\listings\lstlang1.sty
+("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\listings\lstlang1.sty"
 File: lstlang1.sty 2015/06/04 1.6 listings language file
 )
 ("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\hyperref\hyperref.sty"
@@ -968,10 +968,10 @@ Package: booktabs 2005/04/14 v1.61803 publication quality tables
 \@lastruleclass=\count131
 \@thisrulewidth=\dimen155
 )
-(C:\Users\Ran\AppData\Roaming\MiKTeX\2.9\tex\latex\algorithmicx\algorithmicx.st
-y
+("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\algorithmicx\algorithmicx.sty"
 Package: algorithmicx 2005/04/27 v1.2 Algorithmicx
- ("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\ifthen.sty"
+
+("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\ifthen.sty"
 Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
 )
 Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
@@ -1000,8 +1000,7 @@ Package: float 2001/11/08 v1.3d Float enhancements (AL)
 \@float@every@algorithm=\toks37
 \c@algorithm=\count140
 )
-(C:\Users\Ran\AppData\Roaming\MiKTeX\2.9\tex\latex\algorithmicx\algpseudocode.s
-ty
+("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\algorithmicx\algpseudocode.sty"
 Package: algpseudocode 
 
 Document Style - pseudocode environments for use with the `algorithmicx' style
@@ -1158,34 +1157,40 @@ Package hyperref Warning: Suppressing link with empty target on input line 413.
 
 [3]
 File: plot_spx.eps Graphic file (type eps)
- <plot_spx.eps> [4] (assign1.bbl [5]) [6]
-(C:\Users\Ran\AppData\Roaming\MiKTeX\2.9\tex\latex\listings\lstlang1.sty
+ <plot_spx.eps> [4] [5] (assign1.bbl) [6]
+("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\listings\lstlang1.sty"
 File: lstlang1.sty 2015/06/04 1.6 listings language file
 )
-(C:\Users\Ran\AppData\Roaming\MiKTeX\2.9\tex\latex\listings\lstlang2.sty
+("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\listings\lstlang2.sty"
 File: lstlang2.sty 2015/06/04 1.6 listings language file
 )
-(C:\Users\Ran\AppData\Roaming\MiKTeX\2.9\tex\latex\listings\lstlang3.sty
+("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\listings\lstlang3.sty"
 File: lstlang3.sty 2015/06/04 1.6 listings language file
 )
-(assignment1-1.R) [7] (assignment1-2.R)
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 531.
+(assignment1-1.R) [7] (assignment1-2.R
+LaTeX Font Info:    Try loading font information for TS1+ppl on input line 22.
+
+("D:\Program Files (x86)\MiKTeX 2.9\tex\latex\psnfss\ts1ppl.fd"
+File: ts1ppl.fd 2001/06/04 font definitions for TS1/ppl.
+))
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 566.
  [8]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 531.
- (assign1.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 531.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 531.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 566.
+
+(assign1.aux)
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 566.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 566.
 Package rerunfilecheck Info: File `assign1.out' has not changed.
-(rerunfilecheck)             Checksum: 0947F9D3A5CD1E50BDF72778F81F05D7;948.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 531.
+(rerunfilecheck)             Checksum: 360EF51B11FB3B4E3667BAC501D69B8C;1023.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 566.
  ) 
 Here is how much of TeX's memory you used:
- 12117 strings out of 493635
- 169421 string characters out of 3141346
- 519228 words of memory out of 3000000
- 15136 multiletter control sequences out of 15000+200000
- 84841 words of font info for 83 fonts, out of 3000000 for 9000
+ 12162 strings out of 493635
+ 169895 string characters out of 3141329
+ 505319 words of memory out of 3000000
+ 15177 multiletter control sequences out of 15000+200000
+ 85154 words of font info for 84 fonts, out of 3000000 for 9000
  1186 hyphenation exceptions out of 8191
  36i,9n,42p,810b,1865s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on assign1.dvi (8 pages, 112628 bytes).
+Output written on assign1.dvi (8 pages, 117512 bytes).

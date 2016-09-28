@@ -412,8 +412,8 @@ $$
 
 Substitute the log-likelihood function in Equation~\ref{log_like_ar} into the optimization condition above yields
 \begin{eqnarray*}
-    \frac{\ell\mathbf(\theta)}{\partial \bar{X}} & = & -\frac{(1-\phi^2)(\bar{X}-x_0)}{2\sigma} + \frac{1-\phi}{\sigma^2}\sum_{t=0}^{T-1}[x_{t+1}-\bar{X}(1-\phi)-\phi x_t] = 0 \\
-    \frac{\ell\mathbf(\theta)}{\partial \phi} & = & -\frac{1}{\phi} + \frac{\phi(x_0-\bar{X})^2}{\sigma^2} - \frac{1}{\sigma^2}\sum_{t=0}^{T-1}(\bar{X} - x_t)[x_{t+1}-\bar{X}(1-\phi)-\phi x_t] = 0 \\
+    \frac{\ell\mathbf(\theta)}{\partial \bar{X}} & = & -\frac{(1-\phi^2)(\bar{X}-x_0)}{2\sigma^2} + \frac{1-\phi}{\sigma^2}\sum_{t=0}^{T-1}[x_{t+1}-\bar{X}(1-\phi)-\phi x_t] = 0 \\
+    \frac{\ell\mathbf(\theta)}{\partial \phi} & = & -\frac{\phi}{1-\phi^2} + \frac{\phi(x_0-\bar{X})^2}{\sigma^2} - \frac{1}{\sigma^2}\sum_{t=0}^{T-1}(\bar{X} - x_t)[x_{t+1}-\bar{X}(1-\phi)-\phi x_t] = 0 \\
     \frac{\ell\mathbf(\theta)}{\partial \sigma^2} & = & -\frac{T+1}{2\sigma^2} + \frac{(1-\phi^2)(x_0-\bar{X})^2}{2\sigma^4} + \frac{1}{2\sigma^4}\sum_{t=0}^{T-1}[x_{t+1}-\bar{X}(1-\phi)-\phi x_t]^2 = 0 \\
 \end{eqnarray*}
 
@@ -464,7 +464,7 @@ where $S_0$ is the initial value of the stock price. Let $Y_j = \log V_j$ and re
 X_t = \log\frac{S_t}{S_0} = \left(\mu-\frac{1}{2} \sigma^2 \right)t + \sigma W_t + \sum_{j=0}^{N_t}Y_j
 \end{equation}
 and we assume in this paper that the processes $W_t$, $N_t$ and $Y_j$ are independent. The parameter set
-of this MJD model is $\mathbf{\theta}=(\mu, \sigma, \theta, \delta^2, \lambda)'$.
+of this MJD model is $\mathbf{\theta}=(\mu, \sigma^2, \theta, \delta^2, \lambda)'$.
 
 Discretize Equation~\ref{mjd_solution} over time period $[t, t+1]$ and yield
 $$
@@ -488,15 +488,50 @@ $$
 \mathbb{E}[(X-\mathbb{E}(X))^{2k}] = \frac{(2k)!}{2^k k!} \sum_{n=0}^{+\infty} e^{-\lambda}\frac{\lambda^n}{n!} (\sigma^2 + n\delta^2)^k
 $$
 
-Using the following five central moments to estimate the five parameters:
+Follow Beckers~\cite{B81} and Ball and Torous~\cite{BT85}, set $\theta$ to be 0, as to assume symmetric jumps. Using the following (lowest available) four central moments to estimate the four parameters:
 \begin{eqnarray*}
-\mathbb{E}(X)                       &=& \mu - \frac{\sigma^2}{2} + \lambda\theta \\
+\mathbb{E}(X)                       &=& \mu - \frac{\sigma^2}{2}  \\
 \mathbb{E}[(X-\mathbb{E}(X))^{2}]   &=& \sigma^2 + \lambda\delta^2 \\
 \mathbb{E}[(X-\mathbb{E}(X))^{4}]   &=& 3[(\sigma^2+\lambda\delta^2)^2+\lambda\delta^4] \\
 \mathbb{E}[(X-\mathbb{E}(X))^{6}]   &=& 15[(\sigma^2+\lambda\delta^2)^3 + 3\lambda\delta^4(\sigma^2+\lambda\delta^2)+\lambda\delta^6] \\
-\mathbb{E}[(X-\mathbb{E}(X))^{8}]   &=& x
 \end{eqnarray*}
 
+Then optimize the following expression to get parameter estimations:
+\begin{equation} \label{opt_func}
+\argmin_{\theta} g'(\theta) g(\theta)
+\end{equation}
+where $g(\theta)$ is the difference between theoretical moments and moments from market data. To be specific,
+$$
+g(\theta) = \left(
+              \begin{array}{c}
+                \frac{1}{N}\sum_{i=0}^N x_{i} - \mathbb{E}(X)  \\
+                \frac{1}{N-1}\sum_{i=0}^N(x_{i} - \bar{X})^2 - \mathbb{E}[(X-\mathbb{E}(X))^{2}]  \\
+                \frac{1}{N-1}\sum_{i=0}^N(x_{i} - \bar{X})^4 - \mathbb{E}[(X-\mathbb{E}(X))^{4}] \\
+                \frac{1}{N-1}\sum_{i=0}^N(x_{i} - \bar{X})^6 - \mathbb{E}[(X-\mathbb{E}(X))^{6}] \\
+              \end{array}
+            \right)
+$$
+where $x_i$ is the $i$th observation from the market data. $N$ is the total sample size. $\bar{X}$ is the sample mean. The optimization assumes equal weights among moments.
+
+\subsection{Calibration Results}
+Optimizing (minimizing) the objective function shown in~\ref{opt_func} with help of statistical package yields the calibrated parameters as listed in Table~\ref{tbl::gmm_calibration_parameter}. The market data used for calibration contains the 
+
+\begin{table}[H]
+\begin{center}
+\caption{Calibrated MJD model parameters using method of moments.}
+\begin{tabular}{|c|c|} 
+  \hline
+  % after \\: \hline or \cline{col1-col2} \cline{col3-col4} ...
+  Parameters & Calibrated Value \\ \hline
+  $\mu$ & 0.0003547 \\
+  $\sigma^2$ & 0.00004836 \\
+  $\theta$ & 0 \\
+  $\delta^2$ & 0.03310 \\
+  $\lambda$ & 0.001458 \\
+  \hline
+\end{tabular}\label{tbl::gmm_calibration_parameter}
+\end{center}
+\end{table}
 %obtained by equalizing:
 %\begin{eqnarray*}
 %X_0          &=& \bar{X} (1-\phi) + \phi X_0 + \sigma \epsilon_{1} \\

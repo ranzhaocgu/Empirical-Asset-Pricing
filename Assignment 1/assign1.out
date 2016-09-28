@@ -7,6 +7,7 @@
 \BOOKMARK [2][-]{subsection.2.1}{2.1. Introduction}{section.2}% 7
 \BOOKMARK [2][-]{subsection.2.2}{2.2. Jump Diffusion Process}{section.2}% 8
 \BOOKMARK [2][-]{subsection.2.3}{2.3. Parameter Estimation with Method of Moments}{section.2}% 9
-\BOOKMARK [1][-]{section*.3}{References}{}% 10
-\BOOKMARK [1][-]{section*.4}{Appendix: Code for Vasicek model ML estimation}{}% 11
-\BOOKMARK [1][-]{section*.5}{Appendix: Code for Merton jump diffusion model }{}% 12
+\BOOKMARK [2][-]{subsection.2.4}{2.4. Calibration Results}{section.2}% 10
+\BOOKMARK [1][-]{section*.4}{References}{}% 11
+\BOOKMARK [1][-]{section*.5}{Appendix: Code for Vasicek model ML estimation}{}% 12
+\BOOKMARK [1][-]{section*.6}{Appendix: Code for Merton jump diffusion model }{}% 13

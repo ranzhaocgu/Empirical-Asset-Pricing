@@ -1,5 +1,18 @@
 \begin{thebibliography}{1}
 
+\bibitem{BT85}
+{Ball C. A., Torous W. N.}
+\newblock On jumps in common stock prices and their impact on call option
+  pricing.
+\newblock {\em Journal of Finance}, 40(1):155--173, 1985.
+
+\bibitem{B81}
+{Becker S.}
+\newblock A note on estimating the parameters of the diffusion-jump model of
+  stock returns.
+\newblock {\em Journal of Financial and Quantitative Analysis}, 16(1):127--140,
+  1981.
+
 \bibitem{BS73}
 {Black F., Scholes M.}
 \newblock The pricing of options and corporate liabilities.
