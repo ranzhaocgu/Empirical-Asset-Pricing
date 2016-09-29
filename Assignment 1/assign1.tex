@@ -297,7 +297,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{abstract}
-
+This paper first explores the maximum likelihood estimation (MLE) of the Vasicek model on 3-month T-bill rates. The exact ML estimations for four different historical time period are compared and analyzed. Then the calibration of Merton jump diffusion (MJD) model is conducted by method of moments. The theoretical mean, variance, kurtosis, and the $6^{th}$-order moment are derived from the density of underlying stock processes. The model parameters are estimated by minimizing the difference between theoretical and empirical moments. 
 \end{abstract}
 
 \maketitle
@@ -417,11 +417,13 @@ Substitute the log-likelihood function in Equation~\ref{log_like_ar} into the op
     \frac{\ell\mathbf(\theta)}{\partial \sigma^2} & = & -\frac{T+1}{2\sigma^2} + \frac{(1-\phi^2)(x_0-\bar{X})^2}{2\sigma^4} + \frac{1}{2\sigma^4}\sum_{t=0}^{T-1}[x_{t+1}-\bar{X}(1-\phi)-\phi x_t]^2 = 0 \\
 \end{eqnarray*}
 
-The exact maximum likelihood estimators requires to solve the above equations. In other words, the solutions of the above equations become the exact ML estimator. However, these equations are nonlinear and difficult to solve analytically. Numerical methods and algorithms would be used in this case, and in this paper I use $\mathrm{R}$ to obtain the
+The exact maximum likelihood estimators requires to solve the above equations. In other words, the solutions of the above equations become the exact ML estimator. However, these equations are nonlinear and difficult to solve analytically. Numerical methods and algorithms would be used in this case. The solved parameters for each market period are listed in Table~\ref{tbl::est_params}. $\bar{X}$ can be interpreted as the long term mean reverting level. Note that the table shows the monthly rate, which is calculated by the annual rate divided by 12. The first two time periods have the highest estimation of $\bar{X}$, and most recent period has much lower long term average rate. The observation is consistent with the average rate levels for these periods. $\sigma^2$ interprets as the conditional volatility of the underlying series, and the time period 1976 to 1981 has the highest volatility level on rate, which is confirmed from the graph that from 1980 to 1983, the short rates are more volatile than other historical levels.
+
+The sign of $\phi$ indicates the direction of autoregressive behavior. For example, the time period 1954 to 1975 and time period 1982 to 2005 have positive sign on parameter $\phi$, showing a momentum feature of the spot rate in these periods. For the other two time periods, the rate moves contrary to its previous step. Also $\phi$ shows the mean reverting speed. The faster the mean reverting, the smaller $\phi$ is, and vice versa. There time period 1976 to 1981 and time period 1982 to 2015 have faster rate's mean reverting. 
 
 \begin{table}[H]
 \begin{center}
-\caption{Moments comparison between theoretical and empirical ones, the model is Merton jump diffusion.}
+\caption{The estimated parameters of Vasicek model fitting on 3-month Treasury Bill rates. The full period is from 1954 to 2015.}
 \begin{tabular}{c|c|c|c|c|c}
   \hline \hline
 	&	Full Period	&	Year 1954 to 1975	&	Year 1976 to 1981	&	Year 1982 to 2005	&	Year 2006 to 2015	\\ \hline
@@ -429,7 +431,7 @@ $\phi$	&	0.2640	&	0.3877	&	-0.8310	&	0.3341	&	-0.9664	\\
 $\bar{X}$	&	0.8506	&	0.8872	&	0.7368	&	0.0443	&	0.09096	\\
 $\sigma^2$	&	0.6615	&	0.2424	&	0.9135	&	0.4476	&	0.2252	\\
   \hline\hline
-\end{tabular}\label{tbl::mom_comp}
+\end{tabular}\label{tbl::est_params}
 \end{center}
 \end{table}
 
@@ -547,13 +549,13 @@ Optimizing (minimizing) the objective function shown in~\ref{opt_func} with help
 \end{center}
 \end{table}
 
-To check the goodness of fit of the MJD model calibration, we compare the empirical moments and the theoretical moments side by side in Table~\ref{tbl::mom_comp}. The first- and second- and $4^{th}$ order moments are fitted well, with relative difference less than 2\%. But $6^{th}$ order moments do not fit very well, even after adjusting the weight for $6^{th}$ order moments by the relative magnitude difference with other moments. In terms of model calibration, it seems the MJD's higher order (beyond $4^{th}$ order) moments are harder to fit. 
+To check the goodness of fit of the MJD model calibration, we compare the empirical moments and the theoretical moments side by side in Table~\ref{tbl::mom_comp}. The first- and second- and $4^{th}$ order moments are fitted well, with relative difference less than 2\%. But $6^{th}$ order moment does not fit very well, even after adjusting the weight for $6^{th}$ order moments by the relative magnitude difference with other moments. In terms of model calibration, it seems the MJD's higher order (beyond $4^{th}$ order) moments are harder to fit.
 
 \begin{table}[H]
 \begin{center}
 \caption{Moments comparison between theoretical and empirical ones, the model is Merton jump diffusion.}
 \begin{tabular}{c|c|c|c|c}
-  \hline \hline 
+  \hline \hline
 Moments	&	Theoretical	&	Empirical	&	Diff	&	Percentage Diff	\\ \hline
 1	&	3.36E-04	&	3.31E-04	&	-5.29E-06	&	-1.57\%	\\
 2	&	9.66E-05	&	9.62E-05	&	-4.23E-07	&	-0.44\%	\\
@@ -563,6 +565,14 @@ Moments	&	Theoretical	&	Empirical	&	Diff	&	Percentage Diff	\\ \hline
 \end{tabular}\label{tbl::mom_comp}
 \end{center}
 \end{table}
+
+As for model specification in terms of fitting the daily return data, Figure~\ref{plot_hist} plots the comparison on density of the market data (plotted in light-gray), the fitted normal distribution density (solid black line) and the density of simulated index returns from calibrated MJD model using parameters above (histogram with borders). The MJD model successfully addresses the fat-tail property of the return, and the mean/variance estimations are well, but failed to match higher order moments.
+
+\begin{figure}
+  \centering
+  \includegraphics[scale=0.7]{spx_plot_returns.eps}
+  \caption{The histogram of SP500 Index daily return (in lightgray) compares to the piecewise fitted normal distribution density (solid black line) and the simulated daily returns from the calibrated MJD model (lightred). The simulation is based on the parameters given above with 15000 data points. Time period for market data is from 1954 to 2015.}\label{plot_hist}
+\end{figure}
 
 
 %

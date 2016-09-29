@@ -59,3 +59,23 @@ diff.out = empi.out - theo.out
 perg.out = diff.out / theo.out
 
 cbind(theo.out, empi.out, diff.out, perg.out)
+
+
+# well specified
+g=spx_index_values$Return
+
+sim.returns = spx_index_values$Return
+for (i in 3:length(sim.returns)){
+  sim.returns[i] = sim.returns[i] + mu - 0.5*sigma.square + (sqrt(sigma.square)-lambda*sqrt(abs(delta.square)))*rnorm(1) + sum(runif(1)<lambda)*rnorm(1, 0, sqrt(abs(delta.square)))
+}
+
+p2<-hist(sim.returns, breaks=500, density=500) 
+
+h<-hist(g, breaks=500, density=500, col="lightgray", xlab="SP500 Index Returns", main="SP500 Index Daily Returns vs. Estimated Normals",
+        xlim=range(c(-0.05,0.05))) 
+xfit<-seq(min(g),max(g),length=500) 
+yfit<-dnorm(xfit,mean=mean(g),sd=sd(g)) 
+yfit <- yfit*diff(h$mids[1:2])*length(g) 
+lines(xfit, yfit, col="black", lwd=2)
+plot( p2, col=rgb(1,0,0,1/4), xlim=c(-0.05,0.05), add=T)  # second
+legend(-1, 1.9, c("a", "b", "c"))
