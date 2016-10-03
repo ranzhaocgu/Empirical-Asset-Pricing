@@ -1,0 +1,337 @@
+\documentclass[11pt,reqno,final]{amsart}
+\usepackage[font=small,margin=10pt,labelfont={bf},labelsep={space}]{caption}
+\usepackage{subfig}
+\usepackage{wrapfig}
+\usepackage{amsmath, amssymb, epsfig}
+\usepackage[scaled]{helvet} % I like Helvetica for sf
+\usepackage{fourier}
+\usepackage{bm}
+\usepackage{color}
+\usepackage{fullpage} 	% Fullpage package
+%\usepackage{cite}
+%\usepackage{citesort}
+\newcommand{\notate}[1]{\textcolor{red}{\textbf{[#1]}}}
+%\input{macros}
+
+
+\newcommand{\tasos}{\text{TASOS}}
+%Results
+%Shortcuts
+\newcommand{\hide}[1]{}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+
+\newcommand{\x}{\mathbf{x}}
+\newcommand{\y}{\mathbf{y}}
+\newcommand{\z}{\mathbf{z}}
+%\newcommand{\A}{\mathbf{A}}
+\newcommand{\bi}{\mathbf{b}}
+\newcommand{\ro}{\mathbf{r}}
+\newcommand{\w}{\mathbf{w}}
+\newcommand{\zero}{\mathbf{0}}
+\newcommand{\ep}{\epsilon}
+\newcommand{\de}{\delta}
+\newcommand{\defby}{\overset{\mathrm{\scriptscriptstyle{def}}}{=}}
+\newcommand{\bigO}{\mathrm{O}}
+\DeclareMathOperator*{\argmin}{arg min}
+\DeclareMathOperator*{\argmax}{arg max}
+%************************************
+%************************************
+% The macros below are due to Tassos Zouzias
+%************************************
+%************************************
+
+\newcommand{\eps}{\varepsilon}
+
+
+\newcommand{\Prob}[1]{\ensuremath{\mathbb{P}\left(#1\right)}}
+
+\newcommand{\OO}{\mathcal{O}}
+\newcommand{\vol}[1]{\text{vol}(#1)}
+\newcommand{\tr}{\rm{Tr}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\reals}{\mathbb{R}}
+
+
+\newcommand{\e}{\ensuremath{{\rm e}}}
+\DeclareMathOperator{\EE}{\mathbb{E}}
+% Variance
+\newcommand{\var}[1]{\ensuremath{\mathrm{Var}(#1)}}
+% Pseudo-inverse of a matrix
+\newcommand{\pinv}[1]{ {#1}^\dagger}
+\newcommand{\norm}[1]{\ensuremath{\left\|#1\right\|_2}}
+\newcommand{\pnorm}[1]{\ensuremath{\left\|#1\right\|_p}}
+\newcommand{\qnorm}[1]{\ensuremath{\left\|#1\right\|_q}}
+\newcommand{\infnorm}[1]{\ensuremath{\left\|#1\right\|_\infty}}
+\newcommand{\onenorm}[1]{\ensuremath{\left\|#1\right\|_1}}
+\newcommand{\frobnorm}[1]{\ensuremath{\left\|#1\right\|_{\text{\rm F}}}}
+% Stable rank of a matrix
+\newcommand{\sr}[1]{\ensuremath{\mathrm{\textbf{\footnotesize sr}}\left(#1\right)}}
+% Trace of a matrix.
+\newcommand{\trace}[1]{\ensuremath{\mathrm{\textbf{tr}}\left(#1\right)}}
+%\DeclareMathOperator{\trace}{trace}
+% Rank of a matrix
+\newcommand{\rank}[1]{\ensuremath{\mathrm{\textbf{{\footnotesize rank}}}\left(#1\right)}}
+% Kernel of a matrix
+%\newcommand{\ker}[1]{\ensuremath{\mathrm{\textbf{ker}}\left(#1\right)}}
+% Image of a matrix
+\newcommand{\im}[1]{\ensuremath{\mathrm{\textbf{Im}}\left(#1\right)}}
+
+% Condition number of a matrix
+\newcommand{\cond}[1]{\ensuremath{\mathrm{\text{cond}}\left(#1\right)}}
+
+\newcommand{\expm}[1]{\ensuremath{\mathrm{\textbf{\footnotesize exp}}\left[#1\right]}}
+\newcommand{\coshm}[1]{\ensuremath{\mathrm{\textbf{\footnotesize cosh}}\left[#1\right]}}
+\newcommand{\detm}[1]{\ensuremath{\mathrm{\textbf{det}}\left(#1\right)}}
+\newcommand{\sign}[1]{\ensuremath{\mathrm{\textbf{sign}}\left(#1\right)}}
+
+
+% # of non-zero entries of a matrix
+\newcommand{\nnz}[1]{\ensuremath{\mathrm{\textbf{\footnotesize nnz}}\left(#1\right)}}
+
+% Diagonal Matrix
+\newcommand{\diag}[1]{\ensuremath{\mathrm{\textbf{diag}}\left(#1\right)}}
+% Polylog(n)
+\newcommand{\polylog}[1]{\ensuremath{\mathrm{polylog}\left(#1\right)}}
+
+\newcommand{\old}{\text{old}}
+\newcommand{\new}{\text{new}}
+\newcommand{\ravg}{\text{R}_{\text{avg}}}
+\newcommand{\cavg}{\text{C}_{\text{avg}}}
+%\newcommand{\cavg}[1]{\text{C}_{\text{avg}}(#1)}
+
+
+%%% Vector and matrix operators
+
+\newcommand{\vct}[1]{\bm{#1}}
+\newcommand{\mtx}[1]{\bm{#1}}
+
+\newcommand{\ip}[2]{\left\langle {#1},\ {#2} \right\rangle}
+\newcommand{\mip}[2]{ {#1}\bullet {#2}}
+
+\newcommand{\ignore}[1]{}
+
+\newcommand{\Id}{\mathbf{I}}
+\newcommand{\J}{\mathbf{J}}
+\newcommand{\onemtx}{\bm{1}}
+%\newcommand{\zeromtx}{\bm{0}}
+\newcommand{\zeromtx}{\mathbf{0}}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\mat}[1]{ {\ensuremath{\mtx{#1} }}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\gammab{{\bm{\gamma}}}
+\def\kappab{{\bm{\kappa}}}
+\def\sig{{\bm{\Sigma}}}
+\def\sigplus{{\bm{\Sigma}^{+}}}
+\def\siginv{{\bm{\Sigma}^{-1}}}
+\def\bet{{\bm{\beta}}}
+\def\one{{\bm{1}}}
+\def\exp{\hbox{\rm exp}}
+\def\col{\hbox{\rm col}}
+\def\ker{\hbox{\rm ker}}
+\def\ahat{{\hat\a}}
+\def\p{{\mathbf p}}
+\def\e{{\mathbf e}}
+\def\q{{\mathbf q}}
+\def\rb{{\mathbf r}}
+\def\s{{\mathbf s}}
+\def\u{{\mathbf u}}
+\def\v{{\mathbf v}}
+\def\d{{\mathbf \delta}}
+\def\xhat{{\hat\x}}
+\def\yhat{{\hat\y}}
+\def\A{\matA}
+\def\B{\matB}
+\def\C{\matC}
+\def\Ahat{\hat\matA}
+\def\Atilde{\tilde\matA}
+\def\Btilde{\tilde\matB}
+\def\Stilde{\tilde\matS}
+\def\Utilde{\tilde\matU}
+\def\Vtilde{\tilde\matV}
+\def\G{{\cl G}}
+\def\hset{{\cl H}}
+\def\Q{{\bm{Q}}}
+\def\U{{\bm{U}}}
+\def\V{{\bm{V}}}
+\def\win{\hat{\w}}
+\def\wopt{\w^*}
+\def\matAhat{\hat\mat{A}}
+\def\matA{\mat{A}}
+\def\matB{\mat{B}}
+\def\matC{\mat{C}}
+\def\matD{\mat{D}}
+\def\matE{\mat{E}}
+\def\matH{\mat{H}}
+\def\matI{\mat{I}}
+\def\matM{\mat{M}}
+\def\matP{\mat{P}}
+\def\matQ{\mat{Q}}
+\def\matR{\mat{R}}
+\def\matL{\mat{L}}
+
+\def\matS{\mat{S}}
+\def\matT{\mat{T}}
+\def\matU{\mat{U}}
+\def\matV{\mat{V}}
+\def\matW{\mat{W}}
+\def\matX{\mat{X}}
+\def\matY{\mat{Y}}
+\def\matZ{\mat{Z}}
+\def\matSig{\mat{\Sigma}}
+\def\matOmega{\mat{\Omega}}
+\def\matGam{\mat{\Gamma}}
+\def\matTheta{\mat{\Theta}}
+\def\w{{\mathbf{w}}}
+\def\ein{{\cl E_{\text{\rm in}}}}
+\def\eout{{\cl E}}
+\def\scl{{\textsc{l}}}
+\def\scu{{\textsc{u}}}
+\def\phiu{{\overline{\phi}}}
+\def\psiu{{\overline{\psi}}}
+\def\phil{{\underbar{\math{\phi}}}}
+\newcommand\remove[1]{}
+
+
+\newcommand{\vecb}{{\vct{b} }}
+\newcommand{\bc}{{\vecb_{\mathcal{R}(\matA)^\bot } }}
+\newcommand{\br}{{\vecb_{\mathcal{R}(\matA) } }}
+
+% Least squares solution of Ax = b
+\def\xls{\x_{\text{\tiny LS}}}
+
+% For rows and columns of a matrix A
+\newcommand{\ar}[1]{ \matA^{(#1)}}
+\newcommand{\ac}[1]{ \matA_{(#1)}}
+
+\newcommand{\colspan}[1]{\mathcal{R}(#1)}
+
+\usepackage{palatino}
+
+%---------------------Listings--------------------%
+\usepackage{listings}
+\usepackage{color}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\lstset{ %
+  language=Octave,                % the language of the code
+  basicstyle=\footnotesize,           % the size of the fonts that are used for the code
+  numbers=left,                   % where to put the line-numbers
+  numberstyle=\tiny\color{gray},  % the style that is used for the line-numbers
+  stepnumber=2,                   % the step between two line-numbers. If it's 1, each line
+                                  % will be numbered
+  numbersep=5pt,                  % how far the line-numbers are from the code
+  backgroundcolor=\color{white},      % choose the background color. You must add \usepackage{color}
+  showspaces=false,               % show spaces adding particular underscores
+  showstringspaces=false,         % underline spaces within strings
+  showtabs=false,                 % show tabs within strings adding particular underscores
+  frame=single,                   % adds a frame around the code
+  rulecolor=\color{black},        % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens (green here))
+  tabsize=2,                      % sets default tabsize to 2 spaces
+  captionpos=b,                   % sets the caption-position to bottom
+  breaklines=true,                % sets automatic line breaking
+  breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+  title=\lstname,                   % show the filename of files included with \lstinputlisting;
+                                  % also try caption instead of title
+  keywordstyle=\color{blue},          % keyword style
+  commentstyle=\color{dkgreen},       % comment style
+  stringstyle=\color{mauve},         % string literal style
+  escapeinside={\%*}{*)},            % if you want to add LaTeX within your code
+  morekeywords={*,...}               % if you want to add more keywords to the set
+}
+%-------------------------------------------------%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{hyperref}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tabularx,ragged2e,booktabs,caption}
+
+% Place this after the backref command
+\usepackage{algorithmicx}
+\usepackage[ruled]{algorithm}
+\usepackage{algpseudocode}
+
+\newcommand{\floor}[1]{\lfloor #1 \rfloor}
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{question}{Question}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{observation}[theorem]{Observation}
+\newtheorem{fact}[theorem]{Fact}
+\newtheorem{example}{Example}
+%\newtheorem{algorithm}{Algorithm}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{remark}{Remark}
+\newtheorem{problem}{Problem}
+
+%-------------------------------------------------%
+
+
+%%%%%%%%%%%%%%
+% Document
+%%%%%%%%%%%%%%
+
+
+\title{Calibration on Merton Jump Diffusion Using Bayesian MCMC Method}
+\author{Ran Zhao}
+\thanks{}
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{abstract}
+
+\end{abstract}
+
+\maketitle
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%
+%
+\section{Introduction}
+
+
+\section{Model Specification}
+
+\section{Data and Empirical Results}
+
+\section{Conclusion}
+ 
+
+
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \newpage
+%\bibliographystyle{plain}
+%\bibliography{bib}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%
+%\newpage
+%\section*{Appendix: Code for Vasicek model ML estimation}
+%%\begin{spacing}{0.9}
+%\lstinputlisting[language=R]{assignment1-1.R}
+
+\end{document}
+\endinput
