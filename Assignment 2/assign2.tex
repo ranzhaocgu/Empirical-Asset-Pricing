@@ -307,6 +307,17 @@
 %
 %
 \section{Introduction}
+Advances in computing powers and numerical methods have largely improve the capability of solving econometric and statistical models using computational intense methods, includes Markov Chain Monte Carlo (MCMC) method. Especially in dynamic asset pricing models, the MCMC method is widely utilized to extracting information about latent state variables (such as implied volatility), structural parameters and market prices of risk (volatility or jump risks) from observed prices or market quotes. The Bayesian inference is to obtain the distribution of parameter set, $\Theta$, and (optional) state variables, $X$, conditioning on the observed prices, $Y$. That is, the posterior distribution, $p(\Theta, X|Y)$ is vital to the parameters estimation and their statistical inference.
+
+Consider a stochastic process $\{X_t\}$, where each $X_t$ assumes value in space $\Omega$. Then the process $\{X_t\}$ is a Markov process if given the value of $X_t$, the values of $X_{t+h}$, $h>0$, do not depend on the values $X_s$, $s<t$. That is, $\{X_t\}$ is a Markov process if its conditioanl distribution function satisfies
+
+$$
+\mathbb{P}(X_{t+h}|X_s, s \leq t) = \mathbb{P}(X_{t+h}|X_t), \quad h>0.
+$$
+
+In continuous-time asset pricing models, MCMC that explore their posterior distributions samples from high-dimensional and sophisticated distributions by generating Markon process over $(\Theta,X)$, $\{\Theta^{(g)}, X^{(g)}\}_{g=1}^{G}$. And the equilibrium distribution of $(\Theta,X)$ is $p(\Theta, X|Y)$. Then Monte Carlo methods use these samples for statistical inference on parameters and states. 
+
+
 
 
 \section{Model Specification}
@@ -314,7 +325,7 @@
 \section{Data and Empirical Results}
 
 \section{Conclusion}
- 
+
 
 
 %
