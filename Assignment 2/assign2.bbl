@@ -1,0 +1,24 @@
+\begin{thebibliography}{1}
+
+\bibitem{BS73}
+{Black F., Scholes M.}
+\newblock The pricing of options and corporate liabilities.
+\newblock {\em Journal of Political Economy}, 81(3):637--654, 1973.
+
+\bibitem{CH70}
+John Hammersley and Peter Clifford.
+\newblock Markov fields on finite graphs and lattices.
+\newblock {\em Unpublished Manuscipt}, 1970.
+
+\bibitem{JPR94}
+{Jacquier, Eric, Nicholas G. Polson, and Peter Rossi}.
+\newblock Bayesian analysis of stochastic volatility models.
+\newblock {\em Journal of Business and Economic Statistics}, 12:69--87, 1994.
+
+\bibitem{JP02}
+{Johannes, Michael, and Nicholas G. Polson}.
+\newblock Mcmc methods in financial econometrics, in yacine
+  a$\ddot{i}$t-sahalia, and lars hansen.
+\newblock {\em Handbook of Financial Econometrics (Elsevier: Oxford)}, 2002.
+
+\end{thebibliography}

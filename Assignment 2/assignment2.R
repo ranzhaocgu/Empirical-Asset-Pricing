@@ -4,6 +4,7 @@ require(pscl)
 
 # Data loading
 spx_index_values = read.csv('spx_index_values.csv', header = TRUE)
+par(mfrow=c(2,1))
 plot(as.Date(as.character(spx_index_values$Date), "%m/%d/%Y"), spx_index_values$SPX.Index, type='l', 
      main='SPX index levels, from 1954 to 2015',
      xlab='year', ylab='SPX index')
@@ -15,6 +16,9 @@ spx_index_values$Return[2:length(spx_index_values$Return)] =
   spx_index_values$SPX.Index[1:(length(spx_index_values$SPX.Index)-1)])
 data.length = length(spx_index_values$Return)
 
+plot(as.Date(as.character(spx_index_values$Date), "%m/%d/%Y"), spx_index_values$Return, type='l', 
+     main='SPX index returns, from 1954 to 2015',
+     xlab='year', ylab='SPX returns')
 
 ##################################################
 # Black-Scholes model with Bayesian MCMC
@@ -57,16 +61,6 @@ quantile.sigma2.vector = c(quantile(sigma2.vector.est.comp, 0.025), quantile(sig
 ##################################################
 
 
-
-
-
-
-
-
-
-
-
-
 ##################################################
 # Jump diffusion   model with Bayesian MCMC
 # non-informative
@@ -84,7 +78,7 @@ model2 <- set.to.class("jumpDiffusion", Lambda = function(t, xi) (t/xi[2])^xi[1]
                                           xi = function(xi) dnorm(xi, c(3, 1/4), c(1,1))))
 est2 <- estimate(model2, 1:length(spx_index_values$Return), spx_index_values$Return, 2000)
 plot(est)
-
+##################################################
 
 
 

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=latex 2015.2.2)  3 OCT 2016 16:34
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=latex 2015.2.2)  7 OCT 2016 16:27
 entering extended mode
 **assign2.tex
 ("C:\Users\ranzhao\Documents\Empirical-Asset-Pricing\Assignment 2\assign2.tex"
@@ -1115,24 +1115,45 @@ ABD: EverySelectfont initializing macros
 LaTeX Info: Redefining \selectfont on input line 295.
 LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <10.95> not available
 (Font)              Font shape `T1/ppl/b/n' tried instead on input line 309.
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 336.
- [1]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 336.
+LaTeX Font Info:    Font shape `FMX/futm/m/n' will be
+(Font)              scaled to size 10.07397pt on input line 310.
+LaTeX Font Info:    Font shape `FMX/futm/m/n' will be
+(Font)              scaled to size 7.63599pt on input line 310.
+LaTeX Font Info:    Font shape `U/futm/m/n' will be
+(Font)              scaled to size 10.07397pt on input line 310.
+LaTeX Font Info:    Font shape `U/futm/m/n' will be
+(Font)              scaled to size 7.63599pt on input line 310.
+
+Overfull \hbox (3.27673pt too wide) in paragraph at lines 329--330
+[][]\T1/ppl/m/n/10.95 A typ-i-cal ap-pli-ca-tion of MCMC tech-nique in as-set p
+ric-ing model is Jacquier, Pol-son and Rossi [[]],
+ []
+
+[1]
+File: spx_index_return.eps Graphic file (type eps)
+ <spx_index_return.eps>
+LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <10> not available
+(Font)              Font shape `T1/ppl/b/n' tried instead on input line 343.
+ [2] [3] [4]
+("C:\Users\ranzhao\Documents\Empirical-Asset-Pricing\Assignment 2\assign2.bbl")
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 432.
+[5]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 432.
 
 ("C:\Users\ranzhao\Documents\Empirical-Asset-Pricing\Assignment 2\assign2.aux")
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 336.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 336.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 432.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 432.
 Package rerunfilecheck Info: File `assign2.out' has not changed.
-(rerunfilecheck)             Checksum: A68ED72B87F401E6F476083F5860CD4F;223.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 336.
+(rerunfilecheck)             Checksum: 4389120DA0CCA19587A374E5F3CAB346;450.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 432.
  ) 
 Here is how much of TeX's memory you used:
- 10929 strings out of 493922
- 157097 string characters out of 3144894
- 240110 words of memory out of 3000000
- 13882 multiletter control sequences out of 15000+200000
- 52599 words of font info for 55 fonts, out of 3000000 for 9000
+ 10978 strings out of 493922
+ 157904 string characters out of 3144894
+ 249110 words of memory out of 3000000
+ 13925 multiletter control sequences out of 15000+200000
+ 82657 words of font info for 80 fonts, out of 3000000 for 9000
  1002 hyphenation exceptions out of 8191
- 36i,5n,40p,320b,331s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 36i,11n,40p,816b,395s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on assign2.dvi (1 page, 3876 bytes).
+Output written on assign2.dvi (5 pages, 27124 bytes).

@@ -1,4 +1,7 @@
 \BOOKMARK [1][-]{section.1}{1. Introduction}{}% 1
 \BOOKMARK [1][-]{section.2}{2. Model Specification}{}% 2
-\BOOKMARK [1][-]{section.3}{3. Data and Empirical Results}{}% 3
-\BOOKMARK [1][-]{section.4}{4. Conclusion}{}% 4
+\BOOKMARK [2][-]{subsection.2.1}{2.1. Geometric Brownian Motion \(Black-Scholes\)}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{2.2. Merton Jump Diffusion Model}{section.2}% 4
+\BOOKMARK [1][-]{section.3}{3. Data and Empirical Results}{}% 5
+\BOOKMARK [1][-]{section.4}{4. Conclusion}{}% 6
+\BOOKMARK [1][-]{section*.2}{References}{}% 7

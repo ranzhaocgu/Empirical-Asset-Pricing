@@ -315,12 +315,97 @@ $$
 \mathbb{P}(X_{t+h}|X_s, s \leq t) = \mathbb{P}(X_{t+h}|X_t), \quad h>0.
 $$
 
-In continuous-time asset pricing models, MCMC that explore their posterior distributions samples from high-dimensional and sophisticated distributions by generating Markon process over $(\Theta,X)$, $\{\Theta^{(g)}, X^{(g)}\}_{g=1}^{G}$. And the equilibrium distribution of $(\Theta,X)$ is $p(\Theta, X|Y)$. Then Monte Carlo methods use these samples for statistical inference on parameters and states. 
+In continuous-time asset pricing models, MCMC that explore their posterior distributions samples from high-dimensional and sophisticated distributions by generating Markon process over $(\Theta,X)$, $\{\Theta^{(g)}, X^{(g)}\}_{g=1}^{G}$. And the equilibrium distribution of $(\Theta,X)$ is $p(\Theta, X|Y)$. Then Monte Carlo methods use these samples for statistical inference on parameters and states.
 
+However, $p(\Theta, X|Y)$ in continuous-time asset pricing models is usually not easy to obtain. Johannes and Polson~\cite{JP02} listed the reasons for this difficulty, which summarize as
+\begin{enumerate}
+    \item market prices are observed discretely (e.g. on daily basis) while the asset pricing models specify the prices and states to evolve continuously;
+    \item the state variables are latent based on researcher's perspective but not observable on the market;
+    \item $p(\Theta, X|Y)$ is usually in high dimension, causing common sampling method to fail;
+    \item the transition distributions for prices and states of the asset pricing model are non-normal and non-standard, complication the standard estimation methods such as MLE and GMM;
+    \item the parameters of the asset pricing models are usually nonlinear and non-analytic form as the implicit solution to a stochastic differential equations.
+\end{enumerate}
 
+A typical application of MCMC technique in asset pricing model is Jacquier, Polson and Rossi~\cite{JPR94}, where a cyclic Metropolis algorithm is used to construct a Markov-chain simulation on stochastic volatility model.
 
 
 \section{Model Specification}
+\subsection{Geometric Brownian Motion (Black-Scholes)}
+The baseline model selected for fitting the underlying stock returns is Black-Scholes model~\cite{BS73}, where the stock price dynamic, $S_t$, follows Geometric Brownian Motion
+$$
+d S_t = \left(\mu+\frac{1}{2}\sigma^2\right) S_t dt + \sigma S_t dW_t
+$$
+where $\mu$ is the drift term and $\sigma$ is the volatility. $W_t$ is the Wiener process. This model assumes the stock returns follow a random walk. In reality, the S\&P500 index level and returns on daily basis are plotted in Figure~\ref{plot_spx}.
+
+\begin{figure}
+  \centering
+  \includegraphics[scale=0.6]{spx_index_return.eps}
+  \caption{The SPX index levels and return on daily basis. Time period is from 1954 to 2015.}\label{plot_spx}
+\end{figure}
+
+In discrete time equally space, the model has close-form solution for the return
+$$
+Y_t = \log(S_t / S_{t-1}) = \mu + \sigma \epsilon_t
+$$
+where $\epsilon_t \sim N(0,1)$. We have $\Theta = (\mu, \sigma^2)$. There is no latent variable, which implies the posterior to be $p(\Theta|Y) = p(\mu,\sigma|Y)$.
+
+Using Hammersley-Clifford theorem~\cite{CH70}, $p(\mu|\sigma^2,Y)$ and $p(\sigma^2|\mu,Y)$ are complete conditionals to the posterior. Assuming independent priors on $\mu$ and $\sigma^2$, Bayes rule implies that
+\begin{eqnarray*}
+p(\mu|\sigma^2, Y) &\propto& p(Y|\mu,\sigma^2)(\mu) \\
+p(\sigma^2|\mu, Y) &\propto& p(Y|\mu,\sigma^2)(\sigma^2) \\
+p(Y|\mu,\sigma^2) &=& \left( \frac{1}{\sqrt{2\pi\sigma^2}} \right)^T \exp\left( -\frac{1}{2} \sum_{t=1}^{T} \left( \frac{Y_t - \mu}{\sigma}\right)^2 \right)
+\end{eqnarray*}
+where $T$ is the sample size. $p(\mu)$ and $p(\sigma^2)$ are priors. Here we choose the standard conjugate priors on $\mu$ and $\sigma^2$. First select the inverse gamma distribution as the prior for $\sigma^2$. The inverse gamma distribution relies on two parameters $\alpha$ and $\beta$. The density is
+$$
+f(\sigma^2|\alpha,\beta) = \frac{\beta^{\alpha}}{\Gamma(\alpha)} (\sigma^2)^{-\alpha-1} \exp(-\beta/\sigma^2)
+$$
+
+Therefore, the marginal density $p(\sigma^2)$ combines the prior $p(\sigma^2)$ and density $p(Y|\mu, \sigma^2)$, which yields
+
+\begin{eqnarray*}
+p(\sigma^2|\mu, Y)  &\propto& p(Y|\mu,\sigma^2) \times p(\sigma^2) \\
+                    &=& \left( \frac{1}{\sqrt{2\pi\sigma^2}} \right)^T \exp\left( -\frac{1}{2} \sum_{t=1}^{T} \left( \frac{Y_t - \mu}{\sigma}\right)^2 \right) \times \frac{\beta^{\alpha}}{\Gamma(\alpha)} (\sigma^2)^{-\alpha-1} \exp(-\beta/\sigma^2) \\
+                    &\propto& (\sigma^2)^{-T/2-\alpha-1} \exp\left( -\left[\frac{1}{2}\sum_{t=1}^{T} (Y_t-\mu)^2 + \beta \right]/\sigma^2 \right) \\
+                    &\propto& IG\left(\alpha+\frac{T}{2}, \beta+\frac{1}{2}\sum_{t=1}^{T}(Y_t-\mu)^2 \right)
+\end{eqnarray*}
+
+That is, given $\mu$ and $Y_t$, we are able to generate the $\sigma^2$ according to the marginal density $p(\sigma^2|\mu, Y)$. Similarly, select normal distribution as prior for $\mu$. The density is
+$$
+f(\mu|\theta,\delta) = \frac{1}{\sqrt{2\pi\delta^2}} \exp\left( -frac{1}{2} \left( \frac{\mu-\theta}{\delta} \right)^2 \right)
+$$
+and the marginal density is
+\begin{eqnarray*}
+p(\mu|\sigma^2, Y)  &\propto& p(Y|\mu,\sigma^2) \times p(\mu) \\
+                    &=& \left( \frac{1}{\sqrt{2\pi\sigma^2}} \right)^T \exp\left( -\frac{1}{2} \sum_{t=1}^{T} \left( \frac{Y_t - \mu}{\sigma}\right)^2 \right) \times \frac{1}{\sqrt{2\pi\delta^2}} \exp\left( -frac{1}{2} \left( \frac{\mu-\theta}{\delta} \right)^2 \right)
+\end{eqnarray*}
+
+To deal with $Y_t - \mu$, denote $\hat{\mu}=\left( \sum_{t=1}^T Y_t \right)/T$, and
+\begin{eqnarray*}
+\sum_{t=1}^T (Y_t - \mu)^2 &=&  \sum_{t=1}^T (Y_t - \hat{\mu} + \hat{\mu} - \mu)^2 \\
+                           &=&  \sum_{t=1}^T (Y_t - \hat{\mu})^2 + 2(\hat{\mu}-\mu)\sum_{t=1}^T(Y_t-\hat{\mu}) + \sum_{t=1}^T(\hat{\mu} - \mu)^2 \\
+                           &=&  \sum_{t=1}^T (Y_t - \hat{\mu})^2 + T(\hat{\mu}-\mu)^2
+\end{eqnarray*}
+
+Continuing on the marginal density, we have
+\begin{eqnarray*}
+p(\mu|\sigma^2, Y) &\propto& \exp\left(-\frac{T}{2\sigma^2}(\mu-\mu)^2-\frac{1}{2\delta^2}(\mu-\theta)^2\right) \\
+                   &\propto& \exp\left(-\frac{T}{2\sigma^2}(-2\hat{\mu}\mu+\mu^2)-\frac{1}{2\delta^2}(\mu^2-2\mu\theta)\right) \\
+                   &\propto& \exp\left(-\frac{1}{2\delta^{*2}} \left( \mu-\left(\frac{T\hat{\mu}}{\sigma^2} + \frac{\theta}{\delta^2}\right)\delta^{*2} \right)^2 \right) \\
+                   &\propto& N\left( \left( \sum_{t=1}^T Y_t / \sigma^2 + \theta/\delta^2 \right)\delta^{*2}, \delta^{*2} \right)
+\end{eqnarray*}
+where $\delta^{*2} = (T/\sigma^2+1/\delta^2)^{-1}$.
+
+Given the prior distributions, the complete MCMC method to conduct parameter estimation and statistical inference is
+\begin{enumerate}
+    \item initialize the parameters $\mu^{(0)}$ and $(\sigma^2)^{0}$;
+    \item specify the parameters of the prior $\alpha, \beta, \theta, \delta$;
+    \item draw $\mu^{g+1} \sim p(\mu|(\sigma^2)^{g}, Y)$;
+    \item draw $(\sigma^2)^{g+1} \sim p(\sigma^2|()^{g}, Y)$;
+    \item estimate parameters in $\{\mu^{g}, (\sigma^2)^{g} \}_{g=1}^{G}$ 
+\end{enumerate}
+
+
+\subsection{Merton Jump Diffusion Model}
 
 \section{Data and Empirical Results}
 
@@ -331,9 +416,9 @@ In continuous-time asset pricing models, MCMC that explore their posterior distr
 %
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \newpage
-%\bibliographystyle{plain}
-%\bibliography{bib}
+\newpage
+\bibliographystyle{plain}
+\bibliography{bib}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
