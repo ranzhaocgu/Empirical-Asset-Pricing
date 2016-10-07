@@ -76,13 +76,13 @@ est <- estimate(model, 1:length(spx_index_values$Return), spx_index_values$Retur
 plot(est)
 
 # informative
-model <- set.to.class("jumpDiffusion", Lambda = function(t, xi) (t/xi[2])^xi[1],
+model2 <- set.to.class("jumpDiffusion", Lambda = function(t, xi) (t/xi[2])^xi[1],
                       parameter = list(theta = 0.1, phi = 0.05, gamma2 = 0.1, xi = c(3, 1/4)),
                       priorDensity = list(phi = function(phi) dnorm(phi, 0.05, 0.01),
                                           theta = function(theta) dgamma(1/theta, 10, 0.1*9),
                                           gamma2 = function(gamma2) dgamma(1/gamma2, 10, 0.1*9),
                                           xi = function(xi) dnorm(xi, c(3, 1/4), c(1,1))))
-est <- estimate(model, 1:length(spx_index_values$Return), spx_index_values$Return, 2000)
+est2 <- estimate(model2, 1:length(spx_index_values$Return), spx_index_values$Return, 2000)
 plot(est)
 
 
