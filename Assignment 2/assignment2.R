@@ -1,5 +1,5 @@
 setwd('C:\\Users\\ranzhao\\Documents\\Empirical-Asset-Pricing\\Assignment 2')
-setwd('D:\\PhD FE\\Empirical-Asset-Pricing\\Assignment 1')
+setwd('D:\\PhD FE\\Empirical-Asset-Pricing\\Assignment 2')
 require(pscl)
 
 # Data loading
@@ -36,9 +36,10 @@ delta2 = 0.001
 
 
 for (i in 2:simulation.length){
-  sigma2.vector[i] = rigamma(1,alpha+0.5*data.length, beta+0.5*sum((spx_index_values$Return - mu.vector[i-1])^2))
+  # draw mu first, does the order matter?
   delta.star.2 = 1/(data.length/sigma2.vector[i-1] + 1/delta2)
   mu.vector[i] = rnorm(1,(sum(spx_index_values$Return)/sigma2.vector[i-1]+theta/delta2)*delta.star.2, sqrt(delta.star.2))   
+  sigma2.vector[i] = rigamma(1,alpha+0.5*data.length, beta+0.5*sum((spx_index_values$Return - mu.vector[i])^2))
 }
 
 plot(mu.vector, type='l', xlab='mu',xlim=c(1001,2000),main='MCMC estimation for mu')

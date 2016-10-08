@@ -397,17 +397,23 @@ where $\delta^{*2} = (T/\sigma^2+1/\delta^2)^{-1}$.
 
 Given the prior distributions, the complete MCMC method to conduct parameter estimation and statistical inference is
 \begin{enumerate}
-    \item initialize the parameters $\mu^{(0)}$ and $(\sigma^2)^{0}$;
+    \item initialize the parameters $\mu^{(0)}$ and $(\sigma^2)^{(0)}$;
     \item specify the parameters of the prior $\alpha, \beta, \theta, \delta$;
-    \item draw $\mu^{g+1} \sim p(\mu|(\sigma^2)^{g}, Y)$;
-    \item draw $(\sigma^2)^{g+1} \sim p(\sigma^2|()^{g}, Y)$;
-    \item estimate parameters in $\{\mu^{g}, (\sigma^2)^{g} \}_{g=1}^{G}$ 
+    \item draw $\mu^{(g+1)} \sim p(\mu|(\sigma^2)^{(g)}, Y)$;
+    \item draw $(\sigma^2)^{(g+1)} \sim p(\sigma^2|\mu^{(g+1)}, Y)$;
+    \item estimate parameters in $\{\mu^{(g)}, (\sigma^2)^{(g)} \}_{g=1}^{G}$
 \end{enumerate}
-
+and $G$ is the simulation size. In this paper, we select $G=2000$.
 
 \subsection{Merton Jump Diffusion Model}
 
 \section{Data and Empirical Results}
+
+\begin{figure}
+  \centering
+  \includegraphics[scale=0.6]{mu_sigma_bs.eps}
+  \caption{The $\mu$ and $\sigma^2$ with Monte Carlo draws on the Markov Chain. The MCMC algorithm is based on Gibbs sampler. The simulation size is 2000. Parameter estimation and statistical inference are conducted between steps 1001 and 2000.}\label{mu_sigma_bs}
+\end{figure}
 
 \section{Conclusion}
 
@@ -424,10 +430,10 @@ Given the prior distributions, the complete MCMC method to conduct parameter est
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %
-%\newpage
-%\section*{Appendix: Code for Vasicek model ML estimation}
-%%\begin{spacing}{0.9}
-%\lstinputlisting[language=R]{assignment1-1.R}
+\newpage
+\section*{Appendix: Code for Vasicek model ML estimation}
+%\begin{spacing}{0.9}
+\lstinputlisting[language=R]{assignment2.R}
 
 \end{document}
 \endinput
