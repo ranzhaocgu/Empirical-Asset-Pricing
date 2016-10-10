@@ -1,5 +1,6 @@
 setwd('C:\\Users\\ranzhao\\Documents\\Empirical-Asset-Pricing\\Assignment 2')
 setwd('D:\\PhD FE\\Empirical-Asset-Pricing\\Assignment 2')
+setwd('D:\\Empirical-Asset-Pricing\\Assignment 2')
 require(pscl)
 
 # Data loading
@@ -63,7 +64,81 @@ quantile.sigma2.vector = c(quantile(sigma2.vector.est.comp, 0.025), quantile(sig
 
 
 ##################################################
-# Jump diffusion   model with Bayesian MCMC
+# Jump diffusion model with Bayesian MCMC
+simulation.length = 2000
+merton.mu.vector = rep(0, simulation.length)
+merton.sigma2.vector = rep(0, simulation.length)
+merton.mu.s.vector = rep(0, simulation.length)
+merton.sigma2.s.vector = rep(0, simulation.length)
+merton.lambda.vector = rep(0, simulation.length)
+merton.Z = rep(0, simulation.length)
+merton.xi = rep(0, simulation.length)
+jump.times = rep(0, simulation.length)
+
+# initialize the parameters (priors)
+merton.mu.vector[1] = mean(spx_index_values$Return)
+merton.sigma2.vector[1] = var(spx_index_values$Return)
+merton.mu.s.vector[1] = 0
+merton.sigma2.s.vector[1] = 0.03
+merton.lambda.vector[1] = 0.03
+merton.Z.data = as.numeric(runif(data.length, 0, 1) < merton.lambda.vector[1])
+merton.xi.data = rnorm(data.length, merton.mu.s.vector[1], sqrt(merton.sigma2.s.vector[1]))
+merton.Z[1] = 0
+merton.xi = 0
+alpha = 1000
+beta = 0.2
+theta = 0
+delta2 = 0.001
+alpha.s = 1000
+beta.s = 0.2
+theta.s = 0
+delta2.s = 0.001
+gamma = 50
+eta = 2
+
+for (i in 2:simulation.length){
+  # mu and sigma for the merton model 
+  delta.star.2 = 1/(data.length/merton.sigma2.vector[i-1] + 1/delta2)
+  merton.mu.vector[i] = rnorm(1,(sum(spx_index_values$Return-merton.Z.data*merton.xi.data)/merton.sigma2.vector[i-1]+theta/delta2)*delta.star.2, sqrt(delta.star.2))   
+  merton.sigma2.vector[i] = rigamma(1,alpha+0.5*data.length, beta+0.5*sum((spx_index_values$Return - merton.mu.vector[i] - merton.Z.data*merton.xi.data)^2))
+  # mu and sigma for the jump size
+  delta.star.s.2 = 1/(data.length/merton.sigma2.s.vector[i-1] + 1/delta2.s)
+  merton.mu.s.vector[i] = rnorm(1,(sum(merton.xi.data*merton.Z.data)/merton.sigma2.vector[i-1]+theta.s/delta2.s)*delta.star.s.2, sqrt(delta.star.s.2))
+  merton.sigma2.s.vector[i] = rigamma(1,alpha.s+0.5*data.length, beta.s+0.5*sum((merton.Z.data*merton.xi.data - merton.mu.s.vector[i])^2))
+  # jump intensity
+  merton.lambda.vector[i] = rbeta(1, max(5, sum(merton.Z.data)+gamma, data.length - sum(merton.Z.data) + eta)
+  # state variable xi
+  sigma.star.xi = 1/(merton.Z[i-1]/merton.sigma2.vector[i]+1/merton.sigma2.s.vector[i])
+  for (j in 1:data.length){
+    merton.xi.data[j] = rnorm(1, (spx_index_values$Return[j]-merton.mu.vector[i])*merton.Z.data[j]/merton.sigma2.vector[i]+merton.mu.s.vector[i]/merton.sigma2.s.vector[i], sqrt(sigma.star.xi))
+    jump.ind = runif(1, 0, 1)
+    if (jump.ind < exp(-0.5*(spx_index_values$Return[j]-merton.mu.vector[i]-merton.xi.data[j])^2/merton.sigma2.vector[i])){
+      merton.Z.data[j] = 1
+    }
+    else{
+      merton.Z.data[j] = 0
+    }
+  }
+  jump.times[i] = sum(merton.Z.data)
+}
+
+par(mfrow=c(2,1))
+plot(merton.mu.vector, type='l', xlab='mu',xlim=c(1001,2000),main='MCMC estimation for mu')
+plot(merton.sigma2.vector, type='l', xlab='sigma^2',xlim=c(1001,2000), ylim=c(0.00008,0.00012),main='MCMC estimation for sigma^2')
+par(mfrow=c(3,1))
+plot(merton.mu.s.vector, type='l', xlab='mu.s',xlim=c(1001,2000), ylim=c(-0.003,0.003),main='MCMC estimation for mu')
+plot(merton.sigma2.s.vector, type='l', xlab='sigma.s^2',xlim=c(1001,2000), ylim=c(0,0.0002),main='MCMC estimation for sigma^2')
+plot(merton.lambda.vector, type='l', xlab='sigma^2',xlim=c(1001,2000),main='MCMC estimation for sigma^2')
+
+mu.vector.est = mu.vector[1001:2000]
+sigma2.vector.est = sigma2.vector[1001:2000]
+
+quantile.mu.vector = c(quantile(mu.vector.est, 0.025), quantile(mu.vector.est, 0.5), quantile(mu.vector.est, 0.975))
+quantile.sigma2.vector = c(quantile(sigma2.vector.est, 0.025), quantile(sigma2.vector.est, 0.5), quantile(sigma2.vector.est, 0.975))
+
+
+
+# check with existing library in R
 # non-informative
 model <- set.to.class("jumpDiffusion", Lambda = function(t, xi) (t/xi[2])^xi[1],
                       parameter = list(theta = 0.1, phi = 0.05, gamma2 = 0.1, xi = c(3, 1/4)))
@@ -80,9 +155,3 @@ model2 <- set.to.class("jumpDiffusion", Lambda = function(t, xi) (t/xi[2])^xi[1]
 est2 <- estimate(model2, 1:length(spx_index_values$Return), spx_index_values$Return, 2000)
 plot(est)
 ##################################################
-
-
-
-
-
-
