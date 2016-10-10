@@ -106,7 +106,7 @@ for (i in 2:simulation.length){
   merton.mu.s.vector[i] = rnorm(1,(sum(merton.xi.data*merton.Z.data)/merton.sigma2.vector[i-1]+theta.s/delta2.s)*delta.star.s.2, sqrt(delta.star.s.2))
   merton.sigma2.s.vector[i] = rigamma(1,alpha.s+0.5*data.length, beta.s+0.5*sum((merton.Z.data*merton.xi.data - merton.mu.s.vector[i])^2))
   # jump intensity
-  merton.lambda.vector[i] = rbeta(1, max(5, sum(merton.Z.data)+gamma, data.length - sum(merton.Z.data) + eta)
+  merton.lambda.vector[i] = rbeta(1, max(5, sum(merton.Z.data)+gamma, data.length - sum(merton.Z.data) + eta))
   # state variable xi
   sigma.star.xi = 1/(merton.Z[i-1]/merton.sigma2.vector[i]+1/merton.sigma2.s.vector[i])
   for (j in 1:data.length){
@@ -122,20 +122,27 @@ for (i in 2:simulation.length){
   jump.times[i] = sum(merton.Z.data)
 }
 
+
+
 par(mfrow=c(2,1))
-plot(merton.mu.vector, type='l', xlab='mu',xlim=c(1001,2000),main='MCMC estimation for mu')
-plot(merton.sigma2.vector, type='l', xlab='sigma^2',xlim=c(1001,2000), ylim=c(0.00008,0.00012),main='MCMC estimation for sigma^2')
+plot(merton.mu.vector, type='l', xlab='iterations',ylab='mu',xlim=c(1001,2000),main='MCMC estimation Merton model - mu')
+plot(merton.sigma2.vector, type='l', xlab='iterations',ylab='sigma^2',xlim=c(1001,2000), ylim=c(0.00008,0.00012),main='MCMC estimation Merton model - sigma^2')
 par(mfrow=c(3,1))
-plot(merton.mu.s.vector, type='l', xlab='mu.s',xlim=c(1001,2000), ylim=c(-0.003,0.003),main='MCMC estimation for mu')
-plot(merton.sigma2.s.vector, type='l', xlab='sigma.s^2',xlim=c(1001,2000), ylim=c(0,0.0002),main='MCMC estimation for sigma^2')
-plot(merton.lambda.vector, type='l', xlab='sigma^2',xlim=c(1001,2000),main='MCMC estimation for sigma^2')
+plot(merton.mu.s.vector, type='l', xlab='iterations',ylab='mu.s',xlim=c(1001,2000), ylim=c(-0.003,0.003),main='MCMC estimation Merton model - mu.s')
+plot(merton.sigma2.s.vector, type='l', xlab='iterations',ylab='sigma.s^2',xlim=c(1001,2000), ylim=c(0,0.0002),main='MCMC estimation Merton model - sigma.s^2')
+plot(merton.lambda.vector, type='l', xlab='iterations',ylab='lambda',xlim=c(1001,2000),main='MCMC estimation Merton model - lambda')
 
-mu.vector.est = mu.vector[1001:2000]
-sigma2.vector.est = sigma2.vector[1001:2000]
+merton.mu.vector.est = merton.mu.vector[1001:2000]
+merton.sigma2.vector.est = merton.sigma2.vector[1001:2000]
+merton.mu.s.vector.est = merton.mu.s.vector[1001:2000]
+merton.sigma2.s.vector.est = merton.sigma2.s.vector[1001:2000]
+merton.lambda.vector.est = merton.lambda.vector[1001:2000]
 
-quantile.mu.vector = c(quantile(mu.vector.est, 0.025), quantile(mu.vector.est, 0.5), quantile(mu.vector.est, 0.975))
-quantile.sigma2.vector = c(quantile(sigma2.vector.est, 0.025), quantile(sigma2.vector.est, 0.5), quantile(sigma2.vector.est, 0.975))
-
+quantile.mu.vector = c(quantile(merton.mu.vector.est, 0.025), quantile(merton.mu.vector.est, 0.5), quantile(merton.mu.vector.est, 0.975))
+quantile.sigma2.vector = c(quantile(merton.sigma2.vector.est, 0.025), quantile(merton.sigma2.vector.est, 0.5), quantile(merton.sigma2.vector.est, 0.975))
+quantile.mu.vector = c(quantile(merton.mu.s.vector.est, 0.025), quantile(merton.mu.s.vector.est, 0.5), quantile(merton.mu.s.vector.est, 0.975))
+quantile.sigma2.vector = c(quantile(merton.sigma2.s.vector.est, 0.025), quantile(merton.sigma2.s.vector.est, 0.5), quantile(merton.sigma2.s.vector.est, 0.975))
+quantile.lambda.vector = c(quantile(merton.lambda.vector.est, 0.025), quantile(merton.lambda.vector.est, 0.5), quantile(merton.lambda.vector.est, 0.975))
 
 
 # check with existing library in R

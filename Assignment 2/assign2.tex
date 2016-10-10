@@ -337,7 +337,7 @@ d S_t = \left(\mu+\frac{1}{2}\sigma^2\right) S_t dt + \sigma S_t dW_t
 $$
 where $\mu$ is the drift term and $\sigma$ is the volatility. $W_t$ is the Wiener process. This model assumes the stock returns follow a random walk. In reality, the S\&P500 index level and returns on daily basis are plotted in Figure~\ref{plot_spx}.
 
-\begin{figure}
+\begin{figure}[H]
   \centering
   \includegraphics[scale=0.6]{spx_index_return.eps}
   \caption{The SPX index levels and return on daily basis. Time period is from 1954 to 2015.}\label{plot_spx}
@@ -371,12 +371,12 @@ p(\sigma^2|\mu, Y)  &\propto& p(Y|\mu,\sigma^2) \times p(\sigma^2) \\
 
 That is, given $\mu$ and $Y_t$, we are able to generate the $\sigma^2$ according to the marginal density $p(\sigma^2|\mu, Y)$. Similarly, select normal distribution as prior for $\mu$. The density is
 $$
-f(\mu|\theta,\delta) = \frac{1}{\sqrt{2\pi\delta^2}} \exp\left( -frac{1}{2} \left( \frac{\mu-\theta}{\delta} \right)^2 \right)
+f(\mu|\theta,\delta) = \frac{1}{\sqrt{2\pi\delta^2}} \exp\left( -\frac{1}{2} \left( \frac{\mu-\theta}{\delta} \right)^2 \right)
 $$
 and the marginal density is
 \begin{eqnarray*}
 p(\mu|\sigma^2, Y)  &\propto& p(Y|\mu,\sigma^2) \times p(\mu) \\
-                    &=& \left( \frac{1}{\sqrt{2\pi\sigma^2}} \right)^T \exp\left( -\frac{1}{2} \sum_{t=1}^{T} \left( \frac{Y_t - \mu}{\sigma}\right)^2 \right) \times \frac{1}{\sqrt{2\pi\delta^2}} \exp\left( -frac{1}{2} \left( \frac{\mu-\theta}{\delta} \right)^2 \right)
+                    &=& \left( \frac{1}{\sqrt{2\pi\sigma^2}} \right)^T \exp\left( -\frac{1}{2} \sum_{t=1}^{T} \left( \frac{Y_t - \mu}{\sigma}\right)^2 \right) \times \frac{1}{\sqrt{2\pi\delta^2}} \exp\left( -\frac{1}{2} \left( \frac{\mu-\theta}{\delta} \right)^2 \right)
 \end{eqnarray*}
 
 To deal with $Y_t - \mu$, denote $\hat{\mu}=\left( \sum_{t=1}^T Y_t \right)/T$, and
@@ -406,14 +406,152 @@ Given the prior distributions, the complete MCMC method to conduct parameter est
 and $G$ is the simulation size. In this paper, we select $G=2000$.
 
 \subsection{Merton Jump Diffusion Model}
+Merton's (1976) jump diffusion model assumes the (log) return process $Y_t$ as a mixture of Poisson distributed jumps and the Geometric Brownian Motion
+\begin{equation}\label{merton_equation}
+Y_t \equiv \log(S_{t}/S_{t-1}) = \mu + \sigma + Z_t \xi_t
+\end{equation}
+
+As shown in Equation~\ref{merton_equation}, in the additional to the Black-Scholes part, a jump process is incorporated, where $Z_t$ is the jump indictor equal to 1 with probability $\lambda$ (the jump intensity) and equal to 0 with probability $(1-\lambda)$. $\xi_t$ is a normally distributed random variable representing the jump size.
+
+Different from the Black-Scholes model, there are two latent variables (state variables), $Z_t$ and $\xi_t$. That is, $X = \{Z_t, \xi_t\}_{t=1}^{T}$. As shown below,
+\begin{eqnarray*}
+Z_t &\sim&
+\left\{
+  \begin{array}{lc}
+    1 & \textrm{with probability } \lambda \\
+    0 & \textrm{with probability } (1-\lambda) \\
+  \end{array}
+\right. \\
+\xi &\sim& N(\mu_s, \sigma_s^2)
+\end{eqnarray*}
+
+The parameter set is $\Theta=\{\mu, \sigma^2, \lambda, \mu_s, \sigma_s^2\}$, where $\mu_s$ and $\sigma_s^2$ are the parameters that define the distribution of $\xi$. The observed returns are $Y=\{r_t\}_{t=1}^T$. The object is to estimate $\Theta$ (and states $X$) conditional to the returns $Y$. Given $p(\Theta, X|Y) = p(\Theta, Z, \xi|Y)$, the marginal densities are obtained
+$$
+p(\Theta, X|Y) \propto p(Y|\Theta,X)p(X|\Theta)p(\Theta)
+$$
+
+Similar with Black-Scholes model, Hammersley-Clifford suggestions the following approach
+\begin{enumerate}
+    \item draw $\Theta_i^{(g+1)} \sim p(\Theta_i|\Theta_{i \backslash c}^{(g)} ,Z^{(g)}, \xi^{(g+1)}, Y)$;
+    \item draw $Z^{(g+1)} \sim p(Z|\Theta^{(g+1)}, \xi^{(g)}, Y)$;
+    \item draw $\xi^{(g+1)} \sim p(\xi|\Theta^{(g+1)}, Z^{(g+1)}, Y)$.
+\end{enumerate}
+where $\Theta_{i \backslash c}$ represents the parameter set without parameter $\Theta_i$. $G$ is the simulation size. In this paper, we select $G=2000$.
+
+Defining the priors and deriving the posteriors is vital to MCMC algorithm. The density of the observed return is
+\begin{eqnarray*}
+p(Y|\Theta, Z, \xi) &=& \Pi_{t=1}^T p(Y_t|\Theta, Z_t, \xi_t) \\
+p(Y_t|\Theta, Z_t, \xi_t) &\sim& N(\mu+\xi_tZ_t, \sigma^2) \\
+p(Y|\Theta, Z, \xi) &=&  \left( \frac{1}{\sqrt{2\pi\sigma^2}} \right)^T \exp\left( -\frac{1}{2} \sum_{t=1}^{T} \left( \frac{Y_t - \mu - Z_t \xi_t}{\sigma}\right)^2 \right)
+\end{eqnarray*}
+
+Using the conjugate priors, we assume the prior distribution of the five parameters in $\Theta$ as
+\begin{eqnarray*}
+\mu         &\sim& N(\theta, \delta^2) \\
+\sigma^2    &\sim& IG(\alpha, \beta) \\
+\mu_s       &\sim& N(\theta_s, \delta_s^2) \\
+\sigma_s^2  &\sim& IG(\alpha_s, \beta_s) \\
+\lambda     &\sim& B(\gamma, \eta)
+\end{eqnarray*}
+where $IG$ represents the inverse gamma distribution, and $B$ is the Beta distribution with density
+$$
+B(\gamma, \eta) = \frac{\Gamma(\gamma+\eta)}{\Gamma(\gamma)\Gamma(\eta)}\lambda^{\gamma-1}(1-\lambda)^{\eta-1}
+$$
+
+The posterior distribution of $\sigma^2$ can be derived by combining the likelihood of $Y_t$ and the prior of $\sigma^2$.
+\begin{eqnarray*}
+p(\sigma^2|\Theta_{\sigma^2 \backslash c}, Z_t, \xi_t, Y)  &\propto& p(Y|\Theta, Z_t, \xi_t,\sigma^2) \times p(\sigma^2) \\
+                    &=& \left( \frac{1}{\sqrt{2\pi\sigma^2}} \right)^T \exp\left( -\frac{1}{2} \sum_{t=1}^{T} \left( \frac{Y_t - \mu - Z_t \xi_t}{\sigma}\right)^2 \right) \times \frac{\beta^{\alpha}}{\Gamma(\alpha)} (\sigma^2)^{-\alpha-1} \exp(-\beta/\sigma^2) \\
+                    &\propto& (\sigma^2)^{-T/2-\alpha-1} \exp\left( -\left[\frac{1}{2}\sum_{t=1}^{T} (Y_t-\mu-Z_t \xi_t)^2 + \beta \right]/\sigma^2 \right) \\
+                    &\propto& IG\left(\alpha+\frac{T}{2}, \beta+\frac{1}{2}\sum_{t=1}^{T}(Y_t-\mu -Z_t \xi_t)^2 \right)
+\end{eqnarray*}
+which yields very similar result as the Black-Scholes model. The only difference is that the return $Y_t$ is adjusted not only by $\mu$ but also the $Z_t \xi_t$.
+
+The posterior of $\mu$ obtains by defining $\hat{\mu}=\left[ \sum_{t=1}^T (Y_t-Z_t \xi_t) \right]/T$.
+$$
+\sum_{t=1}^T (Y_t - \mu - \xi_t Z_t)^2 = \sum_{t=1}^T (Y_t - \hat{\mu} - \xi_t Z_t) + T (\hat{\mu} - \mu)^2
+$$
+
+Then we yield
+\begin{eqnarray*}
+p(\mu|\Theta_{\mu\backslash c}, Z, \xi, Y) &\propto& p(\mu|\sigma^2, Z, \xi, Y) \\
+        &=& p(Y|\mu, \sigma^2, \xi, Z) p(\mu) \\
+        &=& \left( \frac{1}{\sqrt{2\pi\sigma^2}} \right)^T \exp\left( -\frac{1}{2} \sum_{t=1}^{T} \left( \frac{Y_t - \mu - Z_t \xi_t}{\sigma}\right)^2 \right) \times \frac{1}{\sqrt{2\pi\delta^2}} \exp\left( -\frac{1}{2} \left( \frac{\mu-\theta}{\delta} \right)^2 \right) \\
+        &\propto& \exp\left(-\frac{1}{2\delta^{*2}} \left( \mu-\left(\frac{T\hat{\mu}}{\sigma^2} + \frac{\theta}{\delta^2}\right)\delta^{*2} \right)^2 \right) \\
+        &\propto& N\left( \left[ \sum_{t=1}^T (Y_t-\xi_t Z_t) / \sigma^2 + \theta/\delta^2 \right]\delta^{*2}, \delta^{*2} \right)
+\end{eqnarray*}
+where $\delta^{*2} = (T/\sigma^2+1/\delta^2)^{-1}$.
+
+Then we drive the posteriors for $\mu_s$ and $\sigma_s^2$, and they define the jump size in the return process. Analogy to the derivation of the $\mu$ and $\sigma^2$, we yield
+\begin{eqnarray*}
+p(\sigma_s^2|\Theta_{\sigma_s^2 \backslash c}, Z_t, \xi_t, Y)  &\propto& p(\xi|\mu_s,\sigma_s^2) \times p(\sigma_s^2) \\
+                    &=& \left( \frac{1}{\sqrt{2\pi\sigma_s^2}} \right)^T \exp\left( -\frac{1}{2} \sum_{t=1}^{T} \left( \frac{\xi_t - \mu }{\sigma_s}\right)^2 \right) \times \frac{\beta_s^{\alpha_s}}{\Gamma(\alpha_s)} (\sigma_s^2)^{-\alpha_s-1} \exp(-\beta_s/\sigma_s^2) \\
+                    &\propto& IG\left(\alpha_s+\frac{T}{2}, \beta_s+\frac{1}{2}\sum_{t=1}^{T}(\xi_t-\mu_s)^2 \right)
+\end{eqnarray*}
+
+And the posterior of $\mu_s$, using similar technique, obtains
+\begin{eqnarray*}
+p(\mu_s|\Theta_{\mu_s \backslash c}, Z, \xi, Y) &\propto& p(\xi|\mu_s, \sigma_s^2) p(\mu_s) \\
+        &\propto& N\left(\left[\frac{\sum_{t=1}^T \xi_t}{\sigma_s^2} + \frac{\theta_s}{\delta_s^2}\right]\delta_s^{*2}, \delta_s^{*2} \right)
+\end{eqnarray*}
+where $\delta_s^{*2}=(T/\sigma_s^2 + 1/\delta_s^2)^{-1}$.
+
+The jump intensity $\lambda$ is conditional on the jump indicator $Z$. Then the posterior of $\lambda$ is
+\begin{eqnarray*}
+p(\lambda|\Theta_{\lambda \backslash c}, Z, \xi, Y) &=& p(\lambda|Z) = p(Z|\lambda)p(\lambda) \\
+        &\propto& \prod_{t=1}^T p(Z_t|\lambda)p(\lambda) \\
+        &=& \prod_{t=1}^T \lambda^{Z_t} (1-\lambda)^{1-Z_t} p(\lambda) \\
+        &\propto& \lambda^{\sum_{t=1}^T Z_t} (1-\lambda)^{T-\sum_{t=1}^T Z_t} \lambda^{\gamma-1}(1-\lambda)^{\eta-1} \\
+        &\propto& B\left(\sum_{t=1}^T Z_t + \gamma, T - \sum_{t=1}^T Z_t + \eta \right)
+\end{eqnarray*}
+
+The posteriors of the state variables, $\xi_t$ and $Z_t$, are
+\begin{eqnarray*}
+p(\xi_t|\Theta, Z_t, Y) &\propto& p(Y_t|\Theta, Z_t, \xi_t) p(\xi_t|\Theta) \\
+    &\propto& \exp\left( -\frac{1}{2} \left( \frac{Y_t-\mu-\xi_t Z_t}{\sigma} \right)^2 - \frac{1}{2} \left(\frac{\xi_t-\mu_s}{\sigma_s}\right)^2 \right) \\
+    &\propto& N(((Y_t-\mu)Z_t/\sigma^2+\mu_s/\sigma^2)\sigma_t^{*2}, \sigma_t^{*2})
+\end{eqnarray*}
+where $\sigma_t^{*2}=(Z_t/sigma^2+1/sigma_s^2)^{-1}$. And
+\begin{eqnarray*}
+p(Z_t=1|\Theta, \xi_t, Y_t) &\propto& p(Y_t|\Theta, Z_t=1, \xi_t)p(Z_t=1|\Theta) \\
+    &\propto& \exp\left( -\frac{1}{2} \left( \frac{Y_t-\mu-\xi_t}{\sigma} \right)^2 \right) \lambda \\
+p(Z_t=0|\Theta, \xi_t, Y_t) &\propto& p(Y_t|\Theta, Z_t=0, \xi_t)p(Z_t=0|\Theta) \\
+    &\propto& \exp\left( -\frac{1}{2} \left( \frac{Y_t-\mu}{\sigma} \right)^2 \right) (1-\lambda) \\
+\end{eqnarray*}
+and the integrating constant is determined by insuring that the two probability ($p(Z_t=0)$ and $p(Z_t=1)$) add up to one.
+
+The derivations of the posteriors complete the MCMC algorithm for the Merton jump diffusion model.
+
 
 \section{Data and Empirical Results}
+\subsection{Data}
+The data used for the Merton jump diffusion is the daily return of S\&P500 index level over January 1954 to December 2015. The index level and the daily (log) return series are plotted in Figure~\ref{plot_spx}. Given the prices of the index, the log return is calculated by
+$$
+Y_t = \log(S_{t}/S_{t-1})
+$$
 
-\begin{figure}
+\subsection{Estimation from Black-Scholes Model}
+
+\begin{figure}[H]
   \centering
   \includegraphics[scale=0.6]{mu_sigma_bs.eps}
-  \caption{The $\mu$ and $\sigma^2$ with Monte Carlo draws on the Markov Chain. The MCMC algorithm is based on Gibbs sampler. The simulation size is 2000. Parameter estimation and statistical inference are conducted between steps 1001 and 2000.}\label{mu_sigma_bs}
+  \caption{The $\mu$ and $\sigma^2$ with Monte Carlo draws on the Markov Chain. The MCMC algorithm is based on Gibbs sampler. The simulation size is 2000. Parameter estimation and statistical inference are conducted between steps 1001 and 2000. The first 1000 iteration are in the burn-in period.}\label{mu_sigma_bs}
 \end{figure}
+
+\subsection{Estimation from Merton Jump Diffusion Model}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.6]{merton_mu_sigma.eps}
+  \caption{The $\mu$ and $\sigma^2$ with Monte Carlo draws on the Markov Chain for the Merton jump diffusion model. The MCMC algorithm is based on Gibbs sampler. The simulation size is 2000. Parameter estimation and statistical inference are conducted between steps 1001 and 2000. The first 1000 iteration are in the burn-in period.}\label{mu_sigma_merton}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.6]{merton_mus_sigmas_lambda.eps}
+  \caption{The $\mu_s$, $\sigma_s^2$ and $\lambda$ with Monte Carlo draws on the Markov Chain for the Merton jump diffusion model. The MCMC algorithm is based on Gibbs sampler. The simulation size is 2000. Parameter estimation and statistical inference are conducted between steps 1001 and 2000. The first 1000 iteration are in the burn-in period.}\label{mus_sigmas_lambda_merton}
+\end{figure}
+
 
 \section{Conclusion}
 
@@ -431,7 +569,7 @@ and $G$ is the simulation size. In this paper, we select $G=2000$.
 %
 %
 \newpage
-\section*{Appendix: Code for Vasicek model ML estimation}
+\section*{Appendix: Code for Black-Scholes and Merton jump diffusion models using Bayesian MCMC algorithm}
 %\begin{spacing}{0.9}
 \lstinputlisting[language=R]{assignment2.R}
 
