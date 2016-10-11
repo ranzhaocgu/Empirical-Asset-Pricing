@@ -4,8 +4,8 @@
 \BOOKMARK [2][-]{subsection.2.2}{2.2. Merton Jump Diffusion Model}{section.2}% 4
 \BOOKMARK [1][-]{section.3}{3. Data and Empirical Results}{}% 5
 \BOOKMARK [2][-]{subsection.3.1}{3.1. Data}{section.3}% 6
-\BOOKMARK [2][-]{figure.caption.2}{3.2. Estimation from Black-Scholes Model}{section.3}% 7
-\BOOKMARK [2][-]{figure.caption.4}{3.3. Estimation from Black-Scholes Model}{section.3}% 8
+\BOOKMARK [2][-]{subsection.3.2}{3.2. Estimation from Black-Scholes Model}{section.3}% 7
+\BOOKMARK [2][-]{subsection.3.3}{3.3. Estimation from Merton Jump Diffusion Model}{section.3}% 8
 \BOOKMARK [1][-]{section.4}{4. Conclusion}{}% 9
-\BOOKMARK [1][-]{section*.5}{References}{}% 10
-\BOOKMARK [1][-]{section*.6}{Appendix: Code for Black-Scholes and Merton jump diffusion models using Bayesian MCMC algorithm}{}% 11
+\BOOKMARK [1][-]{section*.7}{References}{}% 10
+\BOOKMARK [1][-]{section*.8}{Appendix: Code for Black-Scholes and Merton jump diffusion models using Bayesian MCMC algorithm}{}% 11

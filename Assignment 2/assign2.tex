@@ -297,7 +297,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{abstract}
-
+We explored the theoretical framework of Bayesian MCMC model applying to the Black-Scholes and the Merton jump diffusion model. The conjugated priors are assumed and posteriors are derived in the paper for both models. Then we provides the estimated parameters and statistical inferences using the standard Gibbs sampler. The MCMC algorithm shows successful convergence and provides consistent  estimation between two asset pricing models. We estimated the Merton model mean ($\mu$) as 6.42\% and volatility ($\sigma$) as 16.53\% on annual basis. The jump intensity is 0.3\%, and the jump size has positive (though small), which is added to the mean return process.
 \end{abstract}
 
 \maketitle
@@ -329,8 +329,10 @@ However, $p(\Theta, X|Y)$ in continuous-time asset pricing models is usually not
 A typical application of MCMC technique in asset pricing model is Jacquier, Polson and Rossi~\cite{JPR94}, where a cyclic Metropolis algorithm is used to construct a Markov-chain simulation on stochastic volatility model.
 
 
+
+
 \section{Model Specification}
-\subsection{Geometric Brownian Motion (Black-Scholes)}
+\subsection{Geometric Brownian Motion (Black-Scholes)} \label{bs_section}
 The baseline model selected for fitting the underlying stock returns is Black-Scholes model~\cite{BS73}, where the stock price dynamic, $S_t$, follows Geometric Brownian Motion
 $$
 d S_t = \left(\mu+\frac{1}{2}\sigma^2\right) S_t dt + \sigma S_t dW_t
@@ -344,9 +346,9 @@ where $\mu$ is the drift term and $\sigma$ is the volatility. $W_t$ is the Wiene
 \end{figure}
 
 In discrete time equally space, the model has close-form solution for the return
-$$
+\begin{equation}\label{bs_equation}
 Y_t = \log(S_t / S_{t-1}) = \mu + \sigma \epsilon_t
-$$
+\end{equation}
 where $\epsilon_t \sim N(0,1)$. We have $\Theta = (\mu, \sigma^2)$. There is no latent variable, which implies the posterior to be $p(\Theta|Y) = p(\mu,\sigma|Y)$.
 
 Using Hammersley-Clifford theorem~\cite{CH70}, $p(\mu|\sigma^2,Y)$ and $p(\sigma^2|\mu,Y)$ are complete conditionals to the posterior. Assuming independent priors on $\mu$ and $\sigma^2$, Bayes rule implies that
@@ -405,7 +407,7 @@ Given the prior distributions, the complete MCMC method to conduct parameter est
 \end{enumerate}
 and $G$ is the simulation size. In this paper, we select $G=2000$.
 
-\subsection{Merton Jump Diffusion Model}
+\subsection{Merton Jump Diffusion Model} \label{merton_section}
 Merton's (1976) jump diffusion model assumes the (log) return process $Y_t$ as a mixture of Poisson distributed jumps and the Geometric Brownian Motion
 \begin{equation}\label{merton_equation}
 Y_t \equiv \log(S_{t}/S_{t-1}) = \mu + \sigma + Z_t \xi_t
@@ -529,24 +531,63 @@ The data used for the Merton jump diffusion is the daily return of S\&P500 index
 $$
 Y_t = \log(S_{t}/S_{t-1})
 $$
+The data source is Bloomberg.
 
 \subsection{Estimation from Black-Scholes Model}
+As formulated in Equation~\ref{bs_equation}, the parameters $\mu$ and $\sigma^2$ (along with the randomness source $\epsilon_t$) determine the dynamic of return process. Therefore the parameter set is $\Theta=\{\mu, \sigma^2\}$. Section~\ref{bs_section} describes the selected prior and the derived posteriors of these parameters. In the MCMC experiment, we use 2000 Monte Carlo steps on the Markov Chain. However, it may take non-trivial amount of time (or number of steps) to achieve convergence. To guarantee that the parameter estimation is completed after or close convergence, we set the first 1000 iterations as burn-in period, and use only the second 1000 iteration for estimation and statistical inference.
 
-\begin{figure}[H]
+Table~\ref{tbl::bs_est} presents the priors and posteriors of the parameters ($\mu$ and $\sigma^2$) in Black-Scholes model. From the convergence graph showing in Figure~\ref{mu_sigma_bs}, the Bayesian MCMC algorithm successfully estimates the parameters, by reducing the variance of parameters in posterior and producing 95\% confidence interval close to the mean estimation. The estimated daily rate of return of S\&P500 index is 0.028\% with volatility of 0.011\%, which is equivalent to an annual return of 7.11\% and volatility of 16.54\%.
+
+\begin{table}
+\begin{center}
+\caption{The prior and posterior estimations and statistical inferences on Black-Scholes model.}
+\begin{tabular}{|c|c|c|c|c|c|}
+  \hline
+Merton Model	&	Prior - Mean	&	Prior - std	&	Posterior - mean	&	Posterior - std	&	Posterior C.I.(2.5\%, 97.5\%)	\\ \hline
+$\mu$	&	0	&	$\sqrt{0.001}$	&	2.822E-04	&	8.439E-05	&	(1.134E-04, 4.407E-04)	\\
+$\sigma^2$	&	$\sqrt{0.0002}$	&	0.006	&	1.086E-04	&	1.148E-06	&	(1.064E-04, 1.109E-04)	\\
+  \hline
+\end{tabular}\label{tbl::bs_est}
+\end{center}
+\end{table}
+
+\begin{figure} 
   \centering
   \includegraphics[scale=0.6]{mu_sigma_bs.eps}
   \caption{The $\mu$ and $\sigma^2$ with Monte Carlo draws on the Markov Chain. The MCMC algorithm is based on Gibbs sampler. The simulation size is 2000. Parameter estimation and statistical inference are conducted between steps 1001 and 2000. The first 1000 iteration are in the burn-in period.}\label{mu_sigma_bs}
 \end{figure}
 
-\subsection{Estimation from Merton Jump Diffusion Model}
 
-\begin{figure}[H]
+\subsection{Estimation from Merton Jump Diffusion Model}
+As formulated in Equation~\ref{merton_equation}, the parameter set is $\Theta=\{\mu, \sigma^2, \lambda, \mu_s, \sigma_s^2\}$, and the state variables are $X=\{Z_t,\xi_t\}$. Section~\ref{merton_section} describes the selected prior and the derived posteriors of these parameters. In the MCMC experiment, we use 2000 Monte Carlo steps on the Markov Chain. However, it may take non-trivial amount of time (or number of steps) to achieve convergence. To guarantee that the parameter estimation is completed after or close convergence, we set the first 1000 iterations as burn-in period, and use only the second 1000 iteration for estimation and statistical inference.
+
+Table~\ref{tbl::merton_est} presents the priors and posteriors of the parameters ($\mu$, $\sigma^2$, $\lambda$, $\mu_s$ and $\sigma_s^2$) in Merton jump diffusion model. From the convergence graph showing in Figure~\ref{mu_sigma_merton} and \ref{mus_sigmas_lambda_merton}, the Bayesian MCMC algorithm successfully estimates the parameters, by reducing the variance of parameters in posterior and producing 95\% confidence interval close to the mean estimation. However, the convergence graphs for the parameters have more spikes than the Black-Scholes estimation. By a lead-lag analysis applied to the parameters, the spikes orient from the $\lambda$ estimation. The estimated daily rate of return of S\&P500 index is 0.025\% with volatility of 0.011\%, which is equivalent to an annual return of 6.42\% and volatility of 16.53\%.
+
+The volatility estimation in the Merton jump diffusion model is surprisingly consistent with the Black-Schole model. The mean return coefficient, which is 0.7\% less annually, is compensated by the jumps in Merton model, where the probably of one jump is 0.36\% on daily basis, with a positive (though small) mean jump size (0.0004\%) adding to the Black-Scholes process.
+
+\begin{table}
+\begin{center}
+\caption{The prior and posterior estimations and statistical inferences on Merton jump diffusion model.}
+\begin{tabular}{|c|c|c|c|c|c|}
+  \hline
+Merton Model	&	Prior - Mean	&	Prior - std	&	Posterior - mean	&	Posterior - std	&	Posterior C.I.(2.5\%, 97.5\%)	\\ \hline
+$\mu$	&	0	&	$\sqrt{0.001}$	&	2.548E-04	&	5.311E-04	&	(7.472E-05, 4.662E-04)	\\
+$\sigma^2$	&	$\sqrt{0.0002}$	&	0.006	&	1.085E-04	&	1.434E-06	&	(2.227E-05,5 2.896E-04)	\\
+$\mu_s$	&	0	&	$\sqrt{0.001}$	&	4.415E-06	&	1.159E-04	&	(-8.218E-05,  8.491E-05)	\\
+$\sigma_s^2$	&	$\sqrt{0.0002}$	&	0.006	&	2.365E-05	&	6.036E-06	&	(2.227E-05, 2.897E-05)	\\
+$\lambda$	&	0.95	&	0.025	&	3.678E-03	&	1.078E-03	&	(2.685E-03, 5.532E-03)	\\
+  \hline
+\end{tabular}\label{tbl::merton_est}
+\end{center}
+\end{table}
+
+\begin{figure} 
   \centering
   \includegraphics[scale=0.6]{merton_mu_sigma.eps}
   \caption{The $\mu$ and $\sigma^2$ with Monte Carlo draws on the Markov Chain for the Merton jump diffusion model. The MCMC algorithm is based on Gibbs sampler. The simulation size is 2000. Parameter estimation and statistical inference are conducted between steps 1001 and 2000. The first 1000 iteration are in the burn-in period.}\label{mu_sigma_merton}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure} 
   \centering
   \includegraphics[scale=0.6]{merton_mus_sigmas_lambda.eps}
   \caption{The $\mu_s$, $\sigma_s^2$ and $\lambda$ with Monte Carlo draws on the Markov Chain for the Merton jump diffusion model. The MCMC algorithm is based on Gibbs sampler. The simulation size is 2000. Parameter estimation and statistical inference are conducted between steps 1001 and 2000. The first 1000 iteration are in the burn-in period.}\label{mus_sigmas_lambda_merton}
@@ -554,7 +595,9 @@ $$
 
 
 \section{Conclusion}
+In this paper, we reviewed the Bayesian Monte Carlo Markov Chain method and its application and advantages on estimating asset pricing models. The Geometric Brownian Motion setup in Black-Scholes is firstly examined and estimated, using the S\&P500 index daily returns. The (conjugate) priors are selected, and the posterior distributions are derived accordingly. The MCMC succeed to converge after a safely picked burn-in period. The estimated annual rate of return is 7.11\% with annul volatility of 16.54\%, in the period from 1954 to 2015.
 
+Then the Merton jump diffusion model is built based on the framework developed in~\cite{M76}. Different with the Black-Scholes baseline model, there are two state variables in the Merton's model, the jump indicator and the jump size. The priors and posteriors are analogy to those of the Black-Scholes model. Using the same dataset, the annual volatility is 16.53\% and the annual return is estimated as 6.42\%. The difference in mean return is compensated by returns created by jumps with positive jump size added to the mean return. In Merton's model, the parameter estimation (convergence graph) is more spiky than the Black-Scholes model, and the jumpy behavior orients from the estimation of jump intensity. 
 
 
 %
