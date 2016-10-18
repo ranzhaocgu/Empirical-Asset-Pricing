@@ -289,7 +289,7 @@
 %%%%%%%%%%%%%%
 
 
-\title{Calibration on Merton Jump Diffusion Using Bayesian MCMC Method}
+\title{Parameter Estimation Bias with Different Sample Size}
 \author{Ran Zhao}
 \thanks{}
 \begin{document}
@@ -297,7 +297,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{abstract}
-We explored the theoretical framework of Bayesian MCMC model applying to the Black-Scholes and the Merton jump diffusion model. The conjugated priors are assumed and posteriors are derived in the paper for both models. Then we provides the estimated parameters and statistical inferences using the standard Gibbs sampler. The MCMC algorithm shows successful convergence and provides consistent  estimation between two asset pricing models. We estimated the Merton model mean ($\mu$) as 6.42\% and volatility ($\sigma$) as 16.53\% on annual basis. The jump intensity is 0.3\%, and the jump size has positive (though small), which is added to the mean return process.
+This paper investigates the bias of parameter estimation, given different sets of parameter true value and sample size. We found that non-zero $\alpha$ improves the unbiasedness of parameter estimation in AR(1) model, but the level of $\sigma$ does not contribution to unbiasedness. Another improvement of parameter estimation raises when the AR(1) becomes stationary, say changing the $\beta$ from 1 to 0.95. Increasing the sample size makes the distribution of $\beta$'s t-statistic closer to be normally distributed. 
 \end{abstract}
 
 \maketitle
@@ -306,315 +306,84 @@ We explored the theoretical framework of Bayesian MCMC model applying to the Bla
 %
 %
 %
-\section{Introduction}
-Advances in computing powers and numerical methods have largely improve the capability of solving econometric and statistical models using computational intense methods, includes Markov Chain Monte Carlo (MCMC) method. Especially in dynamic asset pricing models, the MCMC method is widely utilized to extracting information about latent state variables (such as implied volatility), structural parameters and market prices of risk (volatility or jump risks) from observed prices or market quotes. The Bayesian inference is to obtain the distribution of parameter set, $\Theta$, and (optional) state variables, $X$, conditioning on the observed prices, $Y$. That is, the posterior distribution, $p(\Theta, X|Y)$ is vital to the parameters estimation and their statistical inference.
-
-Consider a stochastic process $\{X_t\}$, where each $X_t$ assumes value in space $\Omega$. Then the process $\{X_t\}$ is a Markov process if given the value of $X_t$, the values of $X_{t+h}$, $h>0$, do not depend on the values $X_s$, $s<t$. That is, $\{X_t\}$ is a Markov process if its conditioanl distribution function satisfies
-
-$$
-\mathbb{P}(X_{t+h}|X_s, s \leq t) = \mathbb{P}(X_{t+h}|X_t), \quad h>0.
-$$
-
-In continuous-time asset pricing models, MCMC that explore their posterior distributions samples from high-dimensional and sophisticated distributions by generating Markon process over $(\Theta,X)$, $\{\Theta^{(g)}, X^{(g)}\}_{g=1}^{G}$. And the equilibrium distribution of $(\Theta,X)$ is $p(\Theta, X|Y)$. Then Monte Carlo methods use these samples for statistical inference on parameters and states.
-
-However, $p(\Theta, X|Y)$ in continuous-time asset pricing models is usually not easy to obtain. Johannes and Polson~\cite{JP02} listed the reasons for this difficulty, which summarize as
-\begin{enumerate}
-    \item market prices are observed discretely (e.g. on daily basis) while the asset pricing models specify the prices and states to evolve continuously;
-    \item the state variables are latent based on researcher's perspective but not observable on the market;
-    \item $p(\Theta, X|Y)$ is usually in high dimension, causing common sampling method to fail;
-    \item the transition distributions for prices and states of the asset pricing model are non-normal and non-standard, complication the standard estimation methods such as MLE and GMM;
-    \item the parameters of the asset pricing models are usually nonlinear and non-analytic form as the implicit solution to a stochastic differential equations.
-\end{enumerate}
-
-A typical application of MCMC technique in asset pricing model is Jacquier, Polson and Rossi~\cite{JPR94}, where a cyclic Metropolis algorithm is used to construct a Markov-chain simulation on stochastic volatility model.
-
-
-
-
 \section{Model Specification}
-\subsection{Geometric Brownian Motion (Black-Scholes)} \label{bs_section}
-The baseline model selected for fitting the underlying stock returns is Black-Scholes model~\cite{BS73}, where the stock price dynamic, $S_t$, follows Geometric Brownian Motion
-$$
-d S_t = \left(\mu+\frac{1}{2}\sigma^2\right) S_t dt + \sigma S_t dW_t
-$$
-where $\mu$ is the drift term and $\sigma$ is the volatility. $W_t$ is the Wiener process. This model assumes the stock returns follow a random walk. In reality, the S\&P500 index level and returns on daily basis are plotted in Figure~\ref{plot_spx}.
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[scale=0.6]{spx_index_return.eps}
-  \caption{The SPX index levels and return on daily basis. Time period is from 1954 to 2015.}\label{plot_spx}
-\end{figure}
-
-In discrete time equally space, the model has close-form solution for the return
-\begin{equation}\label{bs_equation}
-Y_t = \log(S_t / S_{t-1}) = \mu + \sigma \epsilon_t
+Consider the AR(1) model with dynamic
+\begin{equation}\label{ar}
+p_t = \alpha +  \beta p_{t-1} + \epsilon_t, \quad \epsilon_t \sim N(0, \sigma^2)
 \end{equation}
-where $\epsilon_t \sim N(0,1)$. We have $\Theta = (\mu, \sigma^2)$. There is no latent variable, which implies the posterior to be $p(\Theta|Y) = p(\mu,\sigma|Y)$.
+where the error terms, $\epsilon_t$, are i.i.d.
 
-Using Hammersley-Clifford theorem~\cite{CH70}, $p(\mu|\sigma^2,Y)$ and $p(\sigma^2|\mu,Y)$ are complete conditionals to the posterior. Assuming independent priors on $\mu$ and $\sigma^2$, Bayes rule implies that
-\begin{eqnarray*}
-p(\mu|\sigma^2, Y) &\propto& p(Y|\mu,\sigma^2)(\mu) \\
-p(\sigma^2|\mu, Y) &\propto& p(Y|\mu,\sigma^2)(\sigma^2) \\
-p(Y|\mu,\sigma^2) &=& \left( \frac{1}{\sqrt{2\pi\sigma^2}} \right)^T \exp\left( -\frac{1}{2} \sum_{t=1}^{T} \left( \frac{Y_t - \mu}{\sigma}\right)^2 \right)
-\end{eqnarray*}
-where $T$ is the sample size. $p(\mu)$ and $p(\sigma^2)$ are priors. Here we choose the standard conjugate priors on $\mu$ and $\sigma^2$. First select the inverse gamma distribution as the prior for $\sigma^2$. The inverse gamma distribution relies on two parameters $\alpha$ and $\beta$. The density is
-$$
-f(\sigma^2|\alpha,\beta) = \frac{\beta^{\alpha}}{\Gamma(\alpha)} (\sigma^2)^{-\alpha-1} \exp(-\beta/\sigma^2)
-$$
+Given the true value of the parameters and the initial value of the log stock price, the full log stock price process, $\{p_t\}_{t=0}^{T}$, can be simulated by the following algorithm,
 
-Therefore, the marginal density $p(\sigma^2)$ combines the prior $p(\sigma^2)$ and density $p(Y|\mu, \sigma^2)$, which yields
+\makeatletter
+\def\BState{\State\hskip-\ALG@thistlm}
+\makeatother
 
-\begin{eqnarray*}
-p(\sigma^2|\mu, Y)  &\propto& p(Y|\mu,\sigma^2) \times p(\sigma^2) \\
-                    &=& \left( \frac{1}{\sqrt{2\pi\sigma^2}} \right)^T \exp\left( -\frac{1}{2} \sum_{t=1}^{T} \left( \frac{Y_t - \mu}{\sigma}\right)^2 \right) \times \frac{\beta^{\alpha}}{\Gamma(\alpha)} (\sigma^2)^{-\alpha-1} \exp(-\beta/\sigma^2) \\
-                    &\propto& (\sigma^2)^{-T/2-\alpha-1} \exp\left( -\left[\frac{1}{2}\sum_{t=1}^{T} (Y_t-\mu)^2 + \beta \right]/\sigma^2 \right) \\
-                    &\propto& IG\left(\alpha+\frac{T}{2}, \beta+\frac{1}{2}\sum_{t=1}^{T}(Y_t-\mu)^2 \right)
-\end{eqnarray*}
+\begin{algorithm}
+\caption{Estimate Bias}\label{algo}
+\begin{algorithmic}[1]
+\Procedure{Simulation}{}
+\BState set sample size $N$ and simulation length $T$
+\BState \emph{loop i from 1 to N}:
+\State initialize $p(0,i)$
+\State \emph{loop t from 1 to T}:
+\State \quad draw random normal variable $u\sim N(0, \sigma^2)$
+\State \quad $p(t,i) \gets \alpha+\beta p(t,i) + norm $
+\State next $t$
+\State estimate parameter bias $Bias_{(\theta,i)}[\hat{\theta}]=\hat{\theta}_i-\theta$, for $\theta=\{\alpha, \beta, \sigma\}$
+\BState next $i$
+\BState $Bias_{(\theta)}[\hat{\theta}]=\sum_{i}Bias_{(\theta,i)}/N$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
 
-That is, given $\mu$ and $Y_t$, we are able to generate the $\sigma^2$ according to the marginal density $p(\sigma^2|\mu, Y)$. Similarly, select normal distribution as prior for $\mu$. The density is
-$$
-f(\mu|\theta,\delta) = \frac{1}{\sqrt{2\pi\delta^2}} \exp\left( -\frac{1}{2} \left( \frac{\mu-\theta}{\delta} \right)^2 \right)
-$$
-and the marginal density is
-\begin{eqnarray*}
-p(\mu|\sigma^2, Y)  &\propto& p(Y|\mu,\sigma^2) \times p(\mu) \\
-                    &=& \left( \frac{1}{\sqrt{2\pi\sigma^2}} \right)^T \exp\left( -\frac{1}{2} \sum_{t=1}^{T} \left( \frac{Y_t - \mu}{\sigma}\right)^2 \right) \times \frac{1}{\sqrt{2\pi\delta^2}} \exp\left( -\frac{1}{2} \left( \frac{\mu-\theta}{\delta} \right)^2 \right)
-\end{eqnarray*}
+\section{Estimation Analysis}
+\subsection{$\alpha=0, \beta=1, \sigma=0.2$}
+First, we select sample size $T=50$ with 10,000 paths to estimate the bias of parameters estimation. Given the parameter set as $\theta=\{\alpha=0, \beta=1, \sigma=0.2\}$, the biases are shown in Table~\ref{tbl::sim_results}. The initial value of the log stock price is set to $\log(100)\approx 4.605$. The bias for $\alpha$ estimation is 0.4739, the bias for $\beta$ estimation is -0.1029, and the bias for $\sigma$ is -0.0049. 
 
-To deal with $Y_t - \mu$, denote $\hat{\mu}=\left( \sum_{t=1}^T Y_t \right)/T$, and
-\begin{eqnarray*}
-\sum_{t=1}^T (Y_t - \mu)^2 &=&  \sum_{t=1}^T (Y_t - \hat{\mu} + \hat{\mu} - \mu)^2 \\
-                           &=&  \sum_{t=1}^T (Y_t - \hat{\mu})^2 + 2(\hat{\mu}-\mu)\sum_{t=1}^T(Y_t-\hat{\mu}) + \sum_{t=1}^T(\hat{\mu} - \mu)^2 \\
-                           &=&  \sum_{t=1}^T (Y_t - \hat{\mu})^2 + T(\hat{\mu}-\mu)^2
-\end{eqnarray*}
+When bumping the true value of $\alpha$, the bias of all the parameters reduce significantly. That is, a non-zero trending benefits the unbiasedness of the parameter estimation. However, bumping $\sigma$ up and down does not improve the bias of parameter estimation. 
 
-Continuing on the marginal density, we have
-\begin{eqnarray*}
-p(\mu|\sigma^2, Y) &\propto& \exp\left(-\frac{T}{2\sigma^2}(\mu-\mu)^2-\frac{1}{2\delta^2}(\mu-\theta)^2\right) \\
-                   &\propto& \exp\left(-\frac{T}{2\sigma^2}(-2\hat{\mu}\mu+\mu^2)-\frac{1}{2\delta^2}(\mu^2-2\mu\theta)\right) \\
-                   &\propto& \exp\left(-\frac{1}{2\delta^{*2}} \left( \mu-\left(\frac{T\hat{\mu}}{\sigma^2} + \frac{\theta}{\delta^2}\right)\delta^{*2} \right)^2 \right) \\
-                   &\propto& N\left( \left( \sum_{t=1}^T Y_t / \sigma^2 + \theta/\delta^2 \right)\delta^{*2}, \delta^{*2} \right)
-\end{eqnarray*}
-where $\delta^{*2} = (T/\sigma^2+1/\delta^2)^{-1}$.
+To test $\beta=1$, the t-statistic is calculated as $t=(\hat{\beta}-1)/se(\hat{\beta})$. With the sample size of 50, the 1\% and 5\% t-statistics are -3.5265 and -2.9083, respectively. 
 
-Given the prior distributions, the complete MCMC method to conduct parameter estimation and statistical inference is
-\begin{enumerate}
-    \item initialize the parameters $\mu^{(0)}$ and $(\sigma^2)^{(0)}$;
-    \item specify the parameters of the prior $\alpha, \beta, \theta, \delta$;
-    \item draw $\mu^{(g+1)} \sim p(\mu|(\sigma^2)^{(g)}, Y)$;
-    \item draw $(\sigma^2)^{(g+1)} \sim p(\sigma^2|\mu^{(g+1)}, Y)$;
-    \item estimate parameters in $\{\mu^{(g)}, (\sigma^2)^{(g)} \}_{g=1}^{G}$
-\end{enumerate}
-and $G$ is the simulation size. In this paper, we select $G=2000$.
-
-\subsection{Merton Jump Diffusion Model} \label{merton_section}
-Merton's (1976) jump diffusion model assumes the (log) return process $Y_t$ as a mixture of Poisson distributed jumps and the Geometric Brownian Motion
-\begin{equation}\label{merton_equation}
-Y_t \equiv \log(S_{t}/S_{t-1}) = \mu + \sigma + Z_t \xi_t
-\end{equation}
-
-As shown in Equation~\ref{merton_equation}, in the additional to the Black-Scholes part, a jump process is incorporated, where $Z_t$ is the jump indictor equal to 1 with probability $\lambda$ (the jump intensity) and equal to 0 with probability $(1-\lambda)$. $\xi_t$ is a normally distributed random variable representing the jump size.
-
-Different from the Black-Scholes model, there are two latent variables (state variables), $Z_t$ and $\xi_t$. That is, $X = \{Z_t, \xi_t\}_{t=1}^{T}$. As shown below,
-\begin{eqnarray*}
-Z_t &\sim&
-\left\{
-  \begin{array}{lc}
-    1 & \textrm{with probability } \lambda \\
-    0 & \textrm{with probability } (1-\lambda) \\
-  \end{array}
-\right. \\
-\xi &\sim& N(\mu_s, \sigma_s^2)
-\end{eqnarray*}
-
-The parameter set is $\Theta=\{\mu, \sigma^2, \lambda, \mu_s, \sigma_s^2\}$, where $\mu_s$ and $\sigma_s^2$ are the parameters that define the distribution of $\xi$. The observed returns are $Y=\{r_t\}_{t=1}^T$. The object is to estimate $\Theta$ (and states $X$) conditional to the returns $Y$. Given $p(\Theta, X|Y) = p(\Theta, Z, \xi|Y)$, the marginal densities are obtained
-$$
-p(\Theta, X|Y) \propto p(Y|\Theta,X)p(X|\Theta)p(\Theta)
-$$
-
-Similar with Black-Scholes model, Hammersley-Clifford suggestions the following approach
-\begin{enumerate}
-    \item draw $\Theta_i^{(g+1)} \sim p(\Theta_i|\Theta_{i \backslash c}^{(g)} ,Z^{(g)}, \xi^{(g+1)}, Y)$;
-    \item draw $Z^{(g+1)} \sim p(Z|\Theta^{(g+1)}, \xi^{(g)}, Y)$;
-    \item draw $\xi^{(g+1)} \sim p(\xi|\Theta^{(g+1)}, Z^{(g+1)}, Y)$.
-\end{enumerate}
-where $\Theta_{i \backslash c}$ represents the parameter set without parameter $\Theta_i$. $G$ is the simulation size. In this paper, we select $G=2000$.
-
-Defining the priors and deriving the posteriors is vital to MCMC algorithm. The density of the observed return is
-\begin{eqnarray*}
-p(Y|\Theta, Z, \xi) &=& \Pi_{t=1}^T p(Y_t|\Theta, Z_t, \xi_t) \\
-p(Y_t|\Theta, Z_t, \xi_t) &\sim& N(\mu+\xi_tZ_t, \sigma^2) \\
-p(Y|\Theta, Z, \xi) &=&  \left( \frac{1}{\sqrt{2\pi\sigma^2}} \right)^T \exp\left( -\frac{1}{2} \sum_{t=1}^{T} \left( \frac{Y_t - \mu - Z_t \xi_t}{\sigma}\right)^2 \right)
-\end{eqnarray*}
-
-Using the conjugate priors, we assume the prior distribution of the five parameters in $\Theta$ as
-\begin{eqnarray*}
-\mu         &\sim& N(\theta, \delta^2) \\
-\sigma^2    &\sim& IG(\alpha, \beta) \\
-\mu_s       &\sim& N(\theta_s, \delta_s^2) \\
-\sigma_s^2  &\sim& IG(\alpha_s, \beta_s) \\
-\lambda     &\sim& B(\gamma, \eta)
-\end{eqnarray*}
-where $IG$ represents the inverse gamma distribution, and $B$ is the Beta distribution with density
-$$
-B(\gamma, \eta) = \frac{\Gamma(\gamma+\eta)}{\Gamma(\gamma)\Gamma(\eta)}\lambda^{\gamma-1}(1-\lambda)^{\eta-1}
-$$
-
-The posterior distribution of $\sigma^2$ can be derived by combining the likelihood of $Y_t$ and the prior of $\sigma^2$.
-\begin{eqnarray*}
-p(\sigma^2|\Theta_{\sigma^2 \backslash c}, Z_t, \xi_t, Y)  &\propto& p(Y|\Theta, Z_t, \xi_t,\sigma^2) \times p(\sigma^2) \\
-                    &=& \left( \frac{1}{\sqrt{2\pi\sigma^2}} \right)^T \exp\left( -\frac{1}{2} \sum_{t=1}^{T} \left( \frac{Y_t - \mu - Z_t \xi_t}{\sigma}\right)^2 \right) \times \frac{\beta^{\alpha}}{\Gamma(\alpha)} (\sigma^2)^{-\alpha-1} \exp(-\beta/\sigma^2) \\
-                    &\propto& (\sigma^2)^{-T/2-\alpha-1} \exp\left( -\left[\frac{1}{2}\sum_{t=1}^{T} (Y_t-\mu-Z_t \xi_t)^2 + \beta \right]/\sigma^2 \right) \\
-                    &\propto& IG\left(\alpha+\frac{T}{2}, \beta+\frac{1}{2}\sum_{t=1}^{T}(Y_t-\mu -Z_t \xi_t)^2 \right)
-\end{eqnarray*}
-which yields very similar result as the Black-Scholes model. The only difference is that the return $Y_t$ is adjusted not only by $\mu$ but also the $Z_t \xi_t$.
-
-The posterior of $\mu$ obtains by defining $\hat{\mu}=\left[ \sum_{t=1}^T (Y_t-Z_t \xi_t) \right]/T$.
-$$
-\sum_{t=1}^T (Y_t - \mu - \xi_t Z_t)^2 = \sum_{t=1}^T (Y_t - \hat{\mu} - \xi_t Z_t) + T (\hat{\mu} - \mu)^2
-$$
-
-Then we yield
-\begin{eqnarray*}
-p(\mu|\Theta_{\mu\backslash c}, Z, \xi, Y) &\propto& p(\mu|\sigma^2, Z, \xi, Y) \\
-        &=& p(Y|\mu, \sigma^2, \xi, Z) p(\mu) \\
-        &=& \left( \frac{1}{\sqrt{2\pi\sigma^2}} \right)^T \exp\left( -\frac{1}{2} \sum_{t=1}^{T} \left( \frac{Y_t - \mu - Z_t \xi_t}{\sigma}\right)^2 \right) \times \frac{1}{\sqrt{2\pi\delta^2}} \exp\left( -\frac{1}{2} \left( \frac{\mu-\theta}{\delta} \right)^2 \right) \\
-        &\propto& \exp\left(-\frac{1}{2\delta^{*2}} \left( \mu-\left(\frac{T\hat{\mu}}{\sigma^2} + \frac{\theta}{\delta^2}\right)\delta^{*2} \right)^2 \right) \\
-        &\propto& N\left( \left[ \sum_{t=1}^T (Y_t-\xi_t Z_t) / \sigma^2 + \theta/\delta^2 \right]\delta^{*2}, \delta^{*2} \right)
-\end{eqnarray*}
-where $\delta^{*2} = (T/\sigma^2+1/\delta^2)^{-1}$.
-
-Then we drive the posteriors for $\mu_s$ and $\sigma_s^2$, and they define the jump size in the return process. Analogy to the derivation of the $\mu$ and $\sigma^2$, we yield
-\begin{eqnarray*}
-p(\sigma_s^2|\Theta_{\sigma_s^2 \backslash c}, Z_t, \xi_t, Y)  &\propto& p(\xi|\mu_s,\sigma_s^2) \times p(\sigma_s^2) \\
-                    &=& \left( \frac{1}{\sqrt{2\pi\sigma_s^2}} \right)^T \exp\left( -\frac{1}{2} \sum_{t=1}^{T} \left( \frac{\xi_t - \mu }{\sigma_s}\right)^2 \right) \times \frac{\beta_s^{\alpha_s}}{\Gamma(\alpha_s)} (\sigma_s^2)^{-\alpha_s-1} \exp(-\beta_s/\sigma_s^2) \\
-                    &\propto& IG\left(\alpha_s+\frac{T}{2}, \beta_s+\frac{1}{2}\sum_{t=1}^{T}(\xi_t-\mu_s)^2 \right)
-\end{eqnarray*}
-
-And the posterior of $\mu_s$, using similar technique, obtains
-\begin{eqnarray*}
-p(\mu_s|\Theta_{\mu_s \backslash c}, Z, \xi, Y) &\propto& p(\xi|\mu_s, \sigma_s^2) p(\mu_s) \\
-        &\propto& N\left(\left[\frac{\sum_{t=1}^T \xi_t}{\sigma_s^2} + \frac{\theta_s}{\delta_s^2}\right]\delta_s^{*2}, \delta_s^{*2} \right)
-\end{eqnarray*}
-where $\delta_s^{*2}=(T/\sigma_s^2 + 1/\delta_s^2)^{-1}$.
-
-The jump intensity $\lambda$ is conditional on the jump indicator $Z$. Then the posterior of $\lambda$ is
-\begin{eqnarray*}
-p(\lambda|\Theta_{\lambda \backslash c}, Z, \xi, Y) &=& p(\lambda|Z) = p(Z|\lambda)p(\lambda) \\
-        &\propto& \prod_{t=1}^T p(Z_t|\lambda)p(\lambda) \\
-        &=& \prod_{t=1}^T \lambda^{Z_t} (1-\lambda)^{1-Z_t} p(\lambda) \\
-        &\propto& \lambda^{\sum_{t=1}^T Z_t} (1-\lambda)^{T-\sum_{t=1}^T Z_t} \lambda^{\gamma-1}(1-\lambda)^{\eta-1} \\
-        &\propto& B\left(\sum_{t=1}^T Z_t + \gamma, T - \sum_{t=1}^T Z_t + \eta \right)
-\end{eqnarray*}
-
-The posteriors of the state variables, $\xi_t$ and $Z_t$, are
-\begin{eqnarray*}
-p(\xi_t|\Theta, Z_t, Y) &\propto& p(Y_t|\Theta, Z_t, \xi_t) p(\xi_t|\Theta) \\
-    &\propto& \exp\left( -\frac{1}{2} \left( \frac{Y_t-\mu-\xi_t Z_t}{\sigma} \right)^2 - \frac{1}{2} \left(\frac{\xi_t-\mu_s}{\sigma_s}\right)^2 \right) \\
-    &\propto& N(((Y_t-\mu)Z_t/\sigma^2+\mu_s/\sigma^2)\sigma_t^{*2}, \sigma_t^{*2})
-\end{eqnarray*}
-where $\sigma_t^{*2}=(Z_t/sigma^2+1/sigma_s^2)^{-1}$. And
-\begin{eqnarray*}
-p(Z_t=1|\Theta, \xi_t, Y_t) &\propto& p(Y_t|\Theta, Z_t=1, \xi_t)p(Z_t=1|\Theta) \\
-    &\propto& \exp\left( -\frac{1}{2} \left( \frac{Y_t-\mu-\xi_t}{\sigma} \right)^2 \right) \lambda \\
-p(Z_t=0|\Theta, \xi_t, Y_t) &\propto& p(Y_t|\Theta, Z_t=0, \xi_t)p(Z_t=0|\Theta) \\
-    &\propto& \exp\left( -\frac{1}{2} \left( \frac{Y_t-\mu}{\sigma} \right)^2 \right) (1-\lambda) \\
-\end{eqnarray*}
-and the integrating constant is determined by insuring that the two probability ($p(Z_t=0)$ and $p(Z_t=1)$) add up to one.
-
-The derivations of the posteriors complete the MCMC algorithm for the Merton jump diffusion model.
-
-
-\section{Data and Empirical Results}
-\subsection{Data}
-The data used for the Merton jump diffusion is the daily return of S\&P500 index level over January 1954 to December 2015. The index level and the daily (log) return series are plotted in Figure~\ref{plot_spx}. Given the prices of the index, the log return is calculated by
-$$
-Y_t = \log(S_{t}/S_{t-1})
-$$
-The data source is Bloomberg.
-
-\subsection{Estimation from Black-Scholes Model}
-As formulated in Equation~\ref{bs_equation}, the parameters $\mu$ and $\sigma^2$ (along with the randomness source $\epsilon_t$) determine the dynamic of return process. Therefore the parameter set is $\Theta=\{\mu, \sigma^2\}$. Section~\ref{bs_section} describes the selected prior and the derived posteriors of these parameters. In the MCMC experiment, we use 2000 Monte Carlo steps on the Markov Chain. However, it may take non-trivial amount of time (or number of steps) to achieve convergence. To guarantee that the parameter estimation is completed after or close convergence, we set the first 1000 iterations as burn-in period, and use only the second 1000 iteration for estimation and statistical inference.
-
-Table~\ref{tbl::bs_est} presents the priors and posteriors of the parameters ($\mu$ and $\sigma^2$) in Black-Scholes model. From the convergence graph showing in Figure~\ref{mu_sigma_bs}, the Bayesian MCMC algorithm successfully estimates the parameters, by reducing the variance of parameters in posterior and producing 95\% confidence interval close to the mean estimation. The estimated daily rate of return of S\&P500 index is 0.028\% with volatility of 0.011\%, which is equivalent to an annual return of 7.11\% and volatility of 16.54\%.
+When sample size increases to 600, the 1\% and 5\% t-statistics are -2.6658 and -1.9607, respectively. With the increase of sample size, the t-statistics are closer to normal distributed statistics, with narrower tail-distribution. When sample size is smaller, the fat-fail is more obvious. 
 
 \begin{table}
 \begin{center}
-\caption{The prior and posterior estimations and statistical inferences on Black-Scholes model.}
-\begin{tabular}{|c|c|c|c|c|c|}
+\caption{The bias on parameter estimation and t-statistic on $\beta$ estimation are provided, given different sets of true parameter values. The model specification is as Equation~\ref{ar}. Simulation procedure follows Algorithm~\ref{algo}. }
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
   \hline
-Merton Model	&	Prior - Mean	&	Prior - std	&	Posterior - mean	&	Posterior - std	&	Posterior C.I.(2.5\%, 97.5\%)	\\ \hline
-$\mu$	&	0	&	$\sqrt{0.001}$	&	2.822E-04	&	8.439E-05	&	(1.134E-04, 4.407E-04)	\\
-$\sigma^2$	&	$\sqrt{0.0002}$	&	0.006	&	1.086E-04	&	1.148E-06	&	(1.064E-04, 1.109E-04)	\\
+Run Tag	&	$\alpha$	&	$\beta$	&	$\sigma$	&	$T$	&	$Bias(\hat{\alpha})$	&	$Bias(\hat{\beta})$	&	$Bias(\hat{\sigma})$	&	$t_{\beta}(1\%)$	&	$t_{\beta}(5\%)$	\\ \hline
+1	&	0	&	1	&	0.2	&	50	&	0.4739	&	-0.1029	&	-0.0049	&	-3.5265	&	-2.9083	\\
+2	&	-0.2	&	1	&	0.2	&	50	&	-0.0049	&	-0.0026	&	-0.0012	&	-2.6658	&	-1.9607	\\
+3	&	0.2	&	1	&	0.2	&	50	&	0.0266	&	-0.0024	&	-0.0015	&	-2.5619	&	-1.8682	\\
+4	&	0	&	1	&	0.1	&	50	&	0.4754	&	-0.1033	&	-0.0025	&	-3.5554	&	-2.9260	\\
+5	&	0	&	1	&	0.3	&	50	&	0.4860	&	-0.1051	&	-0.0078	&	-3.6126	&	-2.9336	\\
+6	&	0	&	1	&	0.2	&	600	&	0.0413	&	-0.0090	&	-0.0004	&	-3.5049	&	-2.8769	\\
+7	&	0	&	0.95	&	0.2	&	50	&	0.0183	&	-0.0126	&	-0.0011	&	-4.7079	&	-3.9881	\\
   \hline
-\end{tabular}\label{tbl::bs_est}
+\end{tabular}\label{tbl::sim_results}
 \end{center}
 \end{table}
 
-\begin{figure} 
-  \centering
-  \includegraphics[scale=0.6]{mu_sigma_bs.eps}
-  \caption{The $\mu$ and $\sigma^2$ with Monte Carlo draws on the Markov Chain. The MCMC algorithm is based on Gibbs sampler. The simulation size is 2000. Parameter estimation and statistical inference are conducted between steps 1001 and 2000. The first 1000 iteration are in the burn-in period.}\label{mu_sigma_bs}
-\end{figure}
 
-
-\subsection{Estimation from Merton Jump Diffusion Model}
-As formulated in Equation~\ref{merton_equation}, the parameter set is $\Theta=\{\mu, \sigma^2, \lambda, \mu_s, \sigma_s^2\}$, and the state variables are $X=\{Z_t,\xi_t\}$. Section~\ref{merton_section} describes the selected prior and the derived posteriors of these parameters. In the MCMC experiment, we use 2000 Monte Carlo steps on the Markov Chain. However, it may take non-trivial amount of time (or number of steps) to achieve convergence. To guarantee that the parameter estimation is completed after or close convergence, we set the first 1000 iterations as burn-in period, and use only the second 1000 iteration for estimation and statistical inference.
-
-Table~\ref{tbl::merton_est} presents the priors and posteriors of the parameters ($\mu$, $\sigma^2$, $\lambda$, $\mu_s$ and $\sigma_s^2$) in Merton jump diffusion model. From the convergence graph showing in Figure~\ref{mu_sigma_merton} and \ref{mus_sigmas_lambda_merton}, the Bayesian MCMC algorithm successfully estimates the parameters, by reducing the variance of parameters in posterior and producing 95\% confidence interval close to the mean estimation. However, the convergence graphs for the parameters have more spikes than the Black-Scholes estimation. By a lead-lag analysis applied to the parameters, the spikes orient from the $\lambda$ estimation. The estimated daily rate of return of S\&P500 index is 0.025\% with volatility of 0.011\%, which is equivalent to an annual return of 6.42\% and volatility of 16.53\%.
-
-The volatility estimation in the Merton jump diffusion model is surprisingly consistent with the Black-Schole model. The mean return coefficient, which is 0.7\% less annually, is compensated by the jumps in Merton model, where the probably of one jump is 0.36\% on daily basis, with a positive (though small) mean jump size (0.0004\%) adding to the Black-Scholes process.
-
-\begin{table}
-\begin{center}
-\caption{The prior and posterior estimations and statistical inferences on Merton jump diffusion model.}
-\begin{tabular}{|c|c|c|c|c|c|}
-  \hline
-Merton Model	&	Prior - Mean	&	Prior - std	&	Posterior - mean	&	Posterior - std	&	Posterior C.I.(2.5\%, 97.5\%)	\\ \hline
-$\mu$	&	0	&	$\sqrt{0.001}$	&	2.548E-04	&	5.311E-04	&	(7.472E-05, 4.662E-04)	\\
-$\sigma^2$	&	$\sqrt{0.0002}$	&	0.006	&	1.085E-04	&	1.434E-06	&	(2.227E-05,5 2.896E-04)	\\
-$\mu_s$	&	0	&	$\sqrt{0.001}$	&	4.415E-06	&	1.159E-04	&	(-8.218E-05,  8.491E-05)	\\
-$\sigma_s^2$	&	$\sqrt{0.0002}$	&	0.006	&	2.365E-05	&	6.036E-06	&	(2.227E-05, 2.897E-05)	\\
-$\lambda$	&	0.95	&	0.025	&	3.678E-03	&	1.078E-03	&	(2.685E-03, 5.532E-03)	\\
-  \hline
-\end{tabular}\label{tbl::merton_est}
-\end{center}
-\end{table}
-
-\begin{figure} 
-  \centering
-  \includegraphics[scale=0.6]{merton_mu_sigma.eps}
-  \caption{The $\mu$ and $\sigma^2$ with Monte Carlo draws on the Markov Chain for the Merton jump diffusion model. The MCMC algorithm is based on Gibbs sampler. The simulation size is 2000. Parameter estimation and statistical inference are conducted between steps 1001 and 2000. The first 1000 iteration are in the burn-in period.}\label{mu_sigma_merton}
-\end{figure}
-
-\begin{figure} 
-  \centering
-  \includegraphics[scale=0.6]{merton_mus_sigmas_lambda.eps}
-  \caption{The $\mu_s$, $\sigma_s^2$ and $\lambda$ with Monte Carlo draws on the Markov Chain for the Merton jump diffusion model. The MCMC algorithm is based on Gibbs sampler. The simulation size is 2000. Parameter estimation and statistical inference are conducted between steps 1001 and 2000. The first 1000 iteration are in the burn-in period.}\label{mus_sigmas_lambda_merton}
-\end{figure}
-
-
-\section{Conclusion}
-In this paper, we reviewed the Bayesian Monte Carlo Markov Chain method and its application and advantages on estimating asset pricing models. The Geometric Brownian Motion setup in Black-Scholes is firstly examined and estimated, using the S\&P500 index daily returns. The (conjugate) priors are selected, and the posterior distributions are derived accordingly. The MCMC succeed to converge after a safely picked burn-in period. The estimated annual rate of return is 7.11\% with annul volatility of 16.54\%, in the period from 1954 to 2015.
-
-Then the Merton jump diffusion model is built based on the framework developed in~\cite{M76}. Different with the Black-Scholes baseline model, there are two state variables in the Merton's model, the jump indicator and the jump size. The priors and posteriors are analogy to those of the Black-Scholes model. Using the same dataset, the annual volatility is 16.53\% and the annual return is estimated as 6.42\%. The difference in mean return is compensated by returns created by jumps with positive jump size added to the mean return. In Merton's model, the parameter estimation (convergence graph) is more spiky than the Black-Scholes model, and the jumpy behavior orients from the estimation of jump intensity. 
-
+\subsection{$\alpha=0, \beta=0.95, \sigma=0.2$}
+Changing true value of $\beta$ to be 0.95 instead of 1, or $\alpha$ estimation is 0.0183, the bias for $\beta$ estimation is -0.0126, and the bias for $\sigma$ is -0.0011. The biases when $\beta=0.95$ are consistently lower than the biases when $\beta=1$, showing an improving on unbiasedness when the model is stationary. 
 
 %
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newpage
-\bibliographystyle{plain}
-\bibliography{bib}
+%\newpage
+%\bibliographystyle{plain}
+%\bibliography{bib}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %
 \newpage
-\section*{Appendix: Code for Black-Scholes and Merton jump diffusion models using Bayesian MCMC algorithm}
+\section*{Code Appendix}
 %\begin{spacing}{0.9}
-\lstinputlisting[language=R]{assignment2.R}
+\lstinputlisting[language=R]{assignment3.R}
 
 \end{document}
 \endinput
