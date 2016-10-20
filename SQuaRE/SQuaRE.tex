@@ -1,0 +1,192 @@
+\documentclass[9pt,a4paper]{article}
+\usepackage{graphicx,epstopdf}
+\usepackage{bbm}
+%\usepackage{natbib}
+%\usepackage{chapterbib}
+\usepackage{amsfonts}
+\usepackage{csquotes}
+\usepackage{mathrsfs}
+\usepackage{amsmath}
+\usepackage[center]{caption2}
+%\usepackage{dsfont}
+%\usepackage[dvips]{graphicx}
+\usepackage{amssymb}
+\usepackage{theorem}
+\usepackage{graphicx}
+%\usepackage{fancyheadings}
+\usepackage[dvips]{epsfig}
+\usepackage{latexsym}
+\usepackage{exscale}
+%\usepackage[notcite,notref]{showkeys}
+%\usepackage{refcheck}
+\usepackage[latin1]{inputenc}
+\usepackage{color}
+%\renewcommand{\baselinestretch}{1.2}
+\setcounter{tocdepth}{3}
+% \topmargin-0.6cm \oddsidemargin0cm
+%\evensidemargin-0.0cm
+%\textheight23cm \textwidth16cm
+\parsep0ex
+\itemsep0ex
+\topsep0.5ex
+\partopsep0ex
+%headings
+%\pagestyle{fancy}
+%\setlength{\headrulewidth}{0.4TP}
+% remember section title
+%\renewcommand{\sectionmark}[1]{\markboth{#1}{#1}}
+%\renewcommand{\subsectionmark}[1]{\markright{\thesubsection\ #1}}
+%\lhead[\rm\thepage]{\sl\rightmark}
+%\rhead[\sl\leftmark]{\rm\thepage}
+%\cfoot{}
+
+\flushbottom
+
+%theorems
+%\parindent4ex
+%\theoremheaderfont{\hspace{\parindent}\normalfont\bfseries}
+%\theorembodyfont{\normalfont \slshape}
+%\numberwithin{equation}{section}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{lemme}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{fact}[thm]{Fact}
+\newtheorem{defn}{Definition}[section]
+\newtheorem{Ex}{Example}[section]
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{remarque}{Remark}[section]
+\newtheorem{conjecture}{Conjecture}
+%\newtheorem{thm}{Theorem}[section]
+%\newtheorem{lemma}{Lemma}[section]
+%\newtheorem{prop}{Proposition}[section]
+%\newtheorem{defn}{Definition}[section]
+%\newtheorem{cor}{Corollary}[section]
+\newtheorem{nota}{Notation}
+\newcommand{\pf}{\noindent {\textit{Proof:}\ }}
+%\newcommand{\remark}{\noindent {\bf Remark:\ }}
+\newenvironment{proof}[1][] {\noindent {\bf Proof#1:} }{\hspace*{\fill}$\square$\medskip\par}
+
+
+\def\be#1\ee{\begin{equation}#1\end{equation}}
+\newcommand{\bed}{\begin{displaymath}}
+\newcommand{\eed}{\end{displaymath}}
+\newcommand{\beq}{\begin{equation}}
+\newcommand{\eeq}{\end{equation}}
+\newcommand{\bea}{\begin{eqnarray}}
+\newcommand{\eea}{\end{eqnarray}}
+\newcommand{\beaa}{\begin{eqnarray*}}
+\newcommand{\eeaa}{\end{eqnarray*}}
+\newcommand{\bei}{\begin{itemize}}
+\newcommand{\eei}{\end{itemize}}
+\newcommand{\bee}{\begin{enumerate}}
+\newcommand{\eee}{\end{enumerate}}
+%\renewcommand{\theequation}{\arabic{chapter}.\arabic{section}.\arabic{equation}}
+
+%quicker way to do norms etc:
+\def\norm#1{\left\|#1\right\|}             %norm
+\def\abs#1{\left\vert #1 \right\vert}      %absolute value
+
+%Sets:
+\def\set#1{\left\{#1\right\}}
+
+%Probability measure and integral:
+%\def\P{{\mathbb{P}}}
+\def\pr#1{\P\left(#1\right)}
+\def\cqfd{$\square$}
+
+%%%%%%%%%%%%%% Bbb characters
+%%%%%%%%%%%%%% Real numbers
+\def\R{{\mathbb R}}
+%%%%%%%%%%%%%% Expectation
+\def\E{{\mathbb E\,}}
+%%%%%%%%%%%%%% Probability
+\def\P{{\mathbb P}}
+%%%%%%%%%%%%%% Integers
+\def\Z{{\mathbb Z}}
+%%%%%%%%%%%%%% Natural numbers
+\def\N{{\mathbb N}}
+\def\Q{{\mathbb Q}}
+%%%%%%%%%%%%%%
+\def\H{{\mathcal H}}
+\def\V{{\mbox{Var}}}
+\def\C{{\mbox{Cov}}}
+\def\D{{\mbox{Diag}}}
+%%%%%%%%%%%%%%%% Special symbols
+%%%%%%%%%%%%%% Exponential
+\def\e{\mathrm{e}}
+%%%%%%%%%%%%%% Differentiation
+\def\ud{\, \mathrm{d}}
+\def\ii{\mathrm{i}}
+%%%%%%%%%%%%%%
+
+%Miscellanea
+
+
+\def\on{{\mathbf 1}}
+\def\ph{{\varphi}}
+\def\ga{{\gamma}}
+\def\vp{\varphi}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\lam} {\lambda}
+\def\al{\alpha}
+\def\scp#1#2{\left\langle{#1},{#2}\right\rangle}
+\def\lp{l_n^\Phi(u)}
+\begin{document}
+\begin{center}
+{\bf On Supervised and Unsupervised Classifications of General Stochastic Volatility Models}\\
+\end{center}
+\vspace{1cm}
+In this project we consider supervised and unsupervised classifications for the case where each point is a continuous-time stochastic volatility model. This statistical setting is nowadays motivated by the applications to many research and industrial areas, such as finance and marketing, geology, biology and medical research, signal processing, etc.  The model is often considered when only a sample of $N$ time series (for instance, asset prices of $N$ companies, number of daily sold items of $N$ products in a supermarket, number of hourly visits to each of the $N$ webpages, ect) are observed, but little is known on the patterns among these time series. Our goal is to improve the existing approaches in literature and to provide new supervised and unsupervised classification approaches for clustering stochastic processes. It mainly involves working on the models based on Cadre (2013).
+
+Cadre (2013) studied supervised classification of Brownian diffusions $\{X_t\}_{t}$, solved from quite a general stochastic volatility model:
+$$
+\ud X_t= b(t,X_t)\ud t+\sigma(t,X_t)\ud B_t,
+$$
+where $b,\sigma$ are unknown smooth deterministic functions and $\{B_t\}_t$ is a standard Brownian motion. Recall that Cadre (2013) has set a problem of classifying $(\{X_t\},Y)$ for which
+\begin{equation}
+\label{model1}
+\left\{
+\begin{array}{ll}
+\ud X_t= b(t,X_t)\ud t+\sigma(t,X_t)\ud B_t&~\mbox{if $Y=0$};\\
+\ud X_t= \left(b(t,X_t)+(f\sigma)(t,X_t)\right)\ud t+\sigma(t,X_t)\ud B_t&~\mbox{if $Y=1$},
+\end{array}\right.
+\end{equation}
+where $b,\sigma,f$ are unknown Borel functions.  Based on an explicit computation of the Bayes rule, Cadre (2013) constructed an empirical classi?cation rule  drawn from an i.i.d. sample of copies of $(\{X_t\},Y)$ and proved that $\hat g$ is a consistent rule with some rate of convergence. More precisely, if one denotes the Bayes rule by $g^*$:
+ $$
+ g^*(x)=\left\{
+ \begin{array}{ll}
+ 1&~\mbox{if $\mathbb P(Y=1|X=x)>\mathbb P(Y=0|X=x)$};\\
+ 0&~\mbox{if else}.
+ \end{array}\right.
+ $$
+ Then Cadre (2013) has constructed some estimate of $g^*$, denoted by $\hat g$, such that
+  $$
+  \mathbb E[L(\hat g)]-L(g^*)\le C n^{-u},~\mbox{for some $u>0$},
+  $$
+  where a constant $C>0$ represents optimal rate of convergence, and $L$ denotes the Bayes risk function: $L(g)=\mathbb P(g(X)\neq Y)$.
+
+  Note that there are at least two conveniences in the model (\ref{model1}):
+  \begin{description}
+  \item[Inconvenience 1] In practice, it is unrealistic that any observed Brownian diffusion has equal stochastic volatility $\sigma$. \textcolor{red}{(Ran Zhao, it would be great if you can elaborate this inconvenience by giving an example in finance.)}
+  \item[Inconvenience 2] In practice, the labels $Y$ for each observed Brownian diffusion $\{X_t\}$ are often unavailable. \textcolor{red}{(Ran Zhao, it would be great if you can elaborate this inconvenience by giving an example in finance.)}
+  \end{description}
+ The desire of remedying the above two inconveniences  motivates our framework in this project. To overcome the first problem, we consider an extended model of (\ref{model1}), namely,
+   \begin{equation}
+\label{model2}
+\left\{
+\begin{array}{ll}
+\ud X_t= b(t,X_t)\ud t+\sigma(t,X_t)\ud B_t&~\mbox{if $Y=0$};\\
+\ud X_t= (1+\epsilon_1(t,X_t))b(t,X_t)\ud t+(1+\epsilon_2(t,X_t))\sigma(t,X_t)\ud B_t&~\mbox{if $Y=1$},
+\end{array}\right.
+\end{equation}
+where $b,\sigma,\epsilon_1,\epsilon_2$ are unknown Borel functions. we would provide a new supervised classification algorithm which is nonparameteric and has a satisfying rate of convergence \textcolor{red}{(Guangliang, would you expand this part to suggest some approaches in lieu of the na\"ive Bayes rule?)}.
+
+ To overcome Inconvenience 2 to make the learning approach more realistic, we will also study the unsupervised classification problem of (\ref{model2}). Recall that Khaleghi et al. (2016) has suggested a nonparametric consistent algorithm to cluster time series into $k\ge2$ groups. The crucial idea is to propose a convenient similarity measure, which reflects the difference between the underlying distributions of time series. However, their algorithm only works for stationary ergodic time series. The framework on clustering martingales is still open. Hence our second main result will devote to designing an algorithm to cluster a continuous-time martingale, using an idea based on Khaleghi et al. (2016).
+
+ Our team consists of Guangliang Chen (San Jos\'e State University), Xuemei Cheng (University of San Francisco), Qidi Peng (Claremont Graduate Unviersity), Yi Wang (Syracuse University) and Ran Zhao (American International Group). Guangliang Chen, Xuemei Cheng and Yi Wang's expertise in clustering analysis will help to solve the martingale-clustering problem; Qidi Peng, whose research field is stochastic calculus, can help to theoretically build up consistency of the algorithms. Ran Zhao, an expert of financial engineering, can help to motivate our model and approaches from an industrial point of view. He will also provide real data source for an empirical test of our algorithms. \textcolor{red}{(My friends, the last paragraph is just a sample, so please feel free to modify them).}
+ \begin{thebibliography}{99}
+\bibitem{Cadre} Cadre B., Supervised classification of Diffusion Paths, Mathematical Methods of Statistics, Vol. 22, No. 3, pp. 213-225, (2013).
+\bibitem{Khaleghi} Khaleghi A., Ryabko D., Mary J. and Preux P., Consistent algorithms for clustering time series, Journal of Machine Learning Research 17, pp. 1-32, (2016).
+
+\end{thebibliography}
+\end{document}
