@@ -167,8 +167,8 @@ where $b,\sigma,f$ are unknown Borel functions.  Based on an explicit computatio
 
   Note that there are at least two conveniences in the model (\ref{model1}):
   \begin{description}
-  \item[Inconvenience 1] In practice, it is unrealistic that any observed Brownian diffusion has equal stochastic volatility $\sigma$. \textcolor{red}{(Ran Zhao, it would be great if you can elaborate this inconvenience by giving an example in finance.)}
-  \item[Inconvenience 2] In practice, the labels $Y$ for each observed Brownian diffusion $\{X_t\}$ are often unavailable. \textcolor{red}{(Ran Zhao, it would be great if you can elaborate this inconvenience by giving an example in finance.)}
+  \item[Inconvenience 1] In practice, it is unrealistic that any observed Brownian diffusion has equal stochastic volatility $\sigma$. In finance literatures, a vast of empirical studies have documented that return differences between two categories of stocks are not only explained by conditional drift term ($b(t,X_t)$) but their volatility levels ($\sigma(t,X_t)$). And the drift variation is not necessarily a function of the volatility term ($(f\sigma)(t,X_t)$). Li, Brooks and Miffre (2009) show that time series value premia (function of $X_t$ and $Y$) is significantly (and positively) correlated to the volatilities of value stock (e.g. $Y=0$) and growth stock (e.g. $Y=1$). An extended version of model (\ref{model1}) is required to accurately classify individual stocks with unknown or hard-to-identify firm characteristics into value or growth category, given its observable stock price process $X_t$. This classification information is vital to conduct asset allocation for portfolio managers.
+  \item[Inconvenience 2] In practice, the labels $Y$ for each observed Brownian diffusion $\{X_t\}$ are often unavailable. Stocks co-movement is an appropriate example, where the stocks are unlabeled to which cluster (with high prices correlation in the group) they belong. Green and Hwang (2009) find that similarly priced stocks move together, and in our context pre-defined high-price or low-price are unobservable and unlikely to label among the stocks. Bekaert, Hodrick and Zhang (2009) examine the world stock market indices ($X_t$) co-movement, and still the indices clusters are hard to pre-determine. An unsupervised classification algorithm will be designed to resolve the issue with this set of classification problem. 
   \end{description}
  The desire of remedying the above two inconveniences  motivates our framework in this project. To overcome the first problem, we consider an extended model of (\ref{model1}), namely,
    \begin{equation}
@@ -187,6 +187,8 @@ where $b,\sigma,\epsilon_1,\epsilon_2$ are unknown Borel functions. we would pro
  \begin{thebibliography}{99}
 \bibitem{Cadre} Cadre B., Supervised classification of Diffusion Paths, Mathematical Methods of Statistics, Vol. 22, No. 3, pp. 213-225, (2013).
 \bibitem{Khaleghi} Khaleghi A., Ryabko D., Mary J. and Preux P., Consistent algorithms for clustering time series, Journal of Machine Learning Research 17, pp. 1-32, (2016).
-
+\bibitem{LBJ09} Li X., Brooks C. and Miffre J., The Value Premium and Time-Varying Volatility,Journal of Business Finance \& Accounting 36(9), pp. 1252-1272, (2009).
+\bibitem{GH09} Green C. and Hwang B.H., Price-based return comovement, Journal of Financial Economics 93(1), pp. 37-50, (2009).
+\bibitem{BHZ09} Bekaert G., Hodrick R. and Zhang X., International Stock Return Comovements, Journal of Finance 64(6), pp. 2591-2626, (2009).
 \end{thebibliography}
 \end{document}
