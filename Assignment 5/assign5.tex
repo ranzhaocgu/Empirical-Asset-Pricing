@@ -1,0 +1,532 @@
+\documentclass[11pt,reqno,final]{amsart}
+\usepackage[font=small,margin=10pt,labelfont={bf},labelsep={space}]{caption}
+\usepackage{subfig}
+\usepackage{wrapfig}
+\usepackage{amsmath, amssymb, epsfig}
+\usepackage[scaled]{helvet} % I like Helvetica for sf
+\usepackage{fourier}
+\usepackage{bm}
+\usepackage{color}
+\usepackage{fullpage} 	% Fullpage package
+%\usepackage{cite}
+%\usepackage{citesort}
+\newcommand{\notate}[1]{\textcolor{red}{\textbf{[#1]}}}
+%\input{macros}
+
+
+\newcommand{\tasos}{\text{TASOS}}
+%Results
+%Shortcuts
+\newcommand{\hide}[1]{}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+
+\newcommand{\x}{\mathbf{x}}
+\newcommand{\y}{\mathbf{y}}
+\newcommand{\z}{\mathbf{z}}
+%\newcommand{\A}{\mathbf{A}}
+\newcommand{\bi}{\mathbf{b}}
+\newcommand{\ro}{\mathbf{r}}
+\newcommand{\w}{\mathbf{w}}
+\newcommand{\zero}{\mathbf{0}}
+\newcommand{\ep}{\epsilon}
+\newcommand{\de}{\delta}
+\newcommand{\defby}{\overset{\mathrm{\scriptscriptstyle{def}}}{=}}
+\newcommand{\bigO}{\mathrm{O}}
+\DeclareMathOperator*{\argmin}{arg min}
+\DeclareMathOperator*{\argmax}{arg max}
+%************************************
+%************************************
+% The macros below are due to Tassos Zouzias
+%************************************
+%************************************
+
+\newcommand{\eps}{\varepsilon}
+
+
+\newcommand{\Prob}[1]{\ensuremath{\mathbb{P}\left(#1\right)}}
+
+\newcommand{\OO}{\mathcal{O}}
+\newcommand{\vol}[1]{\text{vol}(#1)}
+\newcommand{\tr}{\rm{Tr}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\reals}{\mathbb{R}}
+
+
+\newcommand{\e}{\ensuremath{{\rm e}}}
+\DeclareMathOperator{\EE}{\mathbb{E}}
+% Variance
+\newcommand{\var}[1]{\ensuremath{\mathrm{Var}(#1)}}
+% Pseudo-inverse of a matrix
+\newcommand{\pinv}[1]{ {#1}^\dagger}
+\newcommand{\norm}[1]{\ensuremath{\left\|#1\right\|_2}}
+\newcommand{\pnorm}[1]{\ensuremath{\left\|#1\right\|_p}}
+\newcommand{\qnorm}[1]{\ensuremath{\left\|#1\right\|_q}}
+\newcommand{\infnorm}[1]{\ensuremath{\left\|#1\right\|_\infty}}
+\newcommand{\onenorm}[1]{\ensuremath{\left\|#1\right\|_1}}
+\newcommand{\frobnorm}[1]{\ensuremath{\left\|#1\right\|_{\text{\rm F}}}}
+% Stable rank of a matrix
+\newcommand{\sr}[1]{\ensuremath{\mathrm{\textbf{\footnotesize sr}}\left(#1\right)}}
+% Trace of a matrix.
+\newcommand{\trace}[1]{\ensuremath{\mathrm{\textbf{tr}}\left(#1\right)}}
+%\DeclareMathOperator{\trace}{trace}
+% Rank of a matrix
+\newcommand{\rank}[1]{\ensuremath{\mathrm{\textbf{{\footnotesize rank}}}\left(#1\right)}}
+% Kernel of a matrix
+%\newcommand{\ker}[1]{\ensuremath{\mathrm{\textbf{ker}}\left(#1\right)}}
+% Image of a matrix
+\newcommand{\im}[1]{\ensuremath{\mathrm{\textbf{Im}}\left(#1\right)}}
+
+% Condition number of a matrix
+\newcommand{\cond}[1]{\ensuremath{\mathrm{\text{cond}}\left(#1\right)}}
+
+\newcommand{\expm}[1]{\ensuremath{\mathrm{\textbf{\footnotesize exp}}\left[#1\right]}}
+\newcommand{\coshm}[1]{\ensuremath{\mathrm{\textbf{\footnotesize cosh}}\left[#1\right]}}
+\newcommand{\detm}[1]{\ensuremath{\mathrm{\textbf{det}}\left(#1\right)}}
+\newcommand{\sign}[1]{\ensuremath{\mathrm{\textbf{sign}}\left(#1\right)}}
+
+
+% # of non-zero entries of a matrix
+\newcommand{\nnz}[1]{\ensuremath{\mathrm{\textbf{\footnotesize nnz}}\left(#1\right)}}
+
+% Diagonal Matrix
+\newcommand{\diag}[1]{\ensuremath{\mathrm{\textbf{diag}}\left(#1\right)}}
+% Polylog(n)
+\newcommand{\polylog}[1]{\ensuremath{\mathrm{polylog}\left(#1\right)}}
+
+\newcommand{\old}{\text{old}}
+\newcommand{\new}{\text{new}}
+\newcommand{\ravg}{\text{R}_{\text{avg}}}
+\newcommand{\cavg}{\text{C}_{\text{avg}}}
+%\newcommand{\cavg}[1]{\text{C}_{\text{avg}}(#1)}
+
+
+%%% Vector and matrix operators
+
+\newcommand{\vct}[1]{\bm{#1}}
+\newcommand{\mtx}[1]{\bm{#1}}
+
+\newcommand{\ip}[2]{\left\langle {#1},\ {#2} \right\rangle}
+\newcommand{\mip}[2]{ {#1}\bullet {#2}}
+
+\newcommand{\ignore}[1]{}
+
+\newcommand{\Id}{\mathbf{I}}
+\newcommand{\J}{\mathbf{J}}
+\newcommand{\onemtx}{\bm{1}}
+%\newcommand{\zeromtx}{\bm{0}}
+\newcommand{\zeromtx}{\mathbf{0}}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\mat}[1]{ {\ensuremath{\mtx{#1} }}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\gammab{{\bm{\gamma}}}
+\def\kappab{{\bm{\kappa}}}
+\def\sig{{\bm{\Sigma}}}
+\def\sigplus{{\bm{\Sigma}^{+}}}
+\def\siginv{{\bm{\Sigma}^{-1}}}
+\def\bet{{\bm{\beta}}}
+\def\one{{\bm{1}}}
+\def\exp{\hbox{\rm exp}}
+\def\col{\hbox{\rm col}}
+\def\ker{\hbox{\rm ker}}
+\def\ahat{{\hat\a}}
+\def\p{{\mathbf p}}
+\def\e{{\mathbf e}}
+\def\q{{\mathbf q}}
+\def\rb{{\mathbf r}}
+\def\s{{\mathbf s}}
+\def\u{{\mathbf u}}
+\def\v{{\mathbf v}}
+\def\d{{\mathbf \delta}}
+\def\xhat{{\hat\x}}
+\def\yhat{{\hat\y}}
+\def\A{\matA}
+\def\B{\matB}
+\def\C{\matC}
+\def\Ahat{\hat\matA}
+\def\Atilde{\tilde\matA}
+\def\Btilde{\tilde\matB}
+\def\Stilde{\tilde\matS}
+\def\Utilde{\tilde\matU}
+\def\Vtilde{\tilde\matV}
+\def\G{{\cl G}}
+\def\hset{{\cl H}}
+\def\Q{{\bm{Q}}}
+\def\U{{\bm{U}}}
+\def\V{{\bm{V}}}
+\def\win{\hat{\w}}
+\def\wopt{\w^*}
+\def\matAhat{\hat\mat{A}}
+\def\matA{\mat{A}}
+\def\matB{\mat{B}}
+\def\matC{\mat{C}}
+\def\matD{\mat{D}}
+\def\matE{\mat{E}}
+\def\matH{\mat{H}}
+\def\matI{\mat{I}}
+\def\matM{\mat{M}}
+\def\matP{\mat{P}}
+\def\matQ{\mat{Q}}
+\def\matR{\mat{R}}
+\def\matL{\mat{L}}
+
+\def\matS{\mat{S}}
+\def\matT{\mat{T}}
+\def\matU{\mat{U}}
+\def\matV{\mat{V}}
+\def\matW{\mat{W}}
+\def\matX{\mat{X}}
+\def\matY{\mat{Y}}
+\def\matZ{\mat{Z}}
+\def\matSig{\mat{\Sigma}}
+\def\matOmega{\mat{\Omega}}
+\def\matGam{\mat{\Gamma}}
+\def\matTheta{\mat{\Theta}}
+\def\w{{\mathbf{w}}}
+\def\ein{{\cl E_{\text{\rm in}}}}
+\def\eout{{\cl E}}
+\def\scl{{\textsc{l}}}
+\def\scu{{\textsc{u}}}
+\def\phiu{{\overline{\phi}}}
+\def\psiu{{\overline{\psi}}}
+\def\phil{{\underbar{\math{\phi}}}}
+\newcommand\remove[1]{}
+
+
+\newcommand{\vecb}{{\vct{b} }}
+\newcommand{\bc}{{\vecb_{\mathcal{R}(\matA)^\bot } }}
+\newcommand{\br}{{\vecb_{\mathcal{R}(\matA) } }}
+
+% Least squares solution of Ax = b
+\def\xls{\x_{\text{\tiny LS}}}
+
+% For rows and columns of a matrix A
+\newcommand{\ar}[1]{ \matA^{(#1)}}
+\newcommand{\ac}[1]{ \matA_{(#1)}}
+
+\newcommand{\colspan}[1]{\mathcal{R}(#1)}
+
+\usepackage{palatino}
+
+%---------------------Listings--------------------%
+\usepackage{listings}
+\usepackage{color}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\lstset{ %
+  language=Octave,                % the language of the code
+  basicstyle=\footnotesize,           % the size of the fonts that are used for the code
+  numbers=left,                   % where to put the line-numbers
+  numberstyle=\tiny\color{gray},  % the style that is used for the line-numbers
+  stepnumber=2,                   % the step between two line-numbers. If it's 1, each line
+                                  % will be numbered
+  numbersep=5pt,                  % how far the line-numbers are from the code
+  backgroundcolor=\color{white},      % choose the background color. You must add \usepackage{color}
+  showspaces=false,               % show spaces adding particular underscores
+  showstringspaces=false,         % underline spaces within strings
+  showtabs=false,                 % show tabs within strings adding particular underscores
+  frame=single,                   % adds a frame around the code
+  rulecolor=\color{black},        % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens (green here))
+  tabsize=2,                      % sets default tabsize to 2 spaces
+  captionpos=b,                   % sets the caption-position to bottom
+  breaklines=true,                % sets automatic line breaking
+  breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+  title=\lstname,                   % show the filename of files included with \lstinputlisting;
+                                  % also try caption instead of title
+  keywordstyle=\color{blue},          % keyword style
+  commentstyle=\color{dkgreen},       % comment style
+  stringstyle=\color{mauve},         % string literal style
+  escapeinside={\%*}{*)},            % if you want to add LaTeX within your code
+  morekeywords={*,...}               % if you want to add more keywords to the set
+}
+%-------------------------------------------------%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{hyperref}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tabularx,ragged2e,booktabs,caption}
+
+% Place this after the backref command
+\usepackage{algorithmicx}
+\usepackage[ruled]{algorithm}
+\usepackage{algpseudocode}
+
+\newcommand{\floor}[1]{\lfloor #1 \rfloor}
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{question}{Question}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{observation}[theorem]{Observation}
+\newtheorem{fact}[theorem]{Fact}
+\newtheorem{example}{Example}
+%\newtheorem{algorithm}{Algorithm}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{remark}{Remark}
+\newtheorem{problem}{Problem}
+
+%-------------------------------------------------%
+
+
+%%%%%%%%%%%%%%
+% Document
+%%%%%%%%%%%%%%
+
+
+\title{Pricing Kernel and Implications of Bansel Yaron Model}
+\author{Ran Zhao}
+\thanks{}
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{abstract}
+
+\end{abstract}
+
+\maketitle
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%
+%
+\section{Introduction}
+Define the utility recursively with the time aggregator as in~\cite{EZ89}
+and~\cite{W89},
+\begin{equation} \label{eqn::recur_ut}
+U_t = \left[ (1-\beta)c_t^{\rho} +\beta\mu_t(U_{t+1})^{\rho} \right]^{1/\rho}.
+\end{equation}
+
+With this utility function, the pricing kernel yields
+\begin{equation} \label{eqn::pricing_kernel}
+m_{t,t+t} = \beta g_{t+1}^{\rho-1} \left[ g_{t+1}u_{t+1}/\mu_t(g_{t+1}u_{t+1}) \right]^{\alpha-\rho}.
+\end{equation}
+
+With the recursive utility, a loglinear approximation is commonly used to derive the pricing kernel,
+\begin{equation} \label{eqn::loglinear}
+\log u_{t} \approx b_0 + b_1 \log \mu_t(g_{t+1}u_{t+1}).
+\end{equation}
+
+In derivation of pricing kernel, the cumulant generating functions are useful. Let $k_t(s;y)=\log E_t(e^{sy_t+1})$. The utility recursively defined in~\ref{eqn::recur_ut}, the certainty equivalent function,
+\begin{equation} \label{eqn::equi_func}
+\mu_t(U_{t+1}) = [E_t(U_{t+1}^{\alpha})]^{1/\alpha}.
+\end{equation}
+
+Then the $\log$ of~\ref{eqn::equi_func} of $e^{a_t+b_t y_{t+1}}$ is
+$$
+\log \mu_t(e^{a_t+b_t y_{t+1}}) = a_t + k_t (\alpha b_t) / \alpha.
+$$
+
+The cumulant generating function for the standard normals is $k_t(s;\omega_{t+1})=s^2/2$. The cumulant generating function for the jump component is $k_t(s;z_{t+1})=(e^{s\theta+(s\delta)^2/2}-1)h$. We will use the results in pricing kernel in section~\ref{sec::by2_sv} and~\ref{sec::by2_jump}.
+
+\bigskip
+
+\section{Bansel and Yaron Model with Fluctuating Economic Uncertainty}
+\subsection{Pricing Kernel} \label{sec::by2_sv}
+In~\cite{BY04}, Bansel and Yaron presents a consumption growth ($g_t$) model incorporated with fluctuating economic uncertainty (or stochastic variance). The state-space representation of the dynamic is,
+\begin{eqnarray}
+x_{t+1} &=& \rho x_t + \gamma_1 v^{1/2}_t \omega_{x,t+1} \nonumber \\
+g_{t+1} &=& g + x_t + v^{1/2}_t \omega_{g,t+1} \\
+v_{t+1} &=& v + \nu(v_t^2-v) + v_{\sigma}^{1/2} \omega_{v,t+1}  \nonumber \\
+    & & \omega_{x,t+1}, \omega_{g,t+1}, \omega_{v,t+1} \sim N.i.i.d. (0,1), \nonumber
+\end{eqnarray}
+where $\sigma^2_{t+1}$ represents the time-varying economic uncertainty incorporated in consumption growth rate and $\sigma^2$ is its unconditional mean.
+
+More concisely, we express the model with the state variable $x_t$ embedded in the consumption growth dynamic, where
+\begin{eqnarray}
+\log g_t &=& \log g + \gamma(B) v_{t-1}^{1/2} \omega_{g,t}, \nonumber \\
+v_t &=& v + \nu(B) \omega{v,t},
+\end{eqnarray}
+where $\omega_{g,t}$ and $\omega{v,t}$ are independent iid standard normal random variables. $B$ is the lag operator, where $Bx_{j} = x_{j-1}$ for $j\geq 1$. Also,
+$$
+\gamma(B) = \sum_{j=0}^{\infty} \gamma_j B^j, and \quad \gamma(B)\omega_t = \sum_{j=0}^{\infty} \gamma_j \omega_{t-j}.
+$$
+
+The value function should have the form with innovative terms $\omega_t$'s in consumption growth and stochastic variance. And we guess
+$$
+\log u_t = \log u + c_g(B)v_{t-1}^{1/2} \omega_{g,t} + c_v(B)\omega_{v,t}
+$$
+with parameter set $\Theta=(u, c_g, c_v)$ to be determined.
+
+Then the corresponding certainty equivalent is computed, given the initial guess of the value function. Using a trick $c_v(B)\omega_{v,t+1}=(c_v(B)-c_{v,0})\omega_{v,t+1}+c_{v,0}\omega_{v,t+1}$, we have,
+\begin{eqnarray*}
+\log(g_{t+1}u_{t+1}) &=& \log g + \log u + [\gamma(B) + c_g(B)] v_t^{1/2} \omega_{g,t+1} + c_v(B)\omega_{v,t+1} \\
+ &=& \log(gu) + [\gamma(B)+c_g(B)-(\gamma_0+c_{g,0})] v_t^{1/2} \omega_{g,t+1} \\
+ & & + [c_v(B)-c_{v,0}] \omega_{v,t+1} + (\gamma_0+c_{g,0}) v_t^{1/2} \omega_{g,t+1} + c_{v,0} \omega_{v,t+1}
+\end{eqnarray*}
+
+Using the cumulant generating function of standard normals, the certainty equivalent is
+\begin{eqnarray*}
+\log \mu_t(g_{t+1}u_{t+1}) &=& \log(gu) + [\gamma(B)+c_g(B)-(\gamma_0+c_{g,0})] v_t^{1/2} \omega_{g,t+1} \\
+ & & + [c_v(B)-c_{v,0}] \omega_{v,t+1} + (\alpha/2)(\gamma_0+c_{g,0})^2 v_t + (\alpha/2)c_{v,0}^2 \\
+&=& \log(gu) + [\gamma(B)+c_g(B)-(\gamma_0+c_{g,0})] v_t^{1/2} \omega_{g,t+1} \\
+ & & + [c_v(B)-c_{v,0}] \omega_{v,t+1} + (\alpha/2)(\gamma_0+c_{g,0})^2 [v+\nu(B)\omega_{v,t}] + (\alpha/2)c_{v,0}^2  \\
+\end{eqnarray*}
+
+Substitute the certainty equivalent into~\ref{eqn::loglinear} and line up with the parameters with the terms,
+\begin{eqnarray*}
+\log u &=& b_0 + b_1 [\log(gu)+(\alpha/2)c_{v,0^2} +(\alpha/2)(\gamma_0+c_{g,0})^2v] \\
+c_g(B)B &=& b_1 [\gamma(B)+c_g(B)-(\gamma_0+c_{g,0})] \\
+c_v(B)B &=& b_1 [c_v(B)+c_{v,0}+(\alpha/2)(\gamma_0+c_{g,0})^2 \nu(B)B] \\
+\end{eqnarray*}
+
+Apply the same setting as in~\cite{BCZ14}, choose $B = b_1$. We have
+\begin{eqnarray*}
+\gamma_0 + c_{g,0} &=& \gamma(b_1), \\
+c_{v,0} &=& (\alpha/2)\gamma(b_1)^2 b_1\nu(b_1), \\
+\end{eqnarray*}
+
+Construct the pricing kernel from~\ref{eqn::pricing_kernel}, we have
+\begin{eqnarray*}
+\log (g_{t+1}u_{t+1}) &-& \log \mu_t(g_{t+1}u_{t+1}) = \\
+    &=& -(\alpha/2)\gamma(b_1)^2 v + \gamma(b_1)v_t^{1/2}\omega_{g,t+1} + (\alpha/2)\gamma(b_1)^2[b_1\nu(b_1)-\nu(B)B]\omega_{v,t+1} \\
+\end{eqnarray*}
+
+Finally, the stochastic variance Bansel-Yaron pricing kernel is
+\begin{eqnarray*}
+\log m_{t,t+1} &=& \log \beta + (\rho-1) \log g \\
+    & & -(\alpha-\rho)\left\{(\alpha/2)\gamma(b_1)^2 v + [(\alpha/2)\gamma(b_1)^2 b_v\nu(b_1)]^2 \right\} \\
+    & & + [(\rho-1)\gamma(B)+(\alpha-\rho)\gamma(b_1)] v_t^{1/2} \omega_{g,t+1} \\
+    & & + (\alpha-\rho) (\alpha/2)\gamma(b_1)^2 [b_1\nu(b_1)-\nu(B)B]\omega_{v,t+1} \\
+    &=& \textrm{constant} + \\
+    & & + [(\rho-1)\gamma(B)+(\alpha-\rho)\gamma(b_1)] v_t^{1/2} {\color{red} \omega_{g,t+1}} \\
+    & & + (\alpha-\rho) (\alpha/2)\gamma(b_1)^2 [b_1\nu(b_1)-\nu(B)B] {\color{red} \omega_{v,t+1}} \\
+\end{eqnarray*}
+which is a (complex) constant plus the innovative terms (labelled in red above) with certain coefficients. 
+
+
+\subsection{Data Implication}
+
+
+\bigskip
+
+\section{Bansel and Yaron Model with Stochastic Variance and Jumps}
+\subsection{Pricing Kernel} \label{sec::by2_jump}
+The model specification of consumption growth with stochastic variance and jumps is
+\begin{eqnarray}
+\log g_t &=& \log g' + \gamma(B) v_{t-1}^{1/2} \omega_{g,t} + \psi(B)z_{g,t}, \nonumber \\
+v_t &=& v + \nu(B) \omega{v,t}, \\
+h_t &=& h + \eta(B)\omega_{h,t}, \nonumber
+\end{eqnarray}
+where the innovative terms $\omega_{g,t}, \omega_{v,t}, \omega_{h,t}$ are independent and standard-normal distributed. Also, $\log g = \log g' -\psi(h)h\theta$. The jump component $z_{g,t}$ is Poisson distributed, conditionally on $j$ number of jumps whose mean and variance are $j\theta$ and $j\delta^2$ respectively.
+
+The value function should have the form with innovative terms $\omega_t$'s in consumption growth, variance, jump number and jump size. And we guess
+$$
+\log u_t = \log u + c_g(B)v_{t-1}^{1/2} \omega_{g,t} + c_z(B)z_{g,t} + c_v(B)\omega_{v,t} + c_h(B)\omega_{h,t}
+$$
+with parameter set $\Theta=(u, c_g, c_z, c_v, c_h)$ to be determined.
+
+Then the corresponding certainty equivalent is computed, given the initial guess of the value function. Using a trick $c_v(B)\omega_{v,t+1}=(c_v(B)-c_{v,0})\omega_{v,t+1}+c_{v,0}\omega_{v,t+1}$. And we have,
+\begin{eqnarray*}
+\log(g_{t+1}u_{t+1}) &=& \log g' + \log u + [\gamma(B) + c_g(B)] v_t^{1/2} \omega_{g,t+1} + [\psi(B)+c_z(B)]z_{g,t+1} \\
+ & & + c_v(B)\omega_{v,t+1} + c_h(B)\omega_{h,t+1} \\
+ &=& \log(g'u) + [\gamma(B)+c_g(B)-(\gamma_0+c_{g,0})] v_t^{1/2} \omega_{g,t+1} \\
+ & & + [\psi(B)+c_z(B)-(\psi_0+c_{z,0})]z_{g,t+1} + [c_v(B)-c_{v,0}] \omega_{v,t+1} \\
+ & & + [c_h(B)-c_{h,0}] \omega_{h,t+1} + (\gamma_0+c_{g,0}) v_t^{1/2} \omega_{g,t+1} \\
+ & & + c_{v,0} \omega_{v,t+1} + c_{h,0} \omega_{h,t+1} + (\psi_0+c_{z,0}) z_{g,t+1}
+\end{eqnarray*}
+where $g'=$
+
+Using the cumulant generating function of standard normals and Poissons, the certainty equivalent is
+\begin{eqnarray*}
+\log \mu_t(g_{t+1}u_{t+1}) &=& \log(g'u) + [\gamma(B)+c_g(B)-(\gamma_0+c_{g,0})] v_t^{1/2} \omega_{g,t+1} \\
+ & & + [\psi(B)+c_z(B)-(\psi_0+c_{z,0})]z_{g,t+1} + [c_v(B)-c_{v,0}] \omega_{v,t+1} \\
+ & & + (\alpha/2)(\gamma_0+c_{g,0})^2 v_t + (\alpha/2)(c_{v,0}^2 + c_{h,0}^2) \\
+ & & + [(e^{\alpha(\psi_0+c_{z,0})\theta+(\alpha(\psi_0+c_{z,0})\delta)^2/2}-1)/\alpha] h_t \\
+&=& \log(g'u) + [\gamma(B)+c_g(B)-(\gamma_0+c_{g,0})] v_t^{1/2} \omega_{g,t+1} \\
+ & & + [\psi(B)+c_z(B)-(\psi_0+c_{z,0})]z_{g,t+1} + [c_v(B)-c_{v,0}] \omega_{v,t+1} \\
+ & & + (\alpha/2)(\gamma_0+c_{g,0})^2 [v+\nu(B)\omega_{v,t}] + (\alpha/2)(c_{v,0}^2 + c_{h,0}^2) \\
+ & & + [(e^{\alpha(\psi_0+c_{z,0})\theta+(\alpha(\psi_0+c_{z,0})\delta)^2/2}-1)/\alpha] [h+\eta(B)\omega_{h,t}]\\
+\end{eqnarray*}
+
+Substitute the certainty equivalent into~\ref{eqn::loglinear} and line up with the parameters with the terms,
+\begin{eqnarray*}
+\log u &=& b_0 + b_1 [\log(g'u)+(\alpha/2)(c_{v,0^2} + c_{h,0}^2)+(\alpha/2)(\gamma_0+c_{g,0})^2v] \\
+& & + b_1[(e^{\alpha(\psi_0+c_{z,0})\theta + (\alpha(\psi_0+c_{z,0})\delta)^2/2})/\alpha]h; \\
+c_g(B)B &=& b_1 [\gamma(B)+c_g(B)-(\gamma_0+c_{g,0})] \\
+c_z(B)B &=& b_1 [\psi(B)+c_z(B)-(\psi_0+c_{z,0})] \\
+c_v(B)B &=& b_1 [c_v(B)+c_{v,0}+(\alpha/2)(\gamma_0+c_{g,0})^2 \nu(B)B] \\
+c_h(B)B &=& b_1\left\{c_h(B)-c_{h,0}+[(e^{\alpha(\psi_0+c_{z,0})\theta+ (\alpha(\psi_0+c_{z,0})\delta)^2/2}-1)/\alpha]\eta(B)B\right\}
+\end{eqnarray*}
+
+Apply the same setting as in~\cite{BCZ14}, choose $B = b_1$. We have
+\begin{eqnarray*}
+\gamma_0 + c_{g,0} &=& \gamma(b_1), \\
+\psi_0 + c_{z,0} &=& \psi(b_1), \\
+c_{v,0} &=& (\alpha/2)\gamma(b_1)^2 b_1\nu(b_1), \\
+c_{h,0} &=& [(e^{\alpha(\psi_0+c_{z,0})\theta+(\alpha(\psi_0+c_{z,0})\delta)^2/2}-1)/\alpha]b_1 \eta(b_1)
+\end{eqnarray*}
+
+Construct the pricing kernel from~\ref{eqn::pricing_kernel}, we have
+\begin{eqnarray*}
+\log (g_{t+1}u_{t+1}) &-& \log \mu_t(g_{t+1}u_{t+1}) = \\
+    &=& -(\alpha/2)\gamma(b_1)^2 v - [(e^{\alpha(\psi_0+c_{z,0})\theta+(\alpha(\psi_0+c_{z,0})\delta)^2/2}-1)/\alpha]h \\
+    &+& \gamma(b_1)v_t^{1/2}\omega_{g,t+1} + \psi(b_1) z_{g,t+1} + (\alpha/2)\gamma(b_1)^2[b_1\nu(b_1)-\nu(B)B]\omega_{v,t+1} \\
+    &+& [(e^{\alpha(\psi_0+c_{z,0})\theta+(\alpha(\psi_0+c_{z,0})\delta)^2/2}-1)/\alpha] [b_1\eta(b_1)-\eta(B)B]\omega_{h,t+1}
+\end{eqnarray*}
+
+Finally, the pricing kernel is
+\begin{eqnarray*}
+\log m_{t,t+1} &=& \log \beta + (\rho-1) \log g \\
+    & & -(\alpha-\rho)\left\{(\alpha/2)\gamma(b_1)^2 v - [(e^{\alpha(\psi_0+c_{z,0})\theta+(\alpha(\psi_0+c_{z,0})\delta)^2/2}-1)/\alpha] h \right\} \\
+    & & -(\alpha-\rho)(\alpha/2)\left\{ [(\alpha/2)\gamma(b_1)^2 b_v\nu(b_1)]^2 + [[(e^{\alpha(\psi_0+c_{z,0})\theta+(\alpha(\psi_0+c_{z,0})\delta)^2/2}-1)/\alpha] b_1\eta(b_1)]^2 \right\} \\
+    & & + [(\rho-1)\gamma(B)+(\alpha-\rho)\gamma(b_1)] v_t^{1/2} \omega_{g,t+1} + [(\rho-1)\psi(B)+(\alpha-\rho)\psi(b_1)] z_{g,t+1} \\
+    & & + (\alpha-\rho) (\alpha/2)\gamma(b_1)^2 [b_1\nu(b_1)-\nu(B)B]\omega_{v,t+1} \\
+    & & + (\alpha-\rho) [(e^{\alpha(\psi_0+c_{z,0})\theta+(\alpha(\psi_0+c_{z,0})\delta)^2/2}-1)/\alpha] [b_1\eta(b_1)-\eta(B)B]\omega_{h,t+1} \\
+    &=& \textrm{constant} + \\
+    & & + [(\rho-1)\gamma(B)+(\alpha-\rho)\gamma(b_1)] v_t^{1/2} {\color{red} \omega_{g,t+1}} \\
+    & & + [(\rho-1)\psi(B)+(\alpha-\rho)\psi(b_1)] {\color{red} z_{g,t+1}} \\
+    & & + (\alpha-\rho) (\alpha/2)\gamma(b_1)^2 [b_1\nu(b_1)-\nu(B)B] {\color{red} \omega_{v,t+1}} \\
+    & & + (\alpha-\rho) [(e^{\alpha(\psi_0+c_{z,0})\theta+(\alpha(\psi_0+c_{z,0})\delta)^2/2}-1)/\alpha] [b_1\eta(b_1)-\eta(B)B] {\color{red} \omega_{h,t+1}}
+\end{eqnarray*}
+which is a (complex) constant plus the innovative terms (labelled in red above) with certain coefficients. This format makes it easier to calculate the entropy. 
+
+\subsection{Entropy and Horizon Dependence}
+The definition of entropy is 
+$$
+L(x) \equiv \log E(x) - E(\log x) \geq 0,
+$$
+for $x>0$. In this case, 
+
+\subsection{Sensitivity of Parameters}
+
+\subsection{Hansen-Scheinkman Decomposition}
+
+\subsection{Expected Return on Console Bond}
+
+\subsection{Expected Return in the Economy}
+
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\bibliographystyle{plain}
+\bibliography{bib}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%
+\newpage
+\section*{Appendix: Code for Model Implications}
+%\begin{spacing}{0.9}
+%\lstinputlisting[language=R]{assignment2.R}
+
+\end{document}
+\endinput
