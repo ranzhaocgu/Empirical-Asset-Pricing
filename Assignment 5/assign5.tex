@@ -408,7 +408,7 @@ Finally, the stochastic variance Bansel-Yaron pricing kernel is
     & & + [(\rho-1)\gamma(B)+(\alpha-\rho)\gamma(b_1)] v_t^{1/2} {\color{red} \omega_{g,t+1}} \\
     & & + (\alpha-\rho) (\alpha/2)\gamma(b_1)^2 [b_1\nu(b_1)-\nu(B)B] {\color{red} \omega_{v,t+1}} \\
 \end{eqnarray*}
-which is a (complex) constant plus the innovative terms (labelled in red above) with certain coefficients. 
+which is a (complex) constant plus the innovative terms (labelled in red above) with certain coefficients.
 
 
 \subsection{Data Implication}
@@ -495,14 +495,36 @@ Finally, the pricing kernel is
     & & + (\alpha-\rho) (\alpha/2)\gamma(b_1)^2 [b_1\nu(b_1)-\nu(B)B] {\color{red} \omega_{v,t+1}} \\
     & & + (\alpha-\rho) [(e^{\alpha(\psi_0+c_{z,0})\theta+(\alpha(\psi_0+c_{z,0})\delta)^2/2}-1)/\alpha] [b_1\eta(b_1)-\eta(B)B] {\color{red} \omega_{h,t+1}}
 \end{eqnarray*}
-which is a (complex) constant plus the innovative terms (labelled in red above) with certain coefficients. This format makes it easier to calculate the entropy. 
+which is a (complex) constant plus the innovative terms (labelled in red above) with certain coefficients. This format makes it easier to calculate the entropy.
 
 \subsection{Entropy and Horizon Dependence}
-The definition of entropy is 
+The definition of entropy is
 $$
 L(x) \equiv \log E(x) - E(\log x) \geq 0,
 $$
-for $x>0$. In this case, 
+for $x>0$. In this case, we apply the cumulant generating functions, where $k_t(s;\omega_{t+1})=s^2/2$ and $k_t(s;z_{t+1})=(e^{s\theta+(s\delta)^2/2}-1)h$, 
+\begin{eqnarray*} 
+E(\log m_{t,t+1}) &=& \textrm{constant'} \\
+\log E(m_{t,t+1}) &=& \textrm{constant'} \\
+                  & & + [(\rho-1)\gamma(B)+(\alpha-\rho)\gamma(b_1)]^2 v / 2 \\
+                  & & + \left\{ \left( e^{(\alpha^*-1)\theta+[(\alpha^*-1)\delta]^2} -1 \right) -\left(\alpha^*-1\right)\theta \right\} h_t  \\
+                  & & + [(\alpha-\rho) (\alpha/2)\gamma(b_1)^2 b_1\nu(b_1)]^2 /2 \\
+                  & & + \left\{(\alpha-\rho) [(e^{\alpha(\psi_0+c_{z,0})\theta+(\alpha(\psi_0+c_{z,0})\delta)^2/2}-1)/\alpha]b_1\eta(b_1)\right\}^2 / 2 \\
+L(m_{t,t+1})      &=& \log E(m_{t,t+1}) - E(\log m_{t,t+1})\\
+                  &=& [(\rho-1)\gamma(B)+(\alpha-\rho)\gamma(b_1)]^2 v / 2 \\
+                  & & + \left\{ \left( e^{(\alpha^*-1)\theta+[(\alpha^*-1)\delta]^2} -1 \right) -\left(\alpha^*-1\right)\theta \right\} h_t  \\
+                  & & + [(\alpha-\rho) (\alpha/2)\gamma(b_1)^2 b_1\nu(b_1)]^2 /2 \\
+                  & & + \left\{(\alpha-\rho) [(e^{\alpha(\psi_0+c_{z,0})\theta+(\alpha(\psi_0+c_{z,0})\delta)^2/2}-1)/\alpha]b_1\eta(b_1)\right\}^2 / 2 \\
+\end{eqnarray*}
+
+where $(\alpha^*-1) = (\rho-1)\psi_0 +(\alpha-\rho)\psi(b_1)$. Note that $constant'$ in above equation does not equal to the $constant$ in the pricing kernel. But $constant'$s are the same in $E(\log m_{t,t+1})$ and in $\log E(m_{t,t+1})$.
+
+Analogous to the derivation on Appendix F in~\cite{BCZ14}, we have the horizon dependence as
+\begin{eqnarray*}
+H(n) &=& (2n)^{-1} \sum_{j=1}^n (A_{g,j-1}^2 - A_{g,0}^2) +  (2n)^{-1}(A_{z,j-1}^2 - A_{z,0}^2) \\
+     & & + hn^{-1} \sum_{j=1}^n 
+\end{eqnarray*}
+
 
 \subsection{Sensitivity of Parameters}
 
