@@ -4,7 +4,177 @@ setwd('D:\\Empirical-Asset-Pricing\\Assignment 7')
 
 require(data.table)
 option.data = fread('VIXoptions.csv', header = T, sep = ',')
-implied.data = fread('VIXoptionsStd.csv', header = T, sep = ',',select=c("date","days","forward_price"))
-implied.data = unique(implied.data)
+implied.data = fread('VIXoptionsStd.csv', header = T, sep = ',')
+ir.data = fread('zeroyieldcurve.csv', header = T)
+
+option.data = as.data.frame(option.data)
+implied.data = as.data.frame(implied.data)
+ir.data = as.data.frame(ir.data)
+
+option.data = option.data[,c("date","exdate","cp_flag","strike_price","best_bid","best_offer","delta")]
+option.data$days = as.numeric(as.Date(as.character(option.data$exdate), format="%Y%m%d")-as.Date(as.character(option.data$date), format="%Y%m%d"))
+option.data$T = option.data$days/360
+
+option.data = option.data[!is.na(option.data$delta),]
+implied.data = implied.data[implied.data$cp_flag=="C",c("date","days","forward_price")]
+
+# interpolation future prices and interest rate
+option.data$F0 = 0
+option.data$r = 0
+
+all.dates = unique(option.data$date)
+for (i in all.dates){
+  all.days = unique(option.data$days[option.data$date==i])
+  for (j in all.days){
+    ix0 = implied.data$days[implied.data$date==i]
+    iy0 = implied.data$forward_price[implied.data$date==i]
+    option.data$F0[option.data$date==i&option.data$days==j] = linear.inter(ix0, iy0, j, "log")
+    # handle missing data
+    ir.ix0 = ir.data$days[ir.data$date==i]
+    ir.iy0 = ir.data$rate[ir.data$date==i]/100
+    if (length(ir.ix0)==0){
+      ir.ix0 = ir.data$days[ir.data$date==i.last]
+      ir.iy0 = ir.data$rate[ir.data$date==i.last]/100
+    }
+    option.data$r[option.data$date==i&option.data$days==j] = linear.inter(ir.ix0, ir.iy0, j, "linear")
+  }
+  i.last = i
+}
+
+# calculate the BS implied volatility
+option.data$BS_iv = 0
+for (k in 1:length(option.data$date)){ # slow
+  option.data$BS_iv[k] = bs.iv(option.data$F0[k], 
+                               option.data$strike_price[k]/1000, 
+                               option.data$T[k], 
+                               option.data$r[k], 
+                               0.5*(option.data$best_bid[k]+option.data$best_offer[k]), 
+                               option.data$cp_flag[k])
+}
+# option.data$BS_iv = lapply(cbind(option.data$F0, option.data$strike_price/1000, option.data$T, option.data$r, 0.5*(option.data$best_bid+option.data$best_offer), option.data$cp_flag), bs.iv)
+
+option.data = option.data[!is.na(option.data$BS_iv),]
+all.strikes = sort(unique(option.data$strike_price))
+vix.vol.smile = rep(0, length(all.strikes))
+for (s in 1:length(all.strikes)){
+  vix.vol.smile[s] = mean(option.data$BS_iv[option.data$strike_price==all.strikes[s]])
+}
+plot(all.strikes/1000, vix.vol.smile, type='p', main='Averaged Volatility Smile on VIX',xlab='VIX Level',ylab='Implied Vol')
+
+short.term.vol.thres = mean(option.data$BS_iv[option.data$days>=30 & option.data$days<=60])
+long.term.vol.thres = mean(option.data$BS_iv[option.data$days>=120])
+
+short.term.high.long.term.high = c()
+short.term.high.long.term.low = c()
+short.term.low.long.term.high = c()
+short.term.low.long.term.low = c()
+
+for (i in all.dates){
+  short.term.vol = option.data$BS_iv[option.data$date == i & option.data$days>=30 & option.data$days<=60]
+  long.term.vol = option.data$BS_iv[option.data$date == i & option.data$days>=120]
+  if (short.term.vol >= short.term.vol.thres & long.term.vol >= long.term.vol.thres){
+    short.term.high.long.term.high = rbind(short.term.high.long.term.high, option.data[option.data$date == i])
+  } else if (short.term.vol >= short.term.vol.thres & long.term.vol < long.term.vol.thres){
+    short.term.high.long.term.low = rbind(short.term.high.long.term.low, option.data[option.data$date == i])
+  } else if (short.term.vol < short.term.vol.thres & long.term.vol >= long.term.vol.thres){
+    short.term.low.long.term.high = rbind(short.term.low.long.term.high, option.data[option.data$date == i])
+  } else {
+    short.term.low.long.term.low = rbind(short.term.low.long.term.low, option.data[option.data$date == i])
+  }
+}
+
+vix.vol.smile.short.term.high.long.term.high = rep(0, length(all.strikes))
+vix.vol.smile.short.term.high.long.term.low = rep(0, length(all.strikes))
+vix.vol.smile.short.term.low.long.term.high = rep(0, length(all.strikes))
+vix.vol.smile.short.term.low.long.term.low = rep(0, length(all.strikes))
+
+for (s in 1:length(all.strikes)){
+  vix.vol.smile.short.term.high.long.term.high[s] = mean(short.term.high.long.term.high$BS_iv[short.term.high.long.term.high$strike_price==all.strikes[s]])
+  vix.vol.smile.short.term.high.long.term.low[s] = mean(short.term.high.long.term.low$BS_iv[short.term.high.long.term.low$strike_price==all.strikes[s]])
+  vix.vol.smile.short.term.low.long.term.high[s] = mean(short.term.low.long.term.high$BS_iv[short.term.low.long.term.high$strike_price==all.strikes[s]])
+  vix.vol.smile.short.term.low.long.term.low[s] = mean(short.term.low.long.term.low$BS_iv[short.term.low.long.term.low$strike_price==all.strikes[s]])
+}
+plot(all.strikes/1000, vix.vol.smile.short.term.high.long.term.high, type='p', main='Averaged Volatility Smile: Short Term High Long Term High',xlab='VIX Level',ylab='Implied Vol')
+plot(all.strikes/1000, vix.vol.smile.short.term.high.long.term.low, type='p', main='Averaged Volatility Smile: Short Term High Long Term Low',xlab='VIX Level',ylab='Implied Vol')
+plot(all.strikes/1000, vix.vol.smile.short.term.low.long.term.high, type='p', main='Averaged Volatility Smile: Short Term Low Long Term High',xlab='VIX Level',ylab='Implied Vol')
+plot(all.strikes/1000, vix.vol.smile.short.term.low.long.term.low, type='p', main='Averaged Volatility Smile: Short Term Low Long Term Low',xlab='VIX Level',ylab='Implied Vol')
 
 
+linear.inter = function(ix0,iy0,ix,inter.method="log"){
+# log-linear and linear interpolation function
+    order = sort(ix0, index.return=TRUE)
+  x0 = order$x
+  y0 = iy0[order$ix]
+  n = length(ix0)
+  if (ix < min(ix0)){
+    ix1 = ix0[1]
+    ix2 = ix0[2]
+    iy1 = iy0[1]
+    iy2 = iy0[2]
+  } else if (ix>max(ix0)){
+    ix1 = ix0[n-1]
+    ix2 = ix0[n]
+    iy1 = iy0[n-1]
+    iy2 = iy0[n]
+  } else {
+    ix1 = ix0[max(which(ix>=ix0))]
+    ix2 = ix0[min(which(ix<=ix0))]
+    iy1 = iy0[max(which(ix>=ix0))]
+    iy2 = iy0[min(which(ix<=ix0))]
+  }  
+  if (ix1 == ix2){
+    return(iy1)
+  }
+  else {
+    if (inter.method == "log"){
+      iy = (ix-ix1)/(ix2-ix1)*log(iy2) + (ix2-ix)/(ix2-ix1)*log(iy1)
+      return(exp(iy))
+    } else if (inter.method == "linear") {
+      iy = (ix-ix1)/(ix2-ix1)*iy2 + (ix2-ix)/(ix2-ix1)*iy1
+      return(iy)
+    }
+  }
+}
+
+
+bs.iv = function(S, K, T, r, market, type){
+# calculate Black-Scholes implied volatility
+  sig <- 0.20
+  sig.up <- 2
+  sig.down <- 0.001
+  count <- 0
+  err <- BS(S, K, T, r, sig, type) - market 
+  
+  ## repeat until error is sufficiently small or counter hits 1000
+  while(abs(err) > 0.0001 && count<3000){
+    if(err < 0){
+      sig.down <- sig
+      sig <- (sig.up + sig)/2
+    }else{
+      sig.up <- sig
+      sig <- (sig.down + sig)/2
+    }
+    err <- BS(S, K, T, r, sig, type) - market
+    count <- count + 1
+  }
+  
+  ## return NA if counter hit 1000
+  if(count==3000){
+    return(NA)
+  }else{
+    return(sig)
+  }
+}
+
+BS = function(S, K, T, r, sig, type="C"){
+# calculation option price using Black-Scholes model
+    d1 <- (log(S/K) + (r + sig^2/2)*T) / (sig*sqrt(T))
+    d2 <- d1 - sig*sqrt(T)
+    if(type=="C"){
+      value <- S*exp(-r*T)*pnorm(d1) - K*exp(-r*T)*pnorm(d2)
+    }
+    if(type=="P"){
+      value <- K*exp(-r*T)*pnorm(-d2) - S**exp(-r*T)*pnorm(-d1)
+    }
+    return(value)
+  }

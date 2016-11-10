@@ -319,9 +319,16 @@ $$
 
 Then the European call price $c$ and the European put price $p$ for the futures option are given by following equations,
 \begin{eqnarray*}
-c &=& e^{-rT} 
-
+c &=& e^{-rT}[F_0 N(d_1) - KN(d_2)] \\
+p &=& e^{-rT}[K N(-d_2) - F_0 N(-d_1)] \\
 \end{eqnarray*}
+
+where
+\begin{eqnarray*}
+d_1 &=& \frac{\log(F_0/K) + \sigma^2T/2}{\sigma\sqrt{T}} \\
+d_2 &=& \frac{\log(F_0/K) - \sigma^2T/2}{\sigma\sqrt{T}} = d_1 -\sigma\sqrt{T} \\
+\end{eqnarray*}
+
 %
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
