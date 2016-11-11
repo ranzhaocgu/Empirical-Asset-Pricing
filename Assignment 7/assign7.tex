@@ -361,8 +361,11 @@ The option data from OptionMetrics contains daily standardized VIX option bid/of
 
 The VIX future has multiplier of 1000, so the strike price of options are in magnitude of 1000 times VIX. To back-out the implied volatility of VIX options, we use the Black model as specified in~\ref{eqn::future_bs}. The market premium is calculated from the average of best bid and best offer price. The underlying future price is interpolated log-linearly from standard option volatility, and the interest rate is interpolated linearly from the term structure of zero yield.
 
-According call-put parity, the implied volatility from call option and put option with same strike will be the same. Figure~\ref{avg_vix} plots the averaged implied volatility over the terms. The graph on the top shows the implied volatility dynamics of VIX option with strike price ranging from 5 to 130. Unlike the volatility skew shape as in equity option, the VIX option has higher implied vol (SPX's vol of vol). The strike-zoom-in graph on the bottom from Figure~\ref{avg_vix} show the volatility smile at relatively low VIX strike levels, ranging from 5\% to 23\%. 
+According call-put parity, the implied volatility from call option and put option with same strike will be the same. Figure~\ref{avg_vix} plots the averaged implied volatility over the terms. The graph on the top shows the implied volatility dynamics of VIX option with strike price ranging from 5\% to 130\%. Unlike the volatility skew shape as in equity option, the VIX option has higher implied vol (SPX's vol of vol). The strike-zoom-in graph on the bottom from Figure~\ref{avg_vix} show the volatility smile at relatively low VIX strike levels, ranging from 5\% to 23\%.
 
+Figure~\ref{four_vix} separates the average on implied volatility when the short term and long term are high/low respectively. From the graphs, it is obvious that the implied volatility levels have different shapes, in terms of both magnitude and the slope. That is, the implied volatility smile of VIX options are not only driven by the VIX level, but also term structure and skew. Therefore, empirical observations conflict one-factor stochastic volatility model, which captures only the level of volatility but not sufficient to fit term structure additionally.
+
+Then the idea of two-factor stochastic volatility modeling becomes natural. In Section~\ref{sec::vix_model}, we will discuss the rationale of the double-stochastic-variance (DSV) model.
 
 \begin{figure}
   \centering
@@ -376,6 +379,15 @@ According call-put parity, the implied volatility from call option and put optio
 
 \section{Modeling VIX and SPX Jointly} \label{sec::vix_model}
 
+
+
+Finally, the double stochastic variance model has dynamics of
+\begin{eqnarray}
+dS_t &=& \sqrt{v_t} S_t d W_t^1, \notag \\
+dv_t &=& \kappa_1 (v_t' - v_t) dt + \xi_1 v_t dW_t^2, \\
+dv_t' &=& \kappa_2 (\theta - v_t') dt + \xi_2 v_t' dW_t^3, \notag \\
+\end{eqnarray}
+where the Brownian motions $W_i$ could all be correlated with $\mathbb{E}[dW_t^i dW_t^j]=\rho_{ij} dt$. 
 %
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
