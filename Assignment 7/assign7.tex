@@ -318,16 +318,63 @@ $$
 $$
 
 Then the European call price $c$ and the European put price $p$ for the futures option are given by following equations,
-\begin{eqnarray*}
-c &=& e^{-rT}[F_0 N(d_1) - KN(d_2)] \\
-p &=& e^{-rT}[K N(-d_2) - F_0 N(-d_1)] \\
-\end{eqnarray*}
+\begin{eqnarray}
+c &=& e^{-rT}[F_0 N(d_1) - KN(d_2)]  \label{eqn::future_bs} \\
+p &=& e^{-rT}[K N(-d_2) - F_0 N(-d_1)] \notag \\
+\end{eqnarray}
 
 where
 \begin{eqnarray*}
 d_1 &=& \frac{\log(F_0/K) + \sigma^2T/2}{\sigma\sqrt{T}} \\
 d_2 &=& \frac{\log(F_0/K) - \sigma^2T/2}{\sigma\sqrt{T}} = d_1 -\sigma\sqrt{T} \\
 \end{eqnarray*}
+
+Following the Black-Scholes framework, more recent researches come up with stochastic volatility (SV) model~\cite{Heston93,Bates96,DPS00}, where the volatility surface (w.r.t. different terms and strikes) are fitted better to the empirical observations. The SV modelings are motivated by the intermittency and clustering feature of volatility from underlying dynamics. A common stochastic volatility process satisfies the SDE:
+\begin{equation*}
+dS_t = \mu_t S_t dt + \sqrt{v_t} S_t dW_1 \\
+dv_t = \alpha(S_t,v_t,t)dt + \eta\beta(S_t,v_t,t)\sqrt{v_t} dW_2
+\end{equation*}
+where $\mathbb{E}[dW_1 dW_2]=\rho dt$. $\mu_t$ is the (deterministic) instantaneous drift of stock price returns, $\eta$ is the volatility of volatility and $\rho$ is the correlation between random stock price returns and changes in $v_t$. $W1$ and $W_2$ are Wiener processes.
+
+The volatility drift and vol of vol term are in most generic functional forms and can determine by time ($t$), instantaneous volatility level ($v_t$) and the spot price ($S_t$). Note that the SV setup ensures the standard time-dependent volatility version of the Black-Scholes formula may be retrieved in the limit $\eta \rightarrow 0$.
+
+Particularly, S\&P500 index returns, shown in Figure~\ref{plot_spx}, reinforce the stochastic volatility and volatility mean-reverting characteristics. More importantly, the ``volatility'' of the S\&P500 index is tradable. The VIX index represents the volatility of SPX in a precise way, and CBOE has listed futures on VIX index since 2004 and VIX option in 2006.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.6]{spx_index_return.eps}
+  \caption{The SPX index levels and return on daily basis. Time period is from 1954 to 2015.}\label{plot_spx}
+\end{figure}
+
+The rest of the paper lays out as following: Section~\ref{sec::vix_smile} presents the observations and findings on implied volatility from VIX options. Section~\ref{sec::vix_model} conjectures a two-factor VIX model and discusses the joint VIX model with SPX dynamics.
+
+\bigskip
+
+\section{VIX Implied Volatility} \label{sec::vix_smile}
+The option data from OptionMetrics contains daily standardized VIX option bid/offer price, Delta of the option and other information including expiration and strike. The forward price, here the underlying future price, is interpolated from OptionMetrics' standard volatility surface using log-linear interpolation. The reasoning of selecting log-linear interpolation is that the future price is positively correlated with discount factor, and we assume a flat-forward interpolation keeps most of properties from term structure. The zero yield curve is also from OptionMetrics database.
+
+\begin{figure}
+  \centering
+  \includegraphics[scale=0.6]{avg_vix.eps}
+  \caption{The averaged VIX option implied volatility over different terms. The graph plots the implied volatility dynamic on various strikes. The blue line is the fitted implied volatility smile by lowess regression. The graph on the top has strikes (of VIX) from 5 to 130. The graph on the bottom has strikes from 5 to 22.}\label{avg_vix}
+\end{figure}
+
+The VIX future has multiplier of 1000, so the strike price of options are in magnitude of 1000 times VIX. To back-out the implied volatility of VIX options, we use the Black model as specified in~\ref{eqn::future_bs}. The market premium is calculated from the average of best bid and best offer price. The underlying future price is interpolated log-linearly from standard option volatility, and the interest rate is interpolated linearly from the term structure of zero yield.
+
+According call-put parity, the implied volatility from call option and put option with same strike will be the same. Figure~\ref{avg_vix} plots the averaged implied volatility over the terms. The graph on the top shows the implied volatility dynamics of VIX option with strike price ranging from 5 to 130. Unlike the volatility skew shape as in equity option, the VIX option has higher implied vol (SPX's vol of vol). The strike-zoom-in graph on the bottom from Figure~\ref{avg_vix} show the volatility smile at relatively low VIX strike levels, ranging from 5\% to 23\%. 
+
+
+\begin{figure}
+  \centering
+  \includegraphics[scale=0.6]{four_vix.eps}
+  \caption{The averaged VIX option implied volatility over different terms, when the short/long term implied volatilities are high/low. Four graphs display the combination of the short- and long-term VIX. Each graph plots the implied volatility dynamic on various strikes.}\label{four_vix}
+\end{figure}
+
+
+\bigskip
+
+
+\section{Modeling VIX and SPX Jointly} \label{sec::vix_model}
 
 %
 %
@@ -343,7 +390,8 @@ d_2 &=& \frac{\log(F_0/K) - \sigma^2T/2}{\sigma\sqrt{T}} = d_1 -\sigma\sqrt{T} \
 \newpage
 \section*{Appendix: Code}
 %\begin{spacing}{0.9}
-%\lstinputlisting[language=R]{assignment2.R}
+\lstinputlisting[language=R]{assignment7.R}
+%\end{spacing}{0.9}
 
 \end{document}
 \endinput

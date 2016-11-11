@@ -1,5 +1,11 @@
 \begin{thebibliography}{1}
 
+\bibitem{Bates96}
+{Bates, David S.}
+\newblock Jumps and stochastic volatility: Exchange rate processes implicit in
+  deutsche mark options.
+\newblock {\em Review of Financial Studies}, 9:69--107, 1996.
+
 \bibitem{Black76}
 {Black, Fischer}.
 \newblock the pricing of commodity contracts.
@@ -9,5 +15,16 @@
 {Black, Fischer and Scholes, Myron}.
 \newblock The pricing of options and corporate liabilities.
 \newblock {\em Journal of Political Economy}, 81:637--654, 1973.
+
+\bibitem{DPS00}
+{Duffie, Darrell, Jun Pun, and Kenneth Singleton}.
+\newblock Transform analysis and asset pricing for affine jump-diffusions.
+\newblock {\em Econometrica}, 68:1343--1376, 2000.
+
+\bibitem{Heston93}
+{Heston, Steven L.}
+\newblock A closed-form soultion for options with stochastic volatility with
+  applications to bond and currency options.
+\newblock {\em Review of Financial Studies}, 6:327--343, 1993.
 
 \end{thebibliography}

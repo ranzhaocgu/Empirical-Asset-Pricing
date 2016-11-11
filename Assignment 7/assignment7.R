@@ -2,6 +2,23 @@ setwd('C:\\Users\\ranzhao\\Documents\\Empirical-Asset-Pricing\\Assignment 7')
 setwd('D:\\PhD FE\\Empirical-Asset-Pricing\\Assignment 7')
 setwd('D:\\Empirical-Asset-Pricing\\Assignment 7')
 
+spx_index_values = read.csv('spx_index_values.csv', header = TRUE)
+par(mfrow=c(2,1))
+plot(as.Date(as.character(spx_index_values$Date), "%m/%d/%Y"), spx_index_values$SPX.Index, type='l', 
+     main='SPX index levels, from 1954 to 2015',
+     xlab='year', ylab='SPX index')
+
+# calculate the return series
+spx_index_values$Return = rep(0, dim(spx_index_values)[1])
+spx_index_values$Return[2:length(spx_index_values$Return)] = 
+  log(spx_index_values$SPX.Index[2:length(spx_index_values$SPX.Index)] / 
+        spx_index_values$SPX.Index[1:(length(spx_index_values$SPX.Index)-1)])
+data.length = length(spx_index_values$Return)
+
+plot(as.Date(as.character(spx_index_values$Date), "%m/%d/%Y"), spx_index_values$Return, type='l', 
+     main='SPX index returns, from 1954 to 2015',
+     xlab='year', ylab='SPX returns')
+
 require(data.table)
 option.data = fread('VIXoptions.csv', header = T, sep = ',')
 implied.data = fread('VIXoptionsStd.csv', header = T, sep = ',')
@@ -23,7 +40,7 @@ option.data$F0 = 0
 option.data$r = 0
 
 all.dates = unique(option.data$date)
-for (i in all.dates){
+for (i in all.dates){ # slow
   all.days = unique(option.data$days[option.data$date==i])
   for (j in all.days){
     ix0 = implied.data$days[implied.data$date==i]
@@ -43,7 +60,7 @@ for (i in all.dates){
 
 # calculate the BS implied volatility
 option.data$BS_iv = 0
-for (k in 1:length(option.data$date)){ # slow
+for (k in 1:length(option.data$date)){ # very slow
   option.data$BS_iv[k] = bs.iv(option.data$F0[k], 
                                option.data$strike_price[k]/1000, 
                                option.data$T[k], 
@@ -59,9 +76,15 @@ vix.vol.smile = rep(0, length(all.strikes))
 for (s in 1:length(all.strikes)){
   vix.vol.smile[s] = mean(option.data$BS_iv[option.data$strike_price==all.strikes[s]])
 }
-plot(all.strikes/1000, vix.vol.smile, type='p', main='Averaged Volatility Smile on VIX',xlab='VIX Level',ylab='Implied Vol')
 
-short.term.vol.thres = mean(option.data$BS_iv[option.data$days>=30 & option.data$days<=60])
+par(mfrow=c(2,1))
+plot(all.strikes/1000, vix.vol.smile, type='p', main='Averaged Volatility Smile on VIX',xlab='VIX Level',ylab='Implied Vol')
+lines(lowess(all.strikes/1000,vix.vol.smile), col="blue") # lowess line (x,y)
+
+plot(all.strikes[1:20]/1000, vix.vol.smile[1:20], type='p', main='Averaged Volatility Smile on VIX',xlab='VIX Level',ylab='Implied Vol')
+lines(lowess(all.strikes[1:20]/1000,vix.vol.smile[1:20]), col="blue") # lowess line (x,y)
+
+short.term.vol.thres = mean(option.data$BS_iv[option.data$days<=60])
 long.term.vol.thres = mean(option.data$BS_iv[option.data$days>=120])
 
 short.term.high.long.term.high = c()
@@ -70,16 +93,16 @@ short.term.low.long.term.high = c()
 short.term.low.long.term.low = c()
 
 for (i in all.dates){
-  short.term.vol = option.data$BS_iv[option.data$date == i & option.data$days>=30 & option.data$days<=60]
-  long.term.vol = option.data$BS_iv[option.data$date == i & option.data$days>=120]
+  short.term.vol = mean(option.data$BS_iv[option.data$date == i & option.data$days<=60])
+  long.term.vol = mean(option.data$BS_iv[option.data$date == i & option.data$days>=120])
   if (short.term.vol >= short.term.vol.thres & long.term.vol >= long.term.vol.thres){
-    short.term.high.long.term.high = rbind(short.term.high.long.term.high, option.data[option.data$date == i])
+    short.term.high.long.term.high = rbind(short.term.high.long.term.high, option.data[option.data$date == i,])
   } else if (short.term.vol >= short.term.vol.thres & long.term.vol < long.term.vol.thres){
-    short.term.high.long.term.low = rbind(short.term.high.long.term.low, option.data[option.data$date == i])
+    short.term.high.long.term.low = rbind(short.term.high.long.term.low, option.data[option.data$date == i,])
   } else if (short.term.vol < short.term.vol.thres & long.term.vol >= long.term.vol.thres){
-    short.term.low.long.term.high = rbind(short.term.low.long.term.high, option.data[option.data$date == i])
+    short.term.low.long.term.high = rbind(short.term.low.long.term.high, option.data[option.data$date == i,])
   } else {
-    short.term.low.long.term.low = rbind(short.term.low.long.term.low, option.data[option.data$date == i])
+    short.term.low.long.term.low = rbind(short.term.low.long.term.low, option.data[option.data$date == i,])
   }
 }
 
@@ -94,11 +117,18 @@ for (s in 1:length(all.strikes)){
   vix.vol.smile.short.term.low.long.term.high[s] = mean(short.term.low.long.term.high$BS_iv[short.term.low.long.term.high$strike_price==all.strikes[s]])
   vix.vol.smile.short.term.low.long.term.low[s] = mean(short.term.low.long.term.low$BS_iv[short.term.low.long.term.low$strike_price==all.strikes[s]])
 }
+par(mfrow=c(2,2))
 plot(all.strikes/1000, vix.vol.smile.short.term.high.long.term.high, type='p', main='Averaged Volatility Smile: Short Term High Long Term High',xlab='VIX Level',ylab='Implied Vol')
-plot(all.strikes/1000, vix.vol.smile.short.term.high.long.term.low, type='p', main='Averaged Volatility Smile: Short Term High Long Term Low',xlab='VIX Level',ylab='Implied Vol')
-plot(all.strikes/1000, vix.vol.smile.short.term.low.long.term.high, type='p', main='Averaged Volatility Smile: Short Term Low Long Term High',xlab='VIX Level',ylab='Implied Vol')
-plot(all.strikes/1000, vix.vol.smile.short.term.low.long.term.low, type='p', main='Averaged Volatility Smile: Short Term Low Long Term Low',xlab='VIX Level',ylab='Implied Vol')
+lines(lowess(all.strikes/1000,vix.vol.smile.short.term.high.long.term.high), col="blue") # lowess line (x,y)
 
+plot(all.strikes/1000, vix.vol.smile.short.term.high.long.term.low, type='p', main='Averaged Volatility Smile: Short Term High Long Term Low',xlab='VIX Level',ylab='Implied Vol')
+lines(lowess(all.strikes/1000,vix.vol.smile.short.term.high.long.term.low), col="blue") # lowess line (x,y)
+
+plot(all.strikes/1000, vix.vol.smile.short.term.low.long.term.high, type='p', main='Averaged Volatility Smile: Short Term Low Long Term High',xlab='VIX Level',ylab='Implied Vol')
+lines(lowess(all.strikes/1000,vix.vol.smile.short.term.low.long.term.high), col="blue") # lowess line (x,y)
+
+plot(all.strikes/1000, vix.vol.smile.short.term.low.long.term.low, type='p', main='Averaged Volatility Smile: Short Term Low Long Term Low',xlab='VIX Level',ylab='Implied Vol')
+lines(lowess(all.strikes/1000,vix.vol.smile.short.term.low.long.term.low), col="blue") # lowess line (x,y)
 
 linear.inter = function(ix0,iy0,ix,inter.method="log"){
 # log-linear and linear interpolation function
@@ -174,7 +204,7 @@ BS = function(S, K, T, r, sig, type="C"){
       value <- S*exp(-r*T)*pnorm(d1) - K*exp(-r*T)*pnorm(d2)
     }
     if(type=="P"){
-      value <- K*exp(-r*T)*pnorm(-d2) - S**exp(-r*T)*pnorm(-d1)
+      value <- K*exp(-r*T)*pnorm(-d2) - S*exp(-r*T)*pnorm(-d1)
     }
     return(value)
   }
