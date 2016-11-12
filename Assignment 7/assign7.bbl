@@ -16,6 +16,12 @@
 \newblock The pricing of options and corporate liabilities.
 \newblock {\em Journal of Political Economy}, 81:637--654, 1973.
 
+\bibitem{CM98}
+{Carr, Peter, and Dilip Madan}.
+\newblock Towards a theory of volatility trading, in robert jarrow,.
+\newblock {\em ed.: Volatility: New Estimation Techniques for Pricing
+  Derivatives (Risk Books: London)}, 1998.
+
 \bibitem{DPS00}
 {Duffie, Darrell, Jun Pun, and Kenneth Singleton}.
 \newblock Transform analysis and asset pricing for affine jump-diffusions.
