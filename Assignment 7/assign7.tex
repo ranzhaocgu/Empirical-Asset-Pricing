@@ -319,20 +319,20 @@ $$
 
 Then the European call price $c$ and the European put price $p$ for the futures option are given by following equations,
 \begin{eqnarray}
-c &=& e^{-rT}[F_0 N(d_1) - KN(d_2)]  \label{eqn::future_bs} \\
-p &=& e^{-rT}[K N(-d_2) - F_0 N(-d_1)] \notag \\
+c &=& e^{-rT}[F_0 N(d_1) - KN(d_2)],  \label{eqn::future_bs} \\
+p &=& e^{-rT}[K N(-d_2) - F_0 N(-d_1)], \notag \\
 \end{eqnarray}
 
 where
 \begin{eqnarray*}
-d_1 &=& \frac{\log(F_0/K) + \sigma^2T/2}{\sigma\sqrt{T}} \\
-d_2 &=& \frac{\log(F_0/K) - \sigma^2T/2}{\sigma\sqrt{T}} = d_1 -\sigma\sqrt{T} \\
+d_1 &=& \frac{\log(F_0/K) + \sigma^2T/2}{\sigma\sqrt{T}}, \\
+d_2 &=& \frac{\log(F_0/K) - \sigma^2T/2}{\sigma\sqrt{T}} = d_1 -\sigma\sqrt{T}. \\
 \end{eqnarray*}
 
 Following the Black-Scholes framework, more recent researches come up with stochastic volatility (SV) model~\cite{Heston93,Bates96,DPS00}, where the volatility surface (w.r.t. different terms and strikes) are fitted better to the empirical observations. The SV modelings are motivated by the intermittency and clustering feature of volatility from underlying dynamics. A common stochastic volatility process satisfies the SDE:
 \begin{equation*}
-dS_t = \mu_t S_t dt + \sqrt{v_t} S_t dW_1 \\
-dv_t = \alpha(S_t,v_t,t)dt + \eta\beta(S_t,v_t,t)\sqrt{v_t} dW_2
+dS_t = \mu_t S_t dt + \sqrt{v_t} S_t dW_1, \\
+dv_t = \alpha(S_t,v_t,t)dt + \eta\beta(S_t,v_t,t)\sqrt{v_t} dW_2,
 \end{equation*}
 where $\mathbb{E}[dW_1 dW_2]=\rho dt$. $\mu_t$ is the (deterministic) instantaneous drift of stock price returns, $\eta$ is the volatility of volatility and $\rho$ is the correlation between random stock price returns and changes in $v_t$. $W1$ and $W_2$ are Wiener processes.
 
@@ -378,8 +378,35 @@ Then the idea of two-factor stochastic volatility modeling becomes natural. In S
 
 
 \section{Modeling VIX and SPX Jointly} \label{sec::vix_model}
+Before proceeding to the conjecture of the VIX model, we firstly show that VIX represents the volatility of SPX in a precise way. Therefore one can model VIX using variance swap instead of the implied volatilities. And also the relationship between the prices of options on SPX and options on VIX can be established. In particular, the fair values of the variance swaps can be expressed in terms of the market prices of European options, which provides an model-independent way of linking SPX and VIX.
 
+Assume there are European options with all possible strikes $K$ and maturity are traded on the market, then any twice-differentiable payoff at time $T$ may be statically hedged using a portfolio of European options expiring at time $T$. To prove this, consider the value of a claim with payoff $g(S_T)$ at time $T$ as
+\begin{eqnarray*}
+g(S_T) &=& \int_0^{\infty} g(K)\delta(S_T-K)dK \\
+       &=& \int_0^{F} g(K)\delta(S_T-K)dK + \int_F^{\infty} g(K)\delta(S_T-K)dK.
+\end{eqnarray*}
 
+Follow the derivation in~\ref{CM98}, and integrate by parts twice, we have
+\begin{eqnarray}
+g(S_T) &=& g(F) - \int_0^{F} g'(K)(K-S_T)^{+}dK \notag \\
+       & & + \int_F^{\infty} g'(K)(S_T-K)^{+} dK, \notag \\
+g(S_T) &=& \int_0^{F} g''(K)(K-S_T)^{+}dK + \int_F^{\infty} g''(K)(S_T-K)^{+} dK \notag \\
+       & & + g(F) + g'(F)[(F-S_T)^{+} - (S_T-F)^{+}] \notag \\
+       &=& \int_0^{F} g''(K)(K-S_T)^{+}dK + \int_F^{\infty} g''(K)(S_T-K)^{+} dK + g(F) + g'(F)(F-S_T) \notag \\
+       & & +g(F) +g'(F)(F-S_T). \label{eqn::rep_euro_option}
+\end{eqnarray}
+
+With $F=\mathbb{E}[S_T]$,
+$$
+\mathbb{E}[g(S_T)] = g(F)+\int_0^{F}dK \tilde{P}(K)g''(K) + \int_{F}^{\infty} dK \tilde{C} (K) g''(K).
+$$
+
+The Equation~\ref{eqn::rep_euro_option} shows that any European type twice-differentiable payoff can be replicated by a portfolio of European options (puts and calls) with strike from 0 to $\infty$. To be specified, the weight of each option in the portfolio is the second derivative of the payoff at the strike price of that options. Additionally, the weight of each option with certain strike depends onyl on the strike price and the payoff function, but not on time or $S_t$. Thus the replication is model-independent. 
+
+The variance swap has log contract payoff at time $T$, $\log(S_T/F)$. Then we have $g''(K) \left. =-1/S_T^2 \right|_{S_T=K}$,
+$$
+\mathbb{E}\left[ \log\left(\frac{S_T}{F}\right)\right] = -\int_0^F \frac{dK}{K^2} \tilde{P}(K) - \int_F^{\infty} \frac{dK}{K^2} \tilde{C}(K)
+$$
 
 Finally, the double stochastic variance model has dynamics of
 \begin{eqnarray}
@@ -387,7 +414,7 @@ dS_t &=& \sqrt{v_t} S_t d W_t^1, \notag \\
 dv_t &=& \kappa_1 (v_t' - v_t) dt + \xi_1 v_t dW_t^2, \\
 dv_t' &=& \kappa_2 (\theta - v_t') dt + \xi_2 v_t' dW_t^3, \notag \\
 \end{eqnarray}
-where the Brownian motions $W_i$ could all be correlated with $\mathbb{E}[dW_t^i dW_t^j]=\rho_{ij} dt$. 
+where the Brownian motions $W_i$ could all be correlated with $\mathbb{E}[dW_t^i dW_t^j]=\rho_{ij} dt$.
 %
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
