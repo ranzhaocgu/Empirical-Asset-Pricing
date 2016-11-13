@@ -363,7 +363,7 @@ The VIX future has multiplier of 1000, so the strike price of options are in mag
 
 According call-put parity, the implied volatility from call option and put option with same strike will be the same. Figure~\ref{avg_vix} plots the averaged implied volatility over the terms. The graph on the top shows the implied volatility dynamics of VIX option with strike price ranging from 5\% to 130\%. Unlike the volatility skew shape as in equity option, the VIX option has higher implied vol (SPX's vol of vol). The strike-zoom-in graph on the bottom from Figure~\ref{avg_vix} show the volatility smile at relatively low VIX strike levels, ranging from 5\% to 23\%.
 
-Figure~\ref{four_vix} separates the average on implied volatility when the short term and long term are high/low respectively. From the graphs, it is obvious that the implied volatility levels have different shapes, in terms of both magnitude and the slope. That is, the implied volatility smile of VIX options are not only driven by the VIX level, but also term structure and skew. Therefore, empirical observations conflict one-factor stochastic volatility model, which captures only the level of volatility but not sufficient to fit term structure additionally.
+Figure~\ref{four_vix} separates the average on implied volatility when the short term and long term are high/low respectively. The short-term VIX volatility is measured by averaged volatilities whose term is less than 60 days. The long-term VIX volatility is measured by averaged volatilities whose term is more than 120 days. From the graphs, it is obvious that the implied volatility levels have different shapes, in terms of both magnitude and the slope. That is, the implied volatility smile of VIX options are not only driven by the VIX level, but also term structure and skew. Therefore, empirical observations conflict one-factor stochastic volatility model, which captures only the level of volatility but not sufficient to fit term structure additionally.
 
 Then the idea of two-factor stochastic volatility modeling becomes natural. In Section~\ref{sec::vix_model}, we will discuss the rationale of the double-stochastic-variance (DSV) model.
 
@@ -439,7 +439,7 @@ VIX^2 = \frac{2}{T} \sum_i \frac{\Delta K_i}{K_i^2} Q(K_i) - \frac{1}{T} \left[\
 \end{equation}
 where $Q_i$ is the price of the out-of-the-money option with strike $K_i$ and $K_0$ is the highest strike below the forward price $F$.
 
-To be specifically, 
+To be specifically,
 \begin{eqnarray*}
 % \nonumber % Remove numbering (before each equation)
   \frac{VIX^2 T}{2} &=& \int_0^F \frac{dK}{K^2}P(K) + \frac{F}{\infty} \frac{dK}{K^2}C(k) \\
@@ -448,19 +448,19 @@ To be specifically,
    &\approx&  \int_0^{\infty} \frac{dK}{K^2} Q(K) + \frac{1}{K_0^2} \int_{K_0}^F dK(K-F) \\
    &=& \int_0^{\infty} \frac{dK}{K^2} Q(K) - \frac{1}{K_0^2} \frac{(K_0-F)^2}{2},
 \end{eqnarray*}
-which yields the discretization of the last expression as 
+which yields the discretization of the last expression as
 $$
 VIX^2 = \frac{2}{T} \sum_i \frac{\Delta K_i}{K_i^2} Q(K_i) - \frac{1}{T} \left[\frac{F}{K_0} -1\right]^2.
 $$
 
-Therefore we show that $VIX^2$ is the fair strike of a variance swap, and the fair value of $VIX^2$ can be calculated from the strip of European options. In practice, we may need to interpolate and extrapolate option prices for each expiration. 
+Therefore we show that $VIX^2$ is the fair strike of a variance swap, and the fair value of $VIX^2$ can be calculated from the strip of European options. In practice, we may need to interpolate and extrapolate option prices for each expiration.
 
 From the observations from Section~\ref{sec::vix_smile}, we know that the VIX smiles are upward. Also when the SPX index decreases, volatility (hereby VIX) usually increases. In 2004, CBOE introduced VIX future, whose value at time $t$ is
 $$
 \mathbb{E}_t\left[\sqrt{\mathbb{E}_T\left[\int_{T}^{T+\Delta} v_s ds\right]}\right].
 $$
 
-In 2006, CBOE listed VIX option. The VIX option expiring at time $T$ with strike $K_{VIX}$ at time $t$ is 
+In 2006, CBOE listed VIX option. The VIX option expiring at time $T$ with strike $K_{VIX}$ at time $t$ is
 $$
 \mathbb{E}_t\left[\left(\sqrt{\mathbb{E}_T\left[\int_{T}^{T+\Delta} v_s ds\right]} - K_{VIX}\right)^{+}\right].
 $$
@@ -476,7 +476,7 @@ dS_t &=& \sqrt{v_t} S_t d W_t^1, \notag \\
 dv_t &=& \kappa_1 (v_t' - v_t) dt + \xi_1 v_t dW_t^2, \\
 dv_t' &=& \kappa_2 (\theta - v_t') dt + \xi_2 v_t' dW_t^3, \notag \\
 \end{eqnarray}
-where the Brownian motions $W_i$ could all be correlated with $\mathbb{E}[dW_t^i dW_t^j]=\rho_{ij} dt$. Instantaneous variance $v$ mean-reverts to a level $v'$ that itself moves slowly over time and mean-reverts to the long-term mean level $\theta$. To conclude, the fair strike of a variance swap is 
+where the Brownian motions $W_i$ could all be correlated with $\mathbb{E}[dW_t^i dW_t^j]=\rho_{ij} dt$. Instantaneous variance $v$ mean-reverts to a level $v'$ that itself moves slowly over time and mean-reverts to the long-term mean level $\theta$. To conclude, the fair strike of a variance swap is
 \begin{eqnarray*}
 \mathbb{E}\left[ \left.\int_t^T v_s ds \right| \mathcal{F}_t\right] &=& \theta \tau + (v_t-\theta) \frac{1-e^{-\kappa_1\tau}}{\kappa_1} \\
     &+& (v_t'-\theta)\frac{\kappa_1}{\kappa_1-\kappa_2}\left[\frac{1-e^{-\kappa_2\tau}}{\kappa_2}- \frac{1-e^{-\kappa_1\tau}}{\kappa_1}\right]

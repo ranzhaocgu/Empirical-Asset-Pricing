@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=latex 2016.3.20)  11 NOV 2016 23:34
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=latex 2016.3.20)  12 NOV 2016 17:14
 entering extended mode
 **./assign7.tex
 (assign7.tex
@@ -1144,14 +1144,12 @@ LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <10> not available
 (Font)              Font shape `T1/ppl/b/n' tried instead on input line 346.
 File: avg_vix.eps Graphic file (type eps)
  <avg_vix.eps> [2]
-File: four_vix.eps Graphic file (type eps)
- <four_vix.eps>
-Underfull \vbox (badness 2809) has occurred while \output is active []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [3]
-Underfull \vbox (badness 1163) has occurred while \output is active []
+File: four_vix.eps Graphic file (type eps)
 
- [4]
+<four_vix.eps> [4]
 Overfull \hbox (6.00034pt too wide) in paragraph at lines 406--407
 [][]\T1/ppl/m/n/10.95 The vari-ance swap has log con-tract pay-off at time $\FM
 L/futmi/m/it/10.95 T$\T1/ppl/m/n/10.95 , $[]\T1/futs/m/n/10.95 (\FML/futmi/m/it
@@ -1205,4 +1203,4 @@ Here is how much of TeX's memory you used:
  1186 hyphenation exceptions out of 8191
  36i,8n,42p,844b,2578s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on assign7.dvi (12 pages, 250968 bytes).
+Output written on assign7.dvi (12 pages, 251212 bytes).
