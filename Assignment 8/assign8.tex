@@ -1,0 +1,406 @@
+\documentclass[11pt,reqno,final]{amsart}
+\usepackage[font=small,margin=10pt,labelfont={bf},labelsep={space}]{caption}
+\usepackage{subfig}
+\usepackage{wrapfig}
+\usepackage{amsmath, amssymb, epsfig}
+\usepackage[scaled]{helvet} % I like Helvetica for sf
+\usepackage{fourier}
+\usepackage{bm}
+\usepackage{color}
+\usepackage{fullpage} 	% Fullpage package
+%\usepackage{cite}
+%\usepackage{citesort}
+\newcommand{\notate}[1]{\textcolor{red}{\textbf{[#1]}}}
+%\input{macros}
+
+
+\newcommand{\tasos}{\text{TASOS}}
+%Results
+%Shortcuts
+\newcommand{\hide}[1]{}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+
+\newcommand{\x}{\mathbf{x}}
+\newcommand{\y}{\mathbf{y}}
+\newcommand{\z}{\mathbf{z}}
+%\newcommand{\A}{\mathbf{A}}
+\newcommand{\bi}{\mathbf{b}}
+\newcommand{\ro}{\mathbf{r}}
+\newcommand{\w}{\mathbf{w}}
+\newcommand{\zero}{\mathbf{0}}
+\newcommand{\ep}{\epsilon}
+\newcommand{\de}{\delta}
+\newcommand{\defby}{\overset{\mathrm{\scriptscriptstyle{def}}}{=}}
+\newcommand{\bigO}{\mathrm{O}}
+\DeclareMathOperator*{\argmin}{arg min}
+\DeclareMathOperator*{\argmax}{arg max}
+%************************************
+%************************************
+% The macros below are due to Tassos Zouzias
+%************************************
+%************************************
+
+\newcommand{\eps}{\varepsilon}
+
+
+\newcommand{\Prob}[1]{\ensuremath{\mathbb{P}\left(#1\right)}}
+
+\newcommand{\OO}{\mathcal{O}}
+\newcommand{\vol}[1]{\text{vol}(#1)}
+\newcommand{\tr}{\rm{Tr}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\reals}{\mathbb{R}}
+
+
+\newcommand{\e}{\ensuremath{{\rm e}}}
+\DeclareMathOperator{\EE}{\mathbb{E}}
+% Variance
+\newcommand{\var}[1]{\ensuremath{\mathrm{Var}(#1)}}
+% Pseudo-inverse of a matrix
+\newcommand{\pinv}[1]{ {#1}^\dagger}
+\newcommand{\norm}[1]{\ensuremath{\left\|#1\right\|_2}}
+\newcommand{\pnorm}[1]{\ensuremath{\left\|#1\right\|_p}}
+\newcommand{\qnorm}[1]{\ensuremath{\left\|#1\right\|_q}}
+\newcommand{\infnorm}[1]{\ensuremath{\left\|#1\right\|_\infty}}
+\newcommand{\onenorm}[1]{\ensuremath{\left\|#1\right\|_1}}
+\newcommand{\frobnorm}[1]{\ensuremath{\left\|#1\right\|_{\text{\rm F}}}}
+% Stable rank of a matrix
+\newcommand{\sr}[1]{\ensuremath{\mathrm{\textbf{\footnotesize sr}}\left(#1\right)}}
+% Trace of a matrix.
+\newcommand{\trace}[1]{\ensuremath{\mathrm{\textbf{tr}}\left(#1\right)}}
+%\DeclareMathOperator{\trace}{trace}
+% Rank of a matrix
+\newcommand{\rank}[1]{\ensuremath{\mathrm{\textbf{{\footnotesize rank}}}\left(#1\right)}}
+% Kernel of a matrix
+%\newcommand{\ker}[1]{\ensuremath{\mathrm{\textbf{ker}}\left(#1\right)}}
+% Image of a matrix
+\newcommand{\im}[1]{\ensuremath{\mathrm{\textbf{Im}}\left(#1\right)}}
+
+% Condition number of a matrix
+\newcommand{\cond}[1]{\ensuremath{\mathrm{\text{cond}}\left(#1\right)}}
+
+\newcommand{\expm}[1]{\ensuremath{\mathrm{\textbf{\footnotesize exp}}\left[#1\right]}}
+\newcommand{\coshm}[1]{\ensuremath{\mathrm{\textbf{\footnotesize cosh}}\left[#1\right]}}
+\newcommand{\detm}[1]{\ensuremath{\mathrm{\textbf{det}}\left(#1\right)}}
+\newcommand{\sign}[1]{\ensuremath{\mathrm{\textbf{sign}}\left(#1\right)}}
+
+
+% # of non-zero entries of a matrix
+\newcommand{\nnz}[1]{\ensuremath{\mathrm{\textbf{\footnotesize nnz}}\left(#1\right)}}
+
+% Diagonal Matrix
+\newcommand{\diag}[1]{\ensuremath{\mathrm{\textbf{diag}}\left(#1\right)}}
+% Polylog(n)
+\newcommand{\polylog}[1]{\ensuremath{\mathrm{polylog}\left(#1\right)}}
+
+\newcommand{\old}{\text{old}}
+\newcommand{\new}{\text{new}}
+\newcommand{\ravg}{\text{R}_{\text{avg}}}
+\newcommand{\cavg}{\text{C}_{\text{avg}}}
+%\newcommand{\cavg}[1]{\text{C}_{\text{avg}}(#1)}
+
+
+%%% Vector and matrix operators
+
+\newcommand{\vct}[1]{\bm{#1}}
+\newcommand{\mtx}[1]{\bm{#1}}
+
+\newcommand{\ip}[2]{\left\langle {#1},\ {#2} \right\rangle}
+\newcommand{\mip}[2]{ {#1}\bullet {#2}}
+
+\newcommand{\ignore}[1]{}
+
+\newcommand{\Id}{\mathbf{I}}
+\newcommand{\J}{\mathbf{J}}
+\newcommand{\onemtx}{\bm{1}}
+%\newcommand{\zeromtx}{\bm{0}}
+\newcommand{\zeromtx}{\mathbf{0}}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\mat}[1]{ {\ensuremath{\mtx{#1} }}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\gammab{{\bm{\gamma}}}
+\def\kappab{{\bm{\kappa}}}
+\def\sig{{\bm{\Sigma}}}
+\def\sigplus{{\bm{\Sigma}^{+}}}
+\def\siginv{{\bm{\Sigma}^{-1}}}
+\def\bet{{\bm{\beta}}}
+\def\one{{\bm{1}}}
+\def\exp{\hbox{\rm exp}}
+\def\col{\hbox{\rm col}}
+\def\ker{\hbox{\rm ker}}
+\def\ahat{{\hat\a}}
+\def\p{{\mathbf p}}
+\def\e{{\mathbf e}}
+\def\q{{\mathbf q}}
+\def\rb{{\mathbf r}}
+\def\s{{\mathbf s}}
+\def\u{{\mathbf u}}
+\def\v{{\mathbf v}}
+\def\d{{\mathbf \delta}}
+\def\xhat{{\hat\x}}
+\def\yhat{{\hat\y}}
+\def\A{\matA}
+\def\B{\matB}
+\def\C{\matC}
+\def\Ahat{\hat\matA}
+\def\Atilde{\tilde\matA}
+\def\Btilde{\tilde\matB}
+\def\Stilde{\tilde\matS}
+\def\Utilde{\tilde\matU}
+\def\Vtilde{\tilde\matV}
+\def\G{{\cl G}}
+\def\hset{{\cl H}}
+\def\Q{{\bm{Q}}}
+\def\U{{\bm{U}}}
+\def\V{{\bm{V}}}
+\def\win{\hat{\w}}
+\def\wopt{\w^*}
+\def\matAhat{\hat\mat{A}}
+\def\matA{\mat{A}}
+\def\matB{\mat{B}}
+\def\matC{\mat{C}}
+\def\matD{\mat{D}}
+\def\matE{\mat{E}}
+\def\matH{\mat{H}}
+\def\matI{\mat{I}}
+\def\matM{\mat{M}}
+\def\matP{\mat{P}}
+\def\matQ{\mat{Q}}
+\def\matR{\mat{R}}
+\def\matL{\mat{L}}
+
+\def\matS{\mat{S}}
+\def\matT{\mat{T}}
+\def\matU{\mat{U}}
+\def\matV{\mat{V}}
+\def\matW{\mat{W}}
+\def\matX{\mat{X}}
+\def\matY{\mat{Y}}
+\def\matZ{\mat{Z}}
+\def\matSig{\mat{\Sigma}}
+\def\matOmega{\mat{\Omega}}
+\def\matGam{\mat{\Gamma}}
+\def\matTheta{\mat{\Theta}}
+\def\w{{\mathbf{w}}}
+\def\ein{{\cl E_{\text{\rm in}}}}
+\def\eout{{\cl E}}
+\def\scl{{\textsc{l}}}
+\def\scu{{\textsc{u}}}
+\def\phiu{{\overline{\phi}}}
+\def\psiu{{\overline{\psi}}}
+\def\phil{{\underbar{\math{\phi}}}}
+\newcommand\remove[1]{}
+
+
+\newcommand{\vecb}{{\vct{b} }}
+\newcommand{\bc}{{\vecb_{\mathcal{R}(\matA)^\bot } }}
+\newcommand{\br}{{\vecb_{\mathcal{R}(\matA) } }}
+
+% Least squares solution of Ax = b
+\def\xls{\x_{\text{\tiny LS}}}
+
+% For rows and columns of a matrix A
+\newcommand{\ar}[1]{ \matA^{(#1)}}
+\newcommand{\ac}[1]{ \matA_{(#1)}}
+
+\newcommand{\colspan}[1]{\mathcal{R}(#1)}
+
+\usepackage{palatino}
+
+%---------------------Listings--------------------%
+\usepackage{listings}
+\usepackage{color}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\lstset{ %
+  language=Octave,                % the language of the code
+  basicstyle=\footnotesize,           % the size of the fonts that are used for the code
+  numbers=left,                   % where to put the line-numbers
+  numberstyle=\tiny\color{gray},  % the style that is used for the line-numbers
+  stepnumber=2,                   % the step between two line-numbers. If it's 1, each line
+                                  % will be numbered
+  numbersep=5pt,                  % how far the line-numbers are from the code
+  backgroundcolor=\color{white},      % choose the background color. You must add \usepackage{color}
+  showspaces=false,               % show spaces adding particular underscores
+  showstringspaces=false,         % underline spaces within strings
+  showtabs=false,                 % show tabs within strings adding particular underscores
+  frame=single,                   % adds a frame around the code
+  rulecolor=\color{black},        % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens (green here))
+  tabsize=2,                      % sets default tabsize to 2 spaces
+  captionpos=b,                   % sets the caption-position to bottom
+  breaklines=true,                % sets automatic line breaking
+  breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+  title=\lstname,                   % show the filename of files included with \lstinputlisting;
+                                  % also try caption instead of title
+  keywordstyle=\color{blue},          % keyword style
+  commentstyle=\color{dkgreen},       % comment style
+  stringstyle=\color{mauve},         % string literal style
+  escapeinside={\%*}{*)},            % if you want to add LaTeX within your code
+  morekeywords={*,...}               % if you want to add more keywords to the set
+}
+%-------------------------------------------------%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{hyperref}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{tabularx,ragged2e,booktabs,caption}
+
+% Place this after the backref command
+\usepackage{algorithmicx}
+\usepackage[ruled]{algorithm}
+\usepackage{algpseudocode}
+
+\newcommand{\floor}[1]{\lfloor #1 \rfloor}
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{question}{Question}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{observation}[theorem]{Observation}
+\newtheorem{fact}[theorem]{Fact}
+\newtheorem{example}{Example}
+%\newtheorem{algorithm}{Algorithm}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{remark}{Remark}
+\newtheorem{problem}{Problem}
+
+%-------------------------------------------------%
+
+
+%%%%%%%%%%%%%%
+% Document
+%%%%%%%%%%%%%%
+
+
+\title{Test Fama-French Three Factor Model Using Fama-MacBeth Approach}
+\author{Ran Zhao}
+\thanks{}
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{abstract}
+In this paper, we use the Fama-MacBeth~\cite{FM73} approach to estimate and evaluate Fama-French three factor model~\cite{FF93}. The market factor and $SMB$ factors have positive and statistically significant coefficients, and $HMB$ has negative but non-significant coefficient. The pricing errors terms seem not to be 0 under Fama-French three-factor model framework.
+\end{abstract}
+
+
+\maketitle
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%
+%
+\section{Introduction}
+Fama and French (1993) identify three common stock market risk factors: overall market factor ($RMF$), firm size ($SMB$) and book-to-market ($HML$), as shown in estimation equation~\ref{eqn::fama_french_three_factor}. Their testing results show that these three factors explain average returns on stocks.
+
+\begin{equation} \label{eqn::fama_french_three_factor}
+r_i - r_f = \beta_0 + \beta_1 (r_m-r_f) + \beta_2 SMB + \beta_3 HML + \epsilon_i
+\end{equation}
+
+
+where $r_i$ is the rate of return for security $i$, $r_f$ represents risk-free rate and $\epsilon$ is the pricing error. The risk factors are market ($r_m - r_f$), small market capitalization minus big ($SMB$) and high book-to-market ratio minus low.
+
+The motivation of constructing three-factor model is based on the stock market observations, where two classes stocks tend to have better than market returns: small-cap stocks and low PB ratio stocks. The observation seems to violate traditional capital asset pricing model (CAPM) model, as in the model the only risk factor is overall market. Fama and French show that the extended model improves the explanatory power of the factor model to average stock market returns.
+
+In following section, I present the coefficient estimation and model validation using Fama-MacBeth approach.
+
+\bigskip
+
+
+\section{Estimation and Evaluation}
+\subsection{Fama-Macbeth Approach}
+Fama and MacBeth~\cite{FM73} suggest a two-stage procedure for estimating cross-sectional regressions. The first pass is to run time-series regression. Fama and MacBeth use rolling five years regressions and I use the technique with full-sample betas, just for faster computation. The estimation model is selected as in Equation~\ref{eqn::fama_macbeth_first_pass}.
+
+\begin{equation} \label{eqn::fama_macbeth_first_pass}
+r_{i,t} - r_{f, t} = \beta_{0, i} + \beta_{1, i} (r_{m, t}-r_{f, t}) + \beta_{2, i} SMB_t + \beta_{3, i} HML_t + \epsilon_i
+\end{equation}
+
+
+Note that the regression is with respect to each security $i$. The Fama-French three-factor risk factors (in terms of returns) are available on French's public website~\footnote{\url{http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/Data_Library/f-f_portfolios.html}}. In this research, I use the month frequency for both risk factors and individual stock returns. The individual stock returns are from CRSP~\footnote{When processing the data, I exclude stocks with less than 10 observations during research period}. The data starts from July, 1926 and ends with September, 2016. There are 30,297 individual stocks in the time series regression.
+
+The second pass is to run cross-sectional regression at each time period, i.e.,
+
+\begin{equation} \label{eqn::fama_macbeth_second_pass}
+r^e_{i,t} = \lambda_{0, t} + \lambda_{1, t} \beta_{RMF, i} + \lambda_{2, t} \beta_{SMB, i} + \lambda_{3, t} \beta_{HML, i} + \alpha_{i,t}
+\end{equation}
+
+
+Then we estimate $\lambda$ and the pricing error as the average of the cross-sectional regression estimates,
+$$
+\hat{\lambda} = \frac{1}{T} \sum_{t=1}^{T} \lambda_{t}, \qquad \hat{\alpha}_i = \frac{1}{T} \sum_{t=1}^{T} \alpha_{i,t}
+$$
+
+The standard deviation of the cross-sectional regression estimates to generate the sampling errors from,
+$$
+\sigma^2(\hat{\lambda}) = \frac{1}{T^2} \sum_{t=1}^T (\hat{\lambda}_t - \hat{\lambda})^2, \qquad \sigma^2(\hat{\alpha}_i) = \frac{1}{T^2} \sum_{t=1}^T (\hat{\alpha}_{i,t} - \hat{\alpha}_i)^2
+$$
+
+
+Cochrane~\cite{J09} proposes the test on whether all the pricing errors are jointly zero. As the pricing error denoted by $\alpha$ shown in Equation~\ref{eqn::fama_macbeth_second_pass}, the covariance matrix of the sample pricing error is
+
+\begin{eqnarray*}
+\hat{\alpha} &=& \frac{1}{T} \sum_{t=1}^{T} \hat{\alpha}_t \\
+cov(\hat{\alpha}) &=& \frac{1}{T^2} \sum_{t=1}^{T} (\hat{\alpha}_t - \hat{\alpha})(\hat{\alpha}_t - \hat{\alpha})'
+\end{eqnarray*} 
+
+and $\alpha = [\alpha_1, \alpha_2, \ldots, \alpha_N]$ where $N$ is the total number of securities. Finally we should test
+
+$$
+\hat{\alpha}' cov(\hat{\alpha}^{-1} \hat{\alpha} \sim \chi^2_{N-1}
+$$
+
+\subsection{Empirical Results}
+The mean and standard errors of the cross-sectional regressions are reported in Table~\ref{tbl::coeff}. The market factor and $SMB$ factor are positive and statistically significant. The $HML$ factor, however, has negative mean and is not significant at 10\% level. The constant is expected to be non-significant.  
+
+\begin{table}
+\begin{center}
+\caption{The mean, standard error, t-statistics and p-value from cross-sectional regression.}
+\begin{tabular}{c|cccc} 
+  \hline
+	&	constant	&	rm-rf	&	HML	&	SMB	\\ \hline
+mean	&	-0.2721	&	0.3363	&	-0.04807	&	0.1940	\\  
+s.e.	&	0.4432	&	0.0474	&	0.0352	&	0.0299	\\
+t-stats	&	-0.6139	&	7.0948	&	-1.3626	&	6.4831	\\
+p-value	&	0.5394	&	0.0000***	&	0.1733	&	0.0000***	\\
+  \hline
+\end{tabular}\label{tbl::coeff}
+\end{center}
+\end{table}
+
+The chi-squared statistic is 1.4670, and the null hypothesis is rejected that all pricing errors are zero. 
+
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bibliographystyle{plain}
+\bibliography{bib}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%
+\newpage
+\section*{Appendix: Code}
+%\begin{spacing}{0.9}
+\lstinputlisting[language=R]{assignment8.R}
+%\end{spacing}{0.9}
+
+\end{document}
+\endinput
