@@ -296,9 +296,6 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{abstract}
-
-\end{abstract}
 
 
 \maketitle
@@ -321,28 +318,31 @@ dS_I^{(F)}(t) &=& (\mu_I - \mu_F) dt + (\sigma_I - \sigma_F) d\tilde{W}^{(F)}_I(
 dS_A^{(F)}(t) &=& (\mu_A - \mu_F) dt + (\sigma_A - \sigma_F) d\tilde{W}^{(F)}_A(t)
 \end{eqnarray*}
 
-where $\tilde{W}^{(F)}_I$ and $\tilde{W}^{(F)}_A$ are Brownian motions under measure of Facebook stock return. This way of modeling cannot tell the relative volatility because the Brownian motion is symmetric. But the drift term would interpret as the excess return of stock return over the numeraire stock return. 
+where $\tilde{W}^{(F)}_I$ and $\tilde{W}^{(F)}_A$ are Brownian motions under measure of Facebook stock return. This way of modeling cannot tell the relative volatility because the Brownian motion is symmetric. But the drift term would interpret as the excess return of stock return over the numeraire stock return. The parameters of the model can be estimated by GMM, MLE or Bayesian MCMC method. From May 2012 (when Facebook went public), the estimation of $\mu_I - \mu_F = -0.00118$, and $\mu_A - \mu_F = -0.00067$. The data source is Bloomberg and my estimation method is MLE.
+
+The interpretation of negative excess returns show that the IBM and Apple stocks underperformed the Facebook stock by 11.8 and 6.7 basis points on daily basis.
 
 If the original model is not iid, there is a compensation term for covariance between numeraire and underlying stocks. That is,
+
 \begin{eqnarray*}
-dS_I^{(F)}(t) &=& (\mu_I - \mu_F + \rho \sigma_I \sigma_F) dt + (\sigma_I - \sigma_F) d\tilde{W}^{(F)}_I(t) \\
-dS_A^{(F)}(t) &=& (\mu_A - \mu_F + \rho \sigma_A \sigma_F) dt + (\sigma_A - \sigma_F) d\tilde{W}^{(F)}_A(t)
+dS_I^{(F)}(t) &=& (\mu_I - \mu_F + \rho_{F,I} \sigma_I \sigma_F) dt + (\sigma_I - \sigma_F) d\tilde{W}^{(F)}_I(t) \\
+dS_A^{(F)}(t) &=& (\mu_A - \mu_F + \rho_{F,A} \sigma_A \sigma_F) dt + (\sigma_A - \sigma_F) d\tilde{W}^{(F)}_A(t)
 \end{eqnarray*}
 
-The drift return is more than just the return-premium, where $\rho$ could be estimated jointly with the return series. 
+The drift return is more than just the return-premium, where $\rho$ could be estimated jointly with the return series. Now we have $\mu_I - \mu_F = -0.001233$, and $\mu_A - \mu_F = -0.000757$. The positive return-correlation compensated for the return premium, and therefore provide a higher return premium of Facebook over the other two stocks.
 
 %
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\bibliographystyle{plain}
-\bibliography{bib}
+%\bibliographystyle{plain}
+%\bibliography{bib}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %
-\newpage
-\section*{Appendix: Code}
+%\newpage
+%\section*{Appendix: Code}
 %\begin{spacing}{0.9}
 %\lstinputlisting[language=R]{assignment9.R}
 %\end{spacing}{0.9}
